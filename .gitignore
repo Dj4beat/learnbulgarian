@@ -1,0 +1,10 @@
+# Python virtual environment
+venv/
+
+# Google Cloud credentials (sensitive)
+**/gen-lang-client-*.json
+
+# OS files
+Thumbs.db
+desktop.ini
+.DS_Store

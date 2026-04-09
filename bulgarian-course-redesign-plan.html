@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Bulgarian Course — Redesign & Restructure Plan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@400;500;600&display=swap');
+
+  :root {
+    --navy: #1a1f4e;
+    --navy-light: #2a3070;
+    --cream: #fdf8f0;
+    --gold: #e8a020;
+    --gold-light: #fef3d8;
+    --green: #1a6b3c;
+    --green-light: #e8f5ee;
+    --blue: #1d5fa8;
+    --blue-light: #e8f0fb;
+    --red: #c0392b;
+    --red-light: #fdf0ef;
+    --purple: #6b3fa0;
+    --purple-light: #f3eefb;
+    --ink: #1a1a2e;
+    --muted: #5a6070;
+    --border: #e2e5f0;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.65;
+    font-size: 16px;
+  }
+
+  /* ── HEADER ── */
+  .doc-header {
+    background: var(--navy);
+    color: white;
+    padding: 56px 40px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .doc-header::before {
+    content: 'БГ';
+    position: absolute;
+    right: -10px;
+    top: -20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 220px;
+    font-weight: 900;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .doc-header .label {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .doc-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 16px;
+    color: white;
+  }
+  .doc-header p {
+    font-size: 17px;
+    color: rgba(255,255,255,0.72);
+    max-width: 620px;
+  }
+  .header-meta {
+    display: flex;
+    gap: 24px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .header-meta-item {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.14);
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+  }
+  .header-meta-item strong { color: var(--gold); }
+
+  /* ── LAYOUT ── */
+  .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 24px 80px;
+  }
+
+  /* ── TOC ── */
+  .toc {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 32px;
+    margin: 40px 0;
+  }
+  .toc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid var(--gold);
+    display: inline-block;
+  }
+  .toc ol {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 24px;
+  }
+  @media (max-width: 600px) { .toc ol { grid-template-columns: 1fr; } }
+  .toc li a {
+    color: var(--blue);
+    text-decoration: none;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .toc li a:hover { color: var(--navy); text-decoration: underline; }
+  .toc-num {
+    font-size: 11px;
+    background: var(--navy);
+    color: white;
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-top: 56px;
+  }
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 3px solid var(--gold);
+  }
+  .section-intro {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 720px;
+    margin-bottom: 28px;
+    line-height: 1.7;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .card p, .card li { font-size: 15px; color: var(--ink); line-height: 1.6; }
+  .card ul, .card ol { padding-left: 20px; margin-top: 8px; }
+  .card li { margin-bottom: 5px; }
+
+  /* ── ISSUE LIST ── */
+  .issue-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  @media (max-width: 700px) { .issue-grid { grid-template-columns: 1fr; } }
+  .issue {
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--red);
+    border-radius: 0 12px 12px 0;
+    padding: 14px 16px;
+  }
+  .issue.design { border-left-color: var(--purple); }
+  .issue.structure { border-left-color: var(--blue); }
+  .issue.content { border-left-color: var(--gold); }
+  .issue-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .issue.design .issue-tag { color: var(--purple); }
+  .issue.structure .issue-tag { color: var(--blue); }
+  .issue.content .issue-tag { color: #b07800; }
+  .issue h4 { font-size: 14px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .issue p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  /* ── MODULE MAP TABLE ── */
+  .module-map {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    font-size: 14px;
+  }
+  .module-map thead tr {
+    background: var(--navy);
+    color: white;
+  }
+  .module-map th {
+    padding: 12px 14px;
+    text-align: left;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+  }
+  .module-map td {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .module-map tr:last-child td { border-bottom: none; }
+  .module-map tr:hover td { background: var(--cream); }
+  .level-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .a1 { background: #e8f5ee; color: #1a6b3c; }
+  .a2 { background: #e8f0fb; color: #1d5fa8; }
+  .b1 { background: #f3eefb; color: #6b3fa0; }
+  .b1plus { background: #fef3d8; color: #b07800; }
+  .new-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--gold);
+    color: white;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .change-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    background: var(--blue);
+    color: white;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+  .keep-badge {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    background: #e0e0e0;
+    color: #555;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  /* ── PHASE CARDS ── */
+  .phases {
+    display: grid;
+    gap: 16px;
+  }
+  .phase {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 90px 1fr;
+  }
+  @media (max-width: 600px) { .phase { grid-template-columns: 1fr; } }
+  .phase-num {
+    background: var(--navy);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    text-align: center;
+  }
+  .phase-num .p-label { font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+  .phase-num .p-number { font-family: 'Playfair Display', serif; font-size: 42px; font-weight: 900; color: var(--gold); line-height: 1; }
+  .phase-body { padding: 20px 22px; }
+  .phase-body h3 { font-size: 17px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .phase-body p { font-size: 14px; color: var(--muted); margin-bottom: 10px; }
+  .phase-body ul { padding-left: 18px; }
+  .phase-body li { font-size: 14px; color: var(--ink); margin-bottom: 4px; }
+  .phase-tag { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 4px; margin-bottom: 8px; }
+  .phase-tag.design { background: var(--purple-light); color: var(--purple); }
+  .phase-tag.content { background: var(--gold-light); color: #9a6600; }
+  .phase-tag.feature { background: var(--green-light); color: var(--green); }
+  .phase-tag.structure { background: var(--blue-light); color: var(--blue); }
+
+  /* ── BEFORE/AFTER ── */
+  .before-after {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 650px) { .before-after { grid-template-columns: 1fr; } }
+  .before, .after {
+    border-radius: 12px;
+    padding: 16px 18px;
+  }
+  .before { background: var(--red-light); border: 1px solid #f5c6c2; }
+  .after { background: var(--green-light); border: 1px solid #b8e0c8; }
+  .ba-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+  .before .ba-label { color: var(--red); }
+  .after .ba-label { color: var(--green); }
+  .before p, .after p { font-size: 14px; line-height: 1.55; color: var(--ink); }
+
+  /* ── EXAM SKILLS ── */
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 640px) { .skill-grid { grid-template-columns: 1fr; } }
+  .skill-card {
+    border-radius: 12px;
+    padding: 18px 20px;
+    border: 1px solid var(--border);
+  }
+  .skill-card .skill-icon { font-size: 28px; margin-bottom: 8px; }
+  .skill-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .skill-card p { font-size: 14px; color: var(--muted); }
+  .skill-card.listen { background: #e8f0fb; }
+  .skill-card.read { background: var(--green-light); }
+  .skill-card.write { background: var(--gold-light); }
+  .skill-card.speak { background: var(--purple-light); }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 4px solid var(--gold);
+    background: var(--gold-light);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 20px;
+    margin: 20px 0;
+  }
+  .callout strong { color: var(--navy); }
+  .callout p { font-size: 15px; color: var(--ink); }
+
+  /* ── TIMELINE ── */
+  .timeline { position: relative; padding-left: 32px; }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 10px;
+    top: 6px;
+    bottom: 6px;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item { position: relative; margin-bottom: 22px; }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -26px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+  .timeline-item h4 { font-size: 15px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+  .timeline-item p { font-size: 14px; color: var(--muted); }
+  .t-tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 4px; font-weight: 600; margin-left: 8px; background: var(--navy); color: white; }
+
+  /* ── NEW MODULE PROPOSALS ── */
+  .new-module {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%);
+    color: white;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 14px;
+  }
+  .new-module h4 { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--gold); }
+  .new-module p { font-size: 14px; color: rgba(255,255,255,0.78); line-height: 1.55; }
+  .new-module ul { padding-left: 18px; margin-top: 8px; }
+  .new-module li { font-size: 14px; color: rgba(255,255,255,0.78); margin-bottom: 3px; }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    margin-top: 64px;
+    padding: 28px 24px;
+    background: var(--navy);
+    color: rgba(255,255,255,0.6);
+    text-align: center;
+    font-size: 13px;
+  }
+  .doc-footer strong { color: var(--gold); }
+
+  /* ── PRINT ── */
+  @media print {
+    .doc-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .phase-num { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+
+<style>
+/* Self-hosted Noto Sans Cyrillic — bypasses Apple system font substitution */
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: normal;
+  font-weight: 400 700;
+  src: url("https://whatchan.co.uk/bulgarian/fonts/noto-sans-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Source Sans 3";
+  font-style: italic;
+  font-weight: 400;
+  src: url("https://whatchan.co.uk/bulgarian/fonts/noto-sans-cyrillic-italic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  font-display: swap;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<div class="doc-header">
+  <div class="label">Course Redesign &amp; Restructure</div>
+  <h1>Bulgarian 60‑by‑60<br>Complete Redesign Plan</h1>
+  <p>A full analysis of the current course, a proposed CEFR-aligned module map, phased design and content improvements, and new interactive features — all framed around earning a real qualification.</p>
+  <div class="header-meta">
+    <div class="header-meta-item">Prepared for <strong>Adrian Dane</strong></div>
+    <div class="header-meta-item">Current: <strong>14 pages / 13 modules</strong></div>
+    <div class="header-meta-item">Target: <strong>A1 → B1 CEFR certified</strong></div>
+    <div class="header-meta-item">Exam: <strong>STBFL / ECL (Sofia University)</strong></div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- TOC -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol>
+      <li><a href="#s1"><span class="toc-num">1</span> The Qualification Opportunity</a></li>
+      <li><a href="#s2"><span class="toc-num">2</span> What the Exam Actually Tests</a></li>
+      <li><a href="#s3"><span class="toc-num">3</span> Current Course Audit</a></li>
+      <li><a href="#s4"><span class="toc-num">4</span> Issues to Fix</a></li>
+      <li><a href="#s5"><span class="toc-num">5</span> New CEFR-Aligned Module Map</a></li>
+      <li><a href="#s6"><span class="toc-num">6</span> New Modules to Add</a></li>
+      <li><a href="#s7"><span class="toc-num">7</span> Design Redesign Plan</a></li>
+      <li><a href="#s8"><span class="toc-num">8</span> Exam Practice Features</a></li>
+      <li><a href="#s9"><span class="toc-num">9</span> Before / After Comparisons</a></li>
+      <li><a href="#s10"><span class="toc-num">10</span> Phased Build Plan</a></li>
+    </ol>
+  </div>
+
+
+  <!-- ══ 1. THE OPPORTUNITY ══ -->
+  <div class="section" id="s1">
+    <div class="section-label">Section 1</div>
+    <h2 class="section-title">The Qualification Opportunity</h2>
+    <p class="section-intro">There are two internationally recognised Bulgarian language certificates. Reframing your course around them transforms it from "a free course" into "the free path to a real European qualification." That is a much more compelling, shareable proposition.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
+      <div class="card" style="border-top:4px solid var(--navy);">
+        <div class="card-title">🎓 STBFL — Standard Test of Bulgarian as a Foreign Language</div>
+        <p>Run by <strong>Sofia University "St. Kliment Ohridski"</strong> — the most respected Bulgarian qualification. Accepted across Bulgaria for university admissions, employment, and citizenship applications.</p>
+        <ul style="margin-top:10px;">
+          <li>Five levels: <strong>A2, B1, B2, C1, C2</strong></li>
+          <li>Written exam: 145–175 mins at A2/B1</li>
+          <li>Oral exam: ~20 minutes via Teams</li>
+          <li>Cost: ~€265 per level</li>
+          <li>Conducted at their Sofia premises or online</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:4px solid var(--gold);">
+        <div class="card-title">🇪🇺 ECL — European Certificate of Attainment</div>
+        <p>A pan-European exam consortium covering A2–C1. Focuses purely on communicative skills — <strong>no grammar translation</strong>, making it more accessible for practical learners.</p>
+        <ul style="margin-top:10px;">
+          <li>Four levels: <strong>A2, B1, B2, C1</strong></li>
+          <li>Two oral and two written tasks per level</li>
+          <li>A2 writing: two texts of ~50 words</li>
+          <li>B1 writing: two texts of ~100 words</li>
+          <li>Widely recognised across EU member states</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="border-top:4px solid var(--green);background:var(--green-light);">
+      <div class="card-title">🏛️ Bulgarian Citizenship Exam — the Practical Goal for Many Learners</div>
+      <p>Many of your likely users are British or EU expats moving to Bulgaria, or people applying for Bulgarian citizenship. The state citizenship language exam is a <strong>20-question test, 1 hour, 60% pass mark</strong> — essentially an A2 test. Your course, properly structured, could make this the primary CTA: <em>"Pass the Bulgarian citizenship language exam."</em></p>
+    </div>
+
+    <div class="callout">
+      <p><strong>The Big Idea:</strong> Rename and reframe the course as <em>"The free path to Bulgarian A2/B1 certification."</em> Every module should end with a mini practice test. The homepage should feature a clear learning path: A1 foundations → A2 certificate → B1 certificate → citizenship exam ready.</p>
+    </div>
+  </div>
+
+
+  <!-- ══ 2. WHAT THE EXAM TESTS ══ -->
+  <div class="section" id="s2">
+    <div class="section-label">Section 2</div>
+    <h2 class="section-title">What the Exam Actually Tests</h2>
+    <p class="section-intro">Understanding the exam structure lets us ensure every module directly prepares learners for a real assessment. The four skill areas below should each get their own practice format in the redesigned course.</p>
+
+    <div class="skill-grid">
+      <div class="skill-card listen">
+        <div class="skill-icon">🎧</div>
+        <h4>Listening</h4>
+        <p>Short audio texts and dialogues. Candidates must understand meaning, take notes, and find specific information. Duration: 40 mins / 55 points at A2.</p>
+        <p style="margin-top:8px;font-size:13px;"><strong>Your course has:</strong> TTS audio buttons but no comprehension questions after listening.</p>
+      </div>
+      <div class="skill-card read">
+        <div class="skill-icon">📖</div>
+        <h4>Reading</h4>
+        <p>400–600 word texts at A2, 500–700 at B1. Multiple choice, matching, sentence completion. Everyday topics: family, travel, food, hobbies.</p>
+        <p style="margin-top:8px;font-size:13px;"><strong>Your course has:</strong> Vocabulary tables but no connected reading passages.</p>
+      </div>
+      <div class="skill-card write">
+        <div class="skill-icon">✍️</div>
+        <h4>Writing</h4>
+        <p>Two written texts per level. A2: ~50 words each. B1: ~100 words each. Assessed on grammar, vocabulary, coherence, and appropriate register.</p>
+        <p style="margin-top:8px;font-size:13px;"><strong>Your course has:</strong> "Write three short lines" prompts but no structured writing tasks.</p>
+      </div>
+      <div class="skill-card speak">
+        <div class="skill-icon">🗣️</div>
+        <h4>Speaking (Oral Exam)</h4>
+        <p>4 parts: self-introduction, role-play dialogue, monologue on a topic, commentary on a picture or text. ~20 minutes with an examiner.</p>
+        <p style="margin-top:8px;font-size:13px;"><strong>Your course has:</strong> "Say aloud" instructions but no structured speaking practice scaffolding.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <div class="card-title">📊 STBFL A2 Exam Structure in Detail</div>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;margin-top:8px;">
+        <thead>
+          <tr style="background:var(--navy);color:white;">
+            <th style="padding:8px 12px;text-align:left;border-radius:6px 0 0 0;">Section</th>
+            <th style="padding:8px 12px;text-align:left;">Time</th>
+            <th style="padding:8px 12px;text-align:left;">Points</th>
+            <th style="padding:8px 12px;text-align:left;border-radius:0 6px 0 0;">Pass Mark</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border);">Listening comprehension</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">40 min</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">55 pts</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">28 pts</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:8px 12px;border-bottom:1px solid var(--border);">Reading comprehension</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">50 min</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">80 pts</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">40 pts</td></tr>
+          <tr><td style="padding:8px 12px;border-bottom:1px solid var(--border);">Writing tasks</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">50 min</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">80 pts</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">40 pts</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:8px 12px;border-bottom:1px solid var(--border);">Oral exam</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">~20 min</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">Graded 2–6</td><td style="padding:8px 12px;border-bottom:1px solid var(--border);">Grade 3+</td></tr>
+          <tr><td style="padding:8px 12px;font-weight:700;" colspan="2">Total written</td><td style="padding:8px 12px;font-weight:700;">285 pts</td><td style="padding:8px 12px;font-weight:700;">144 pts (50.5%)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+
+  <!-- ══ 3. CURRENT AUDIT ══ -->
+  <div class="section" id="s3">
+    <div class="section-label">Section 3</div>
+    <h2 class="section-title">Current Course Audit</h2>
+    <p class="section-intro">A quick inventory of what exists, what works well, and what the exam-alignment gap is.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px;">
+      <div class="card" style="border-top:3px solid var(--green);">
+        <div class="card-title" style="color:var(--green);">✅ What Works</div>
+        <ul>
+          <li>Solid vocabulary depth across 60 days</li>
+          <li>TTS audio pronunciation buttons</li>
+          <li>Speed control (0.75×, 0.85×, 1×)</li>
+          <li>Panic button quick-recap feature</li>
+          <li>Browser-based progress tracking</li>
+          <li>Module 13 interactive sentence builder</li>
+          <li>Module 14 live BNT TV player</li>
+          <li>60-day structured learning path</li>
+          <li>Good topic breadth (food, travel, health)</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--red);">
+        <div class="card-title" style="color:var(--red);">❌ What's Missing</div>
+        <ul>
+          <li>No listening comprehension tests</li>
+          <li>No reading passages (only vocab tables)</li>
+          <li>No structured writing tasks</li>
+          <li>No speaking practice scaffolding</li>
+          <li>No CEFR level framing at all</li>
+          <li>No mock exam or practice test</li>
+          <li>No "can-do" milestone checkpoints</li>
+          <li>No A1 content (jumps straight to A2)</li>
+          <li>Module 1 is missing Day 1 content</li>
+        </ul>
+      </div>
+      <div class="card" style="border-top:3px solid var(--gold);">
+        <div class="card-title" style="color:#9a6600;">⚠️ CEFR Coverage Gap</div>
+        <ul>
+          <li>Modules 1–3: Covers A1/A2 grammar</li>
+          <li>Modules 4–7: Good A2 vocabulary</li>
+          <li>Modules 8–9: Early B1 topics</li>
+          <li>Module 10: B1 grammar (verbal aspect)</li>
+          <li>Modules 11–12: B1 real-world tasks</li>
+          <li style="color:var(--red)">Missing: A2 exam-style reading texts</li>
+          <li style="color:var(--red)">Missing: B1 opinion/argument writing</li>
+          <li style="color:var(--red)">Missing: Oral exam simulation</li>
+          <li style="color:var(--red)">Missing: Full practice tests</li>
+        </ul>
+      </div>
+    </div>
+    @media (max-width: 700px) { above div should be 1 col }
+  </div>
+
+
+  <!-- ══ 4. ISSUES TO FIX ══ -->
+  <div class="section" id="s4">
+    <div class="section-label">Section 4</div>
+    <h2 class="section-title">Issues to Fix</h2>
+    <p class="section-intro">Identified problems across design, structure, and content — prioritised by impact on learner experience.</p>
+
+    <div class="issue-grid">
+      <div class="issue design">
+        <div class="issue-tag">Design</div>
+        <h4>Navigation overload</h4>
+        <p>14 nav items in the header is unusable. Collapses to a plain select on mobile with no styling.</p>
+      </div>
+      <div class="issue design">
+        <div class="issue-tag">Design</div>
+        <h4>Generic visual identity</h4>
+        <p>System fonts, cold blue/white palette, no warmth or cultural character. Looks like a Bootstrap template.</p>
+      </div>
+      <div class="issue design">
+        <div class="issue-tag">Design</div>
+        <h4>No visual rhythm in modules</h4>
+        <p>Each module is a single long scroll. Days have no clear visual "chapter" boundary.</p>
+      </div>
+      <div class="issue design">
+        <div class="issue-tag">Design</div>
+        <h4>Audio buttons easy to miss</h4>
+        <p>Inline blue buttons blend in with surrounding text. No visual "audio zone" signal.</p>
+      </div>
+      <div class="issue design">
+        <div class="issue-tag">Design</div>
+        <h4>No within-module progress</h4>
+        <p>No indicator showing "Day 3 of 5" within a module page. Learners lose their place.</p>
+      </div>
+      <div class="issue design">
+        <div class="issue-tag">Design</div>
+        <h4>Module 13 is a different site</h4>
+        <p>The interactive doctor module has completely different styling from all other pages.</p>
+      </div>
+      <div class="issue structure">
+        <div class="issue-tag">Structure</div>
+        <h4>No CEFR framing</h4>
+        <p>No mention of A1/A2/B1 levels anywhere. Learners have no clear progression milestone.</p>
+      </div>
+      <div class="issue structure">
+        <div class="issue-tag">Structure</div>
+        <h4>Module 1 is missing Day 1</h4>
+        <p>Module 1 starts on Day 2. Day 1 (the alphabet) only exists as a table on the homepage — not a proper lesson.</p>
+      </div>
+      <div class="issue structure">
+        <div class="issue-tag">Structure</div>
+        <h4>Homepage module descriptions too brief</h4>
+        <p>Cards only show a title. No day range, CEFR level, time estimate, or topic tags visible.</p>
+      </div>
+      <div class="issue structure">
+        <div class="issue-tag">Structure</div>
+        <h4>Inconsistent module titles</h4>
+        <p>Homepage titles differ from module page titles (e.g. "Food and shopping" vs "Eating Out and Shopping"). Some have emojis, some don't.</p>
+      </div>
+      <div class="issue structure">
+        <div class="issue-tag">Structure</div>
+        <h4>No "Contents" TOC that works</h4>
+        <p>The "Contents" section at the top of each module is just a static text list — not anchor-linked or sticky.</p>
+      </div>
+      <div class="issue structure">
+        <div class="issue-tag">Structure</div>
+        <h4>No Day 1 proper lesson</h4>
+        <p>The alphabet is only covered as a quick-view table on the homepage. There's no actual Day 1 lesson in the course.</p>
+      </div>
+      <div class="issue content">
+        <div class="issue-tag">Content</div>
+        <h4>Repetitive audio notice</h4>
+        <p>"You may need to press play twice..." appears before every single audio button — sometimes 15+ times per page.</p>
+      </div>
+      <div class="issue content">
+        <div class="issue-tag">Content</div>
+        <h4>No exam-style practice tasks</h4>
+        <p>Vocabulary is taught but never tested in an exam format: multiple choice, gap-fill, matching.</p>
+      </div>
+      <div class="issue content">
+        <div class="issue-tag">Content</div>
+        <h4>No reading passages</h4>
+        <p>The exam requires reading 400–600 word texts. The course has no extended reading content at all.</p>
+      </div>
+      <div class="issue content">
+        <div class="issue-tag">Content</div>
+        <h4>No writing tasks</h4>
+        <p>The exam requires writing 50–100 word texts on prompts. The course has no structured writing practice.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 5. NEW MODULE MAP ══ -->
+  <div class="section" id="s5">
+    <div class="section-label">Section 5</div>
+    <h2 class="section-title">New CEFR-Aligned Module Map</h2>
+    <p class="section-intro">The existing 13 modules cover the right ground — they just need reframing, reordering slightly, and gaps filled. The proposed map below shows what changes for each module, what level it targets, and what to add.</p>
+
+    <div class="callout">
+      <p><strong>Core principle:</strong> Each module ends with a 4-part mini-test (Listen · Read · Write · Speak) mirroring the real exam format. Milestone modules (3, 7, 12) become "checkpoint" modules with a full mock practice test and a "can-do" statement list learners can self-assess against.</p>
+    </div>
+
+    <table class="module-map">
+      <thead>
+        <tr>
+          <th>Module</th>
+          <th>New Title</th>
+          <th>Days</th>
+          <th>CEFR</th>
+          <th>Key Changes</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Intro</strong></td>
+          <td>Start Here: Alphabet & Sounds <span class="new-badge">NEW</span></td>
+          <td>Day 0</td>
+          <td><span class="level-badge a1">A1</span></td>
+          <td>Move alphabet table off homepage into a proper Day 0 / pre-module lesson. Add letter-by-letter audio, Cyrillic writing guide, and a quick 10-question alphabet quiz.</td>
+        </tr>
+        <tr>
+          <td><strong>1</strong></td>
+          <td>Greetings, Numbers & First Words <span class="change-badge">RENAME</span></td>
+          <td>Days 1–5</td>
+          <td><span class="level-badge a1">A1</span></td>
+          <td>Fix missing Day 1 (currently starts on Day 2). Add "can-do" checklist at end. Add mini A1 practice test. Standardise title.</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong></td>
+          <td>Verbs, Negation & Commands <span class="keep-badge">KEEP</span></td>
+          <td>Days 6–10</td>
+          <td><span class="level-badge a1">A1</span></td>
+          <td>Good content. Add a short reading passage (dialogue format). Add end-of-module writing task: "Write 3 sentences about your daily routine."</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong></td>
+          <td>Tenses, Adjectives & Comparisons <span class="keep-badge">KEEP</span></td>
+          <td>Days 11–15</td>
+          <td><span class="level-badge a2">A2</span></td>
+          <td><strong>A1 Checkpoint Module.</strong> Add a full A1 mock test (all 4 skills). Add "A1 Can-Do" self-assessment card. Badge: "A1 Complete 🎉"</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong></td>
+          <td>Eating Out &amp; Shopping <span class="change-badge">RENAME</span></td>
+          <td>Days 16–20</td>
+          <td><span class="level-badge a2">A2</span></td>
+          <td>Fix title (was "Food and shopping" on homepage, "Eating Out and Shopping" in module). Add a short café/restaurant reading text. Add listening comprehension task.</td>
+        </tr>
+        <tr>
+          <td><strong>5</strong></td>
+          <td>Work, Time &amp; Daily Life <span class="change-badge">RENAME</span></td>
+          <td>Days 21–25</td>
+          <td><span class="level-badge a2">A2</span></td>
+          <td>Was "Home and routines" on homepage, "Work and Daily Life" in module. Fix inconsistency. Add writing task: "Describe your typical weekday in 50 words."</td>
+        </tr>
+        <tr>
+          <td><strong>6</strong></td>
+          <td>Family, Feelings &amp; Appearance <span class="keep-badge">KEEP</span></td>
+          <td>Days 26–30</td>
+          <td><span class="level-badge a2">A2</span></td>
+          <td>Good content. Add a short reading: a personal letter/email between friends (classic A2 reading format). Add listening task on describing people.</td>
+        </tr>
+        <tr>
+          <td><strong>7</strong></td>
+          <td>Travel, Hotels &amp; Directions <span class="change-badge">RENAME</span></td>
+          <td>Days 31–35</td>
+          <td><span class="level-badge a2">A2</span></td>
+          <td><strong>A2 Checkpoint Module.</strong> Add full A2 mock test. Add "A2 Can-Do" self-assessment. Highlight: "You're now ready for the Bulgarian Citizenship Language Exam." Badge: "A2 Complete 🎉"</td>
+        </tr>
+        <tr>
+          <td><strong>8</strong></td>
+          <td>Hobbies, Culture &amp; Leisure <span class="keep-badge">KEEP</span></td>
+          <td>Days 36–40</td>
+          <td><span class="level-badge b1">B1</span></td>
+          <td>Good topic range. Add a reading passage about a Bulgarian cultural event or festival. Add opinion writing task: "What is your favourite hobby and why? (75 words)"</td>
+        </tr>
+        <tr>
+          <td><strong>9</strong></td>
+          <td>Media, Customs &amp; Idioms <span class="keep-badge">KEEP</span></td>
+          <td>Days 41–45</td>
+          <td><span class="level-badge b1">B1</span></td>
+          <td>Strong content. Add a news-style reading text (links naturally to Module 14 BNT player). Add idiom-in-context listening exercise.</td>
+        </tr>
+        <tr>
+          <td><strong>10</strong></td>
+          <td>Advanced Grammar: Aspect, Passive &amp; Conditionals <span class="keep-badge">KEEP</span></td>
+          <td>Days 46–50</td>
+          <td><span class="level-badge b1">B1</span></td>
+          <td>Good grammar depth. Add a B1 grammar gap-fill practice exercise. Add "explain your opinion" writing task (this is directly tested at B1).</td>
+        </tr>
+        <tr>
+          <td><strong>11</strong></td>
+          <td>Health, Pharmacy &amp; Emergencies <span class="keep-badge">KEEP</span></td>
+          <td>Days 51–55</td>
+          <td><span class="level-badge b1">B1</span></td>
+          <td>Merge with Module 13 content (interactive doctor practice). Module 13 becomes integrated into Module 11 rather than a standalone page.</td>
+        </tr>
+        <tr>
+          <td><strong>12</strong></td>
+          <td>Immigration, Housing &amp; Final Review <span class="keep-badge">KEEP</span></td>
+          <td>Days 56–60</td>
+          <td><span class="level-badge b1">B1</span></td>
+          <td><strong>B1 Checkpoint Module.</strong> Add full B1 mock test. Add "B1 Can-Do" self-assessment. Day 60 becomes "Your Mock Oral Exam" with prompts for all 4 oral exam parts. Badge: "B1 Complete 🎉"</td>
+        </tr>
+        <tr>
+          <td><strong>+A</strong></td>
+          <td>A2 Full Practice Exam <span class="new-badge">NEW</span></td>
+          <td>—</td>
+          <td><span class="level-badge a2">A2</span></td>
+          <td>Standalone practice exam page: timed 180-minute mock STBFL A2 test. Listening (TTS passages + questions), Reading passage + MCQ, Writing prompts, Speaking guide.</td>
+        </tr>
+        <tr>
+          <td><strong>+B</strong></td>
+          <td>B1 Full Practice Exam <span class="new-badge">NEW</span></td>
+          <td>—</td>
+          <td><span class="level-badge b1">B1</span></td>
+          <td>Standalone B1 practice exam. Longer reading passages (500–700 words), more complex writing tasks (100 words), B1 grammar and vocabulary in context.</td>
+        </tr>
+        <tr>
+          <td><strong>14</strong></td>
+          <td>Media: Live BNT + News Vocabulary <span class="change-badge">ENHANCE</span></td>
+          <td>Ongoing</td>
+          <td><span class="level-badge b1plus">B1+</span></td>
+          <td>Keep the live TV player. Add: a curated news vocabulary section, 3 sample BNT news transcript excerpts with comprehension questions, links to Bulgarian radio (BNR).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+  <!-- ══ 6. NEW MODULES ══ -->
+  <div class="section" id="s6">
+    <div class="section-label">Section 6</div>
+    <h2 class="section-title">New Modules &amp; Pages to Add</h2>
+    <p class="section-intro">These new pages fill the gaps the exam reveals, and add features that make the course distinctive.</p>
+
+    <div class="new-module">
+      <h4>📖 Module 0: The Alphabet — A Proper Day 0 Lesson</h4>
+      <p>Currently the alphabet is just a table on the homepage. This needs to become a proper first lesson: letter groups, pronunciation audio for every letter, a Cyrillic handwriting guide, and a 10-question "read these letters" quiz. This is what every beginner needs before Day 1.</p>
+      <ul>
+        <li>30 letter cards with audio (TTS)</li>
+        <li>Grouped by similarity to Latin letters</li>
+        <li>Letters that look the same but sound different (e.g. В = V, Н = N)</li>
+        <li>Quick 10-question alphabet recognition quiz</li>
+      </ul>
+    </div>
+
+    <div class="new-module">
+      <h4>🧪 Practice Exam Pages (A2 + B1)</h4>
+      <p>Two standalone exam simulation pages, each clearly structured around the real STBFL format. Timed. Interactive. With self-marking multiple choice sections and guided writing/speaking prompts with model answers to compare against.</p>
+      <ul>
+        <li>Timer visible throughout (optional: can be hidden)</li>
+        <li>Section-by-section structure matching real exam</li>
+        <li>Self-assessment rubric after each speaking/writing task</li>
+        <li>Results summary: strengths and areas to revisit</li>
+      </ul>
+    </div>
+
+    <div class="new-module">
+      <h4>📚 Glossary Page (all 60 days in one place)</h4>
+      <p>A searchable, filterable word list compiled from all modules. Searchable by English or Bulgarian. Filterable by module / topic. Each entry has an audio button. This becomes the course's reference tool and dramatically improves SEO.</p>
+    </div>
+
+    <div class="new-module">
+      <h4>🗺️ "How to Get Certified" Page</h4>
+      <p>A simple guide explaining the STBFL and ECL exams: who they're for, how to register, what to expect on the day, and links to official exam websites. Positions your course as the preparation path. A very low-effort page with high value for the citizenship exam audience.</p>
+    </div>
+  </div>
+
+
+  <!-- ══ 7. DESIGN PLAN ══ -->
+  <div class="section" id="s7">
+    <div class="section-label">Section 7</div>
+    <h2 class="section-title">Design Redesign Plan</h2>
+    <p class="section-intro">A warm, literary, culturally-rooted aesthetic — evoking Bulgarian culture, the Cyrillic script's history, and the joy of language learning. Think refined editorial, not clinical e-learning software.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;">
+      <div class="card">
+        <div class="card-title">🎨 New Colour Palette</div>
+        <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:32px;border-radius:6px;background:#1a1f4e;flex-shrink:0;"></div><div><strong>#1a1f4e</strong> — Deep Cyrillic Navy (primary, headers, nav)</div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:32px;border-radius:6px;background:#fdf8f0;border:1px solid #e2e0d8;flex-shrink:0;"></div><div><strong>#fdf8f0</strong> — Warm Cream (page background)</div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:32px;border-radius:6px;background:#e8a020;flex-shrink:0;"></div><div><strong>#e8a020</strong> — Bulgarian Gold (accent, CTAs, highlights)</div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:32px;border-radius:6px;background:#8b1a2e;flex-shrink:0;"></div><div><strong>#8b1a2e</strong> — Deep Rose (Bulgarian rose motif, badges)</div></div>
+          <div style="display:flex;align-items:center;gap:12px;"><div style="width:40px;height:32px;border-radius:6px;background:#2a6347;flex-shrink:0;"></div><div><strong>#2a6347</strong> — Forest Green (completed states, success)</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">🔤 Typography</div>
+        <ul>
+          <li><strong>Headings:</strong> Playfair Display (elegant, literary, works beautifully for a language course — serif gravitas)</li>
+          <li><strong>Body text:</strong> Source Sans 3 (clean, readable, excellent Cyrillic support)</li>
+          <li><strong>Bulgarian script:</strong> Displayed larger (110%) than Latin equivalents, slightly bolder — make the Cyrillic the star</li>
+          <li><strong>Day numbers:</strong> Large display numerals in navy — create clear visual chapter breaks</li>
+          <li><strong>Code/transliteration:</strong> A monospaced font for phonetic guides</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🧭 New Navigation Design</div>
+      <ul>
+        <li><strong>Homepage nav:</strong> Clean horizontal bar with phase groupings: "Foundations (A1)" / "Intermediate (A2)" / "Advanced (B1)" / "Practice Exams" — not 14 individual links</li>
+        <li><strong>Module pages:</strong> Sticky left sidebar (desktop) showing the 5 day sections, highlighting current one as you scroll. Collapses to a top progress strip on mobile</li>
+        <li><strong>Mobile:</strong> Full-screen slide-in menu with module tiles grouped by CEFR level</li>
+        <li><strong>Breadcrumb:</strong> "Home → A2 Phase → Module 4 → Day 17" always visible</li>
+        <li><strong>Previous/Next:</strong> Large bottom navigation cards showing the next day/module title</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">📐 Module Page Layout</div>
+      <ul>
+        <li><strong>Day header:</strong> Full-width coloured band with "Day 16" in large type, day title, estimated time, and CEFR level badge</li>
+        <li><strong>Audio zones:</strong> Visually distinct pale blue cards with speaker icon — not inline buttons</li>
+        <li><strong>Vocabulary tables:</strong> Alternating row colours, inline audio per word, phonetic guide column, Bulgarian script enlarged</li>
+        <li><strong>Dialogue sections:</strong> Chat-bubble style layout (speaker A left, speaker B right) instead of plain text</li>
+        <li><strong>Grammar explainers:</strong> Collapsible "Grammar Note" accordions — visible but not overwhelming</li>
+        <li><strong>Panic button:</strong> Floating bottom-right "lifeline" button (stays in view while scrolling)</li>
+        <li><strong>Day complete:</strong> A satisfying "Mark Day Complete ✓" button at the bottom of each day section</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏠 Homepage Redesign</div>
+      <ul>
+        <li><strong>Hero:</strong> Full-width banner — "Learn Bulgarian. Earn a Real European Certificate." with a "Start for free" CTA and a small credential logo strip (STBFL / ECL / CEFR)</li>
+        <li><strong>Progress dashboard:</strong> Prominent "You're on Day X of 60" tracker for returning users</li>
+        <li><strong>Learning path visual:</strong> A visual roadmap showing A1 → A2 → B1 phases, with modules plotted along it</li>
+        <li><strong>Module cards:</strong> Show level badge, day range, key topics as tags, estimated time, and completion status</li>
+        <li><strong>"Why get certified?" section:</strong> Short section explaining STBFL/ECL/citizenship exam with a link to the certification guide page</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- ══ 8. EXAM FEATURES ══ -->
+  <div class="section" id="s8">
+    <div class="section-label">Section 8</div>
+    <h2 class="section-title">Exam Practice Features to Add</h2>
+    <p class="section-intro">These features don't require a backend — they can all be built in vanilla JS within HTML pages, just like the existing TTS and panic button features.</p>
+
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Feature</div><div class="p-number">A</div></div>
+        <div class="phase-body">
+          <span class="phase-tag feature">End-of-Day</span>
+          <h3>Mini Practice Test (4 questions)</h3>
+          <p>After each day's vocabulary, a 4-question interactive quiz: 2 multiple-choice word match questions, 1 gap-fill sentence, 1 "which is correct?" grammar choice. Auto-marked. Score shown. Wrong answers explain the correct form.</p>
+          <ul>
+            <li>Uses vocabulary from that day only</li>
+            <li>Randomises option order each time</li>
+            <li>Triggers a "Day complete" checkmark on pass (≥3/4)</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Feature</div><div class="p-number">B</div></div>
+        <div class="phase-body">
+          <span class="phase-tag feature">End-of-Module</span>
+          <h3>Exam-Style Module Test (4 skills)</h3>
+          <p>At the end of each module, a structured 4-part test mirroring the real exam: Listen (TTS passage + 5 questions), Read (short text + 5 questions), Write (prompt + self-check rubric), Speak (prompt + model answer reveal).</p>
+          <ul>
+            <li>Listen + Read sections auto-marked</li>
+            <li>Write section provides a model 50-word answer to compare</li>
+            <li>Speak section provides a full model script to read aloud</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Feature</div><div class="p-number">C</div></div>
+        <div class="phase-body">
+          <span class="phase-tag feature">Milestone</span>
+          <h3>Can-Do Checklist (A1, A2, B1)</h3>
+          <p>At modules 3, 7, and 12, a self-assessment card appears with the official CEFR "can-do" statements for that level. Learners tick off what they can do. A visual percentage bar fills up. This is exactly how real CEFR self-assessment works.</p>
+          <ul>
+            <li>A1: 12 can-do statements</li>
+            <li>A2: 18 can-do statements</li>
+            <li>B1: 24 can-do statements</li>
+            <li>Browser saves progress</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Feature</div><div class="p-number">D</div></div>
+        <div class="phase-body">
+          <span class="phase-tag feature">Standalone</span>
+          <h3>Full Mock Practice Exams (A2 + B1)</h3>
+          <p>Two dedicated exam pages replicating the STBFL structure. Optional countdown timer. Section-by-section navigation. Auto-marked MCQ sections. Writing and speaking sections provide model answers and a self-scoring rubric using the official assessment criteria.</p>
+          <ul>
+            <li>A2 exam: 3 hours total (split into sessions if needed)</li>
+            <li>B1 exam: 3 hours total</li>
+            <li>Downloadable self-assessment PDF at the end</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 9. BEFORE/AFTER ══ -->
+  <div class="section" id="s9">
+    <div class="section-label">Section 9</div>
+    <h2 class="section-title">Before / After Comparisons</h2>
+
+    <div class="before-after">
+      <div class="before">
+        <div class="ba-label">❌ Before — Course Proposition</div>
+        <p>"A free online course to learn Bulgarian in 60 days, with 60-minute daily lessons."</p>
+      </div>
+      <div class="after">
+        <div class="ba-label">✅ After — Course Proposition</div>
+        <p>"The free path to Bulgarian A2/B1 certification. 60 days. CEFR-aligned. Exam practice built in. Citizenship exam ready."</p>
+      </div>
+    </div>
+
+    <div class="before-after">
+      <div class="before">
+        <div class="ba-label">❌ Before — Navigation</div>
+        <p>14 individual module links in the header. Collapses to a bare select dropdown on mobile. No grouping. No context.</p>
+      </div>
+      <div class="after">
+        <div class="ba-label">✅ After — Navigation</div>
+        <p>Phase-grouped nav: Foundations (A1) · Intermediate (A2) · Advanced (B1) · Practice Exams. Sticky left sidebar within modules. Breadcrumb always visible.</p>
+      </div>
+    </div>
+
+    <div class="before-after">
+      <div class="before">
+        <div class="ba-label">❌ Before — Module Cards</div>
+        <p>Title only. No CEFR level. No day range. No topic tags. No time estimate. Identical appearance for every module.</p>
+      </div>
+      <div class="after">
+        <div class="ba-label">✅ After — Module Cards</div>
+        <p>Level badge (A1/A2/B1) · Day range (Days 16–20) · 3 topic tags · Estimated time (5 hrs) · Progress indicator · Completion checkmark.</p>
+      </div>
+    </div>
+
+    <div class="before-after">
+      <div class="before">
+        <div class="ba-label">❌ Before — End of Module</div>
+        <p>A "← Previous / Next →" text link pair. No summary, no practice, no milestone moment.</p>
+      </div>
+      <div class="after">
+        <div class="ba-label">✅ After — End of Module</div>
+        <p>4-skill practice test · Can-do checklist (at milestones) · "Module complete" celebration · Large next-module card preview · Exam tip relevant to the topics just covered.</p>
+      </div>
+    </div>
+
+    <div class="before-after">
+      <div class="before">
+        <div class="ba-label">❌ Before — Audio</div>
+        <p>Small inline blue button. "You may need to press play twice..." notice repeated before every single audio button — sometimes 15+ times per page.</p>
+      </div>
+      <div class="after">
+        <div class="ba-label">✅ After — Audio</div>
+        <p>Distinct "Audio Zone" panel with speaker icon, Bulgarian text large and prominent, play/stop controls, one audio notice at the page top only.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══ 10. BUILD PLAN ══ -->
+  <div class="section" id="s10">
+    <div class="section-label">Section 10</div>
+    <h2 class="section-title">Phased Build Plan</h2>
+    <p class="section-intro">A practical sequence for building the redesigned course — starting with the highest-impact changes and building towards a complete exam-ready platform.</p>
+
+    <div class="phases">
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Phase</div><div class="p-number">1</div></div>
+        <div class="phase-body">
+          <span class="phase-tag design">Design System</span>
+          <h3>New branding.css + Homepage Redesign</h3>
+          <p>Build the complete new design system: tokens, typography, components. Then apply to the homepage with the new hero, CEFR learning path visual, and upgraded module cards.</p>
+          <ul>
+            <li>New colour palette, fonts (Playfair + Source Sans 3)</li>
+            <li>All shared components: cards, badges, buttons, audio zones, tables</li>
+            <li>Homepage hero + CEFR roadmap section</li>
+            <li>Upgraded module cards with level badges and topic tags</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Phase</div><div class="p-number">2</div></div>
+        <div class="phase-body">
+          <span class="phase-tag structure">Module Template</span>
+          <h3>Module Page Template (applied to Module 1 as proof of concept)</h3>
+          <p>Build the new module page layout: day headers, audio zones, vocab tables, dialogue bubbles, panic button as floating lifeline, sticky sidebar navigation, day-complete buttons, end-of-module practice test.</p>
+          <ul>
+            <li>Sticky left sidebar (desktop) / progress strip (mobile)</li>
+            <li>Day chapter headers with day number, title, time, level</li>
+            <li>Audio Zone panels replacing inline buttons</li>
+            <li>Vocab tables with per-word audio + phonetics</li>
+            <li>Floating panic button (bottom-right)</li>
+            <li>End-of-module 4-skill mini practice test</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Phase</div><div class="p-number">3</div></div>
+        <div class="phase-body">
+          <span class="phase-tag structure">Content</span>
+          <h3>Roll template across all 13 modules + fix content issues</h3>
+          <p>Apply the new template to all modules. Fix the Day 1 gap in Module 1. Standardise all titles. Remove repeated audio notices. Add reading passages and writing prompts to each module.</p>
+          <ul>
+            <li>All modules restyled to match template</li>
+            <li>Module 1 Day 1 lesson added (alphabet in context)</li>
+            <li>All title inconsistencies fixed</li>
+            <li>13 short reading passages added (one per module)</li>
+            <li>13 writing task prompts added (one per module)</li>
+            <li>Module 13 merged into Module 11</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Phase</div><div class="p-number">4</div></div>
+        <div class="phase-body">
+          <span class="phase-tag feature">New Pages</span>
+          <h3>Module 0 (Alphabet) + Practice Exam Pages + Certification Guide</h3>
+          <p>Build the new pages that complete the course: a proper alphabet lesson, two full practice exam pages (A2 + B1), and the "How to Get Certified" guide.</p>
+          <ul>
+            <li>Module 0: Alphabet with per-letter audio and quiz</li>
+            <li>A2 Practice Exam page (full STBFL format)</li>
+            <li>B1 Practice Exam page</li>
+            <li>Certification guide page (STBFL, ECL, citizenship exam)</li>
+            <li>Can-do self-assessment cards at modules 3, 7, 12</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-num"><div class="p-label">Phase</div><div class="p-number">5</div></div>
+        <div class="phase-body">
+          <span class="phase-tag content">Extras</span>
+          <h3>Glossary + Module 14 Enhancement + Polish</h3>
+          <p>The finishing touches that make the course feel complete and professional.</p>
+          <ul>
+            <li>Searchable glossary page (all vocabulary from all 60 days)</li>
+            <li>Module 14 enhanced with news vocabulary + BNR radio links</li>
+            <li>Dark mode toggle</li>
+            <li>Print stylesheet for any day's content</li>
+            <li>SEO meta descriptions updated across all pages</li>
+            <li>Final cross-browser testing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="callout" style="margin-top:32px;">
+      <p><strong>Suggested starting point:</strong> Phase 1 — new design system + homepage. This gives you something to review and approve before any module pages are touched. It also de-risks the project: if the visual direction is right, rolling it out across 13 modules is mechanical work, not creative decisions.</p>
+    </div>
+
+    <div class="card" style="margin-top:20px;">
+      <div class="card-title">🚀 Quick Wins (can do immediately, high impact)</div>
+      <ul>
+        <li>Remove repeated audio notices from all module pages — replace with one note at the top</li>
+        <li>Fix all module title inconsistencies between homepage and module pages</li>
+        <li>Add CEFR level labels to homepage module cards</li>
+        <li>Add "You are now A2 ready" callout to Module 7 and "B1 ready" to Module 12</li>
+        <li>Make the "Contents" list at the top of each module use anchor links</li>
+        <li>Move alphabet from homepage into its own Module 0 / Day 0 page</li>
+      </ul>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<div class="doc-footer">
+  <p>Bulgarian 60-by-60 Course Redesign Plan · Prepared for <strong>Adrian Dane</strong> · Ready to build whenever you are</p>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -E \"\\\\.\\(css|js|json\\)$\")",
+      "Bash(ls \"C:/Users/Dj4be/Desktop/New Bulgarian/\"*.html)",
+      "Bash(ls \"/c/Users/Dj4be/Desktop/New Bulgarian/\"*.html)",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\Dj4be\\\\Desktop\\\\New Bulgarian\\\\'' -Filter ''*.html'' -File | Select-Object -ExpandProperty Name | Sort-Object\")",
+      "Bash(powershell.exe -Command \"python --version\")",
+      "Bash(python _inject_beta.py)",
+      "Bash(del \"C:\\\\Users\\\\Dj4be\\\\Desktop\\\\New Bulgarian\\\\_inject_beta.py\")",
+      "Bash(python _fix_banner_text.py)",
+      "Bash(rm _fix_banner_text.py)",
+      "Bash(python _mobile_fix.py)",
+      "Bash(rm _mobile_fix.py)",
+      "Bash(grep -l \"new Audio\\(mp3Path\\)\" \"C:\\\\Users\\\\Dj4be\\\\Desktop\\\\New Bulgarian\"/day*.html)",
+      "Bash(grep -l \"new Audio\\(mp3Path\\)\" \"C:\\\\Users\\\\Dj4be\\\\Desktop\\\\New Bulgarian\\\\backup\"/day*.html)",
+      "Bash(ls -d */)",
+      "Bash(ls *.html *.py *.md)"
+    ]
+  }
+}

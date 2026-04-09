@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FKB7EWJX2T"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-FKB7EWJX2T');</script>
+<meta charset="utf-8">
+<title>Course Feedback | Free Bulgarian 60×60</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Report a mistake or send feedback about the free Bulgarian 60×60 course. Help improve the content for everyone.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:ital,ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&subset=cyrillic&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1a1f4e;--navy-mid:#252b68;--cream:#fdf8f0;--cream-dark:#f5ede0;
+  --gold:#e8a020;--gold-light:#fdf0d0;--rose:#8b1a2e;--rose-light:#fdf0f2;
+  --green:#1a6b3c;--green-light:#e8f5ee;--blue:#1a56a8;--blue-light:#e8f0fb;
+  --ink:#1c1c2e;--muted:#5c627a;--border:#e2ddd5;
+  --shadow-sm:0 1px 4px rgba(26,31,78,0.08);
+  --shadow-md:0 4px 20px rgba(26,31,78,0.11);
+  --r:14px;--r-sm:8px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{font-family:'Source Sans 3',system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.65;font-size:16px;-webkit-font-smoothing:antialiased;}
+h1,h2,h3,h4{font-family:'Playfair Display',Georgia,serif;}
+a{color:var(--blue);text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* NAV */
+.site-nav{background:var(--navy);position:sticky;top:0;z-index:100;box-shadow:0 2px 12px rgba(0,0,0,0.25);}
+.nav-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;height:56px;gap:16px;}
+.nav-brand{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;color:white;text-decoration:none;white-space:nowrap;flex-shrink:0;}
+.nav-brand span{color:var(--gold);}
+.nav-brand:hover{text-decoration:none;}
+.nav-cta{display:flex;align-items:center;gap:10px;margin-left:auto;}
+.nav-li{display:flex;align-items:center;gap:5px;color:rgba(255,255,255,0.7);font-size:13px;font-weight:600;padding:6px 10px;border-radius:6px;text-decoration:none;}
+.nav-li:hover{background:rgba(255,255,255,0.1);color:white;text-decoration:none;}
+.nav-start-btn{background:var(--gold);color:var(--navy);font-weight:800;font-size:14px;padding:8px 18px;border-radius:var(--r-sm);text-decoration:none;white-space:nowrap;}
+.nav-start-btn:hover{background:#f5b530;text-decoration:none;color:var(--navy);}
+
+/* HERO */
+.page-hero{background:linear-gradient(150deg,var(--navy) 0%,#1e2860 55%,#16204a 100%);padding:56px 24px 72px;position:relative;overflow:hidden;}
+.page-hero::before{content:'📝';position:absolute;right:-10px;top:-10px;font-size:280px;opacity:0.04;pointer-events:none;user-select:none;}
+.page-hero::after{content:'';position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to bottom,transparent,var(--cream));pointer-events:none;}
+.page-hero-inner{max-width:680px;margin:0 auto;text-align:center;position:relative;z-index:1;}
+.page-kicker{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.8);font-size:12px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:6px 14px;border-radius:999px;margin-bottom:20px;}
+.page-hero h1{font-size:clamp(26px,5vw,44px);font-weight:900;color:white;line-height:1.1;margin-bottom:14px;}
+.page-hero h1 em{font-style:normal;color:var(--gold);}
+.page-hero p{font-size:17px;color:rgba(255,255,255,0.72);line-height:1.7;}
+
+/* MAIN */
+.page-body{max-width:740px;margin:0 auto;padding:52px 24px 100px;}
+
+/* NOTE BOX */
+.note-box{background:var(--gold-light);border:1px solid #ddb560;border-radius:var(--r-sm);padding:16px 20px;margin-bottom:32px;font-size:14px;color:var(--ink);line-height:1.65;}
+.note-box strong{color:var(--navy);}
+.note-box a{color:var(--navy);font-weight:700;text-decoration:underline;}
+
+/* FORM CARD */
+.form-card{background:white;border:1px solid var(--border);border-radius:var(--r);padding:36px 40px;box-shadow:var(--shadow-md);}
+@media(max-width:600px){.form-card{padding:24px 18px;}}
+
+.form-section-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;color:var(--navy);margin:32px 0 18px;padding-top:28px;border-top:1px solid var(--border);}
+.form-section-title:first-of-type{margin-top:0;padding-top:0;border-top:none;}
+
+.form-group{margin-bottom:20px;}
+.form-label{display:block;font-size:14px;font-weight:700;color:var(--ink);margin-bottom:7px;}
+.form-label .optional{font-weight:400;color:var(--muted);font-size:13px;}
+.form-label .req{color:var(--rose);}
+
+select,
+input[type="text"],
+input[type="email"],
+textarea{
+  display:block;width:100%;
+  font-family:'Source Sans 3',system-ui,sans-serif;font-size:15px;
+  background:var(--cream);border:1.5px solid var(--border);border-radius:var(--r-sm);
+  padding:10px 14px;color:var(--ink);
+  transition:border-color .15s,box-shadow .15s;
+  -webkit-appearance:none;appearance:none;
+}
+select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235c627a' stroke-width='1.8' fill='none' stroke-linecap='round'/%3E%3C%2Fsvg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;padding-right:36px;cursor:pointer;
+}
+select:focus,input:focus,textarea:focus{
+  outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(26,31,78,0.1);
+}
+textarea{resize:vertical;min-height:110px;line-height:1.6;}
+select:invalid,select option[value=""]{color:var(--muted);}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+@media(max-width:560px){.form-row{grid-template-columns:1fr;}}
+.form-hint{font-size:12px;color:var(--muted);margin-top:5px;line-height:1.5;}
+
+/* SUBMIT */
+.form-submit-row{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-top:32px;padding-top:24px;border-top:1px solid var(--border);flex-wrap:wrap;
+}
+.btn-submit{
+  background:var(--gold);color:var(--navy);
+  font-family:'Source Sans 3',system-ui,sans-serif;
+  font-weight:800;font-size:16px;padding:13px 32px;
+  border-radius:var(--r-sm);border:none;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  transition:background .15s;
+}
+.btn-submit:hover{background:#f5b530;}
+.btn-submit:disabled{opacity:0.6;cursor:not-allowed;}
+.form-privacy{font-size:12px;color:var(--muted);line-height:1.55;max-width:280px;}
+
+/* SUCCESS STATE */
+.form-success{display:none;text-align:center;padding:52px 24px;}
+.form-success .success-icon{font-size:56px;margin-bottom:18px;}
+.form-success h2{font-family:'Playfair Display',serif;font-size:26px;font-weight:900;color:var(--green);margin-bottom:10px;}
+.form-success p{font-size:16px;color:var(--muted);max-width:400px;margin:0 auto 28px;line-height:1.65;}
+.btn-back{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--navy);color:white;font-weight:700;font-size:14px;
+  padding:11px 24px;border-radius:var(--r-sm);text-decoration:none;
+}
+.btn-back:hover{background:var(--navy-mid);text-decoration:none;color:white;}
+
+/* FOOTER */
+.site-footer{background:var(--navy);color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:28px 24px;}
+.site-footer a{color:rgba(255,255,255,0.65);}
+.site-footer a:hover{color:white;text-decoration:none;}
+</style>
+</head>
+<body>
+
+<!-- ══ BETA BANNER ══ -->
+<div id="beta-banner" style="background:#7c2d12;color:#fff;position:relative;z-index:200;border-bottom:3px solid #ea580c;"><div style="max-width:1100px;margin:0 auto;padding:14px 52px 14px 20px;display:flex;align-items:flex-start;gap:14px;"><span style="font-size:22px;flex-shrink:0;margin-top:2px;">&#9888;&#65039;</span><div style="flex:1;font-size:14px;line-height:1.65;font-family:'Source Sans 3',system-ui,sans-serif;"><strong style="font-size:15px;display:block;margin-bottom:5px;">Please Note &#8212; Beta Course</strong>This is a beta of a language course, and at this stage, there will be mistakes. Although I strive for 100% accuracy, creating the material, and amending modules for over 60 modules, takes an awful lot of time. So please <a href="feedback.html" style="color:#fed7aa;font-weight:700;text-decoration:underline;">use this feedback form</a> to tell me about the problem. I&#8217;ll try and rectify when I can. Some modules are more complete than others, and some, especially the more advanced ones, need a lot more work to bring them up to the required standard. All claims on the efficiency of the course are based on aspirational goals. Remember, this course is free, it has no ads, I just hope enough people are kind enough to <a href="https://www.buymeacoffee.com/adriandane" target="_blank" rel="noopener" style="color:#fed7aa;font-weight:700;text-decoration:underline;">buy me a coffee</a> to make this venture worth while.</div><button onclick="(function(){localStorage.setItem('bgBetaDismissed','1');document.getElementById('beta-banner').style.display='none';})()" style="position:absolute;top:8px;right:10px;background:none;border:none;color:rgba(255,255,255,0.7);font-size:24px;cursor:pointer;padding:2px 8px;line-height:1;" title="Dismiss this notice">&#215;</button></div></div>
+<script>if(localStorage.getItem('bgBetaDismissed')){var _bb=document.getElementById('beta-banner');if(_bb)_bb.style.display='none';}</script>
+
+<!-- ══ NAV ══ -->
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-brand">&#127463;&#127468; Bulgarian <span>60&times;60</span></a>
+    <div class="nav-cta">
+      <a href="index.html" class="nav-li">&#8592; Course home</a>
+      <a href="day01.html" class="nav-start-btn">Start Day 1 &rarr;</a>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<header class="page-hero">
+  <div class="page-hero-inner">
+    <div class="page-kicker">&#127463;&#127468; Beta Course Feedback</div>
+    <h1>Help Improve the <em>Course</em></h1>
+    <p>Found a mistake? Something unclear or missing? Please tell me &#8212; every report helps make the course better for everyone.</p>
+  </div>
+</header>
+
+<!-- ══ MAIN ══ -->
+<main class="page-body">
+
+  <div class="note-box">
+    <strong>Thank you for taking the time to help.</strong> This is a beta course and I&#8217;m working through all 60+ modules alone. Even if it takes time to fix, I read every report and make corrections when I can. This course is free, with no ads &#8212; if it&#8217;s been useful, I&#8217;d love it if you&#8217;d <a href="https://www.buymeacoffee.com/adriandane" target="_blank" rel="noopener">buy me a coffee &#9749;</a> to help keep it going.
+  </div>
+
+  <div class="form-card">
+
+    <!-- SUCCESS MESSAGE -->
+    <div class="form-success" id="formSuccess">
+      <div class="success-icon">&#9989;</div>
+      <h2>Feedback received!</h2>
+      <p>Thank you &#8212; I&#8217;ll review your report and make corrections where needed. I really appreciate your help.</p>
+      <a href="index.html" class="btn-back">&#8592; Back to course</a>
+    </div>
+
+    <!-- FEEDBACK FORM — powered by Formsubmit.co (no signup needed) -->
+    <!-- NOTE: The very first submission will trigger a one-time verification email to bulgarianfeedback.busload124@passinbox.com -->
+    <!-- Click the link in that email once, and all future submissions will arrive directly. -->
+    <form id="feedbackForm" action="https://formsubmit.co/ajax/bulgarianfeedback.busload124@passinbox.com" method="POST">
+
+      <!-- Formsubmit.co config fields -->
+      <input type="hidden" name="_subject" value="Bulgarian 60x60 — Course Feedback">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="false">
+      <!-- Honeypot anti-spam -->
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+      <!-- ── WHERE IS THE ISSUE? ── -->
+      <h2 class="form-section-title">Where is the issue?</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="level">Level <span class="optional">(if applicable)</span></label>
+          <select id="level" name="level">
+            <option value="">&#8212; Select level &#8212;</option>
+            <option value="general">General &#8212; not level-specific</option>
+            <option value="a1">A1 &#8212; Foundations (Days 1&#8211;15)</option>
+            <option value="a2">A2 &#8212; Intermediate (Days 16&#8211;35)</option>
+            <option value="b1">B1 &#8212; Advanced (Days 36&#8211;60)</option>
+            <option value="exam">Exam pages (A2 / B1 Practice Exams)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="day">Day <span class="optional">(if applicable)</span></label>
+          <select id="day" name="day">
+            <option value="">&#8212; Select day &#8212;</option>
+            <option value="n/a">N/A &#8212; general issue</option>
+            <optgroup label="A1 &#8212; Foundations (Days 1&#8211;15)">
+              <option value="1">Day 1 &#8212; The Cyrillic Alphabet</option>
+              <option value="2">Day 2 &#8212; Greetings &amp; Politeness</option>
+              <option value="3">Day 3 &#8212; Numbers 0&#8211;20</option>
+              <option value="4">Day 4 &#8212; Introducing Yourself</option>
+              <option value="5">Day 5 &#8212; The Verb &#8216;To Be&#8217;</option>
+              <option value="6">Day 6 &#8212; Gender &amp; The Article</option>
+              <option value="7">Day 7 &#8212; This, That &amp; Pointing</option>
+              <option value="8">Day 8 &#8212; Numbers 20&#8211;1000 &amp; Prices</option>
+              <option value="9">Day 9 &#8212; Days, Months &amp; Time</option>
+              <option value="10">Day 10 &#8212; Colours &amp; Adjectives</option>
+              <option value="11">Day 11 &#8212; Family &amp; People</option>
+              <option value="12">Day 12 &#8212; Basic Verbs &#8212; Present</option>
+              <option value="13">Day 13 &#8212; Negation &amp; Questions</option>
+              <option value="14">Day 14 &#8212; Places Around Town</option>
+              <option value="15">Day 15 &#8212; A1 Checkpoint</option>
+            </optgroup>
+            <optgroup label="A2 &#8212; Intermediate (Days 16&#8211;35)">
+              <option value="16">Day 16 &#8212; Food Words &amp; Dishes</option>
+              <option value="17">Day 17 &#8212; At the Restaurant</option>
+              <option value="18">Day 18 &#8212; Markets &amp; Shops</option>
+              <option value="19">Day 19 &#8212; Work &amp; Professions</option>
+              <option value="20">Day 20 &#8212; Daily Routine &amp; Time</option>
+              <option value="21">Day 21 &#8212; Transport &amp; Travel</option>
+              <option value="22">Day 22 &#8212; Health &amp; the Body</option>
+              <option value="23">Day 23 &#8212; Past Tense &#8212; Aorist</option>
+              <option value="24">Day 24 &#8212; Future Tense</option>
+              <option value="25">Day 25 &#8212; Feelings &amp; Emotions</option>
+              <option value="26">Day 26 &#8212; Weather &amp; Seasons</option>
+              <option value="27">Day 27 &#8212; Hobbies &amp; Free Time</option>
+              <option value="28">Day 28 &#8212; Hotels &amp; Accommodation</option>
+              <option value="29">Day 29 &#8212; Travel &amp; Airports</option>
+              <option value="30">Day 30 &#8212; Shopping for Clothes</option>
+              <option value="31">Day 31 &#8212; Bulgarian Culture &amp; History</option>
+              <option value="32">Day 32 &#8212; Directions &amp; Getting Around</option>
+              <option value="33">Day 33 &#8212; Family Life &amp; Relationships</option>
+              <option value="34">Day 34 &#8212; Opinions &amp; Agreeing/Disagreeing</option>
+              <option value="35">Day 35 &#8212; A2 Checkpoint</option>
+            </optgroup>
+            <optgroup label="B1 &#8212; Advanced (Days 36&#8211;60)">
+              <option value="36">Day 36 &#8212; Imperfect Past Tense</option>
+              <option value="37">Day 37 &#8212; Reported Speech</option>
+              <option value="38">Day 38 &#8212; Conditional &amp; Wishes</option>
+              <option value="39">Day 39 &#8212; Comparatives &amp; Superlatives</option>
+              <option value="40">Day 40 &#8212; Passive Voice</option>
+              <option value="41">Day 41 &#8212; Media &amp; News</option>
+              <option value="42">Day 42 &#8212; Bulgarian Idioms</option>
+              <option value="43">Day 43 &#8212; Formal Writing</option>
+              <option value="44">Day 44 &#8212; Education &amp; Learning</option>
+              <option value="45">Day 45 &#8212; Verb Aspects</option>
+              <option value="46">Day 46 &#8212; Relative Clauses</option>
+              <option value="47">Day 47 &#8212; Housing &amp; Renting</option>
+              <option value="48">Day 48 &#8212; Business Bulgarian</option>
+              <option value="49">Day 49 &#8212; Immigration &amp; Bureaucracy</option>
+              <option value="50">Day 50 &#8212; Advanced Reading</option>
+              <option value="51">Day 51 &#8212; Listening &amp; Speaking</option>
+              <option value="52">Day 52 &#8212; Bulgarian History</option>
+              <option value="53">Day 53 &#8212; Grammar Revision</option>
+              <option value="54">Day 54 &#8212; Vocabulary Revision</option>
+              <option value="55">Day 55 &#8212; Ordinal Numbers &amp; Dates</option>
+              <option value="56">Day 56 &#8212; Advanced Opinions &amp; Debate</option>
+              <option value="57">Day 57 &#8212; Complex Sentences</option>
+              <option value="58">Day 58 &#8212; Health, Doctors &amp; Emergencies</option>
+              <option value="59">Day 59 &#8212; Oral Exam Preparation</option>
+              <option value="60">Day 60 &#8212; B1 Final Mock</option>
+            </optgroup>
+            <optgroup label="Exam pages">
+              <option value="a2-exam">A2 Full Practice Exam</option>
+              <option value="b1-exam">B1 Full Practice Exam</option>
+              <option value="bnt">Live BNT TV page</option>
+            </optgroup>
+          </select>
+        </div>
+      </div>
+
+      <!-- ── WHAT IS THE ISSUE? ── -->
+      <h2 class="form-section-title">What is the issue?</h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="errorType">Nature of the error <span class="req">*</span></label>
+          <select id="errorType" name="error_type" required>
+            <option value="">&#8212; Select type &#8212;</option>
+            <option value="grammar_mistake">Grammar mistake</option>
+            <option value="incorrect_translation">Incorrect translation</option>
+            <option value="wrong_pronunciation">Wrong pronunciation / phonetics</option>
+            <option value="audio_issue">Audio not working / wrong audio</option>
+            <option value="quiz_error">Quiz question error</option>
+            <option value="broken_link">Broken link or missing content</option>
+            <option value="typo">Typo or spelling mistake</option>
+            <option value="factual_error">Factual or cultural error</option>
+            <option value="layout_issue">Layout or display problem</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="severity">Severity <span class="optional">(optional)</span></label>
+          <select id="severity" name="severity">
+            <option value="">&#8212; Select severity &#8212;</option>
+            <option value="minor">Minor &#8212; cosmetic, doesn&#8217;t affect learning</option>
+            <option value="moderate">Moderate &#8212; confusing but understandable</option>
+            <option value="major">Major &#8212; factually wrong, could mislead learners</option>
+            <option value="critical">Critical &#8212; blocks progress entirely</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="description">Describe the issue <span class="req">*</span></label>
+        <textarea id="description" name="description" required placeholder="Please be as specific as possible &#8212; quote the incorrect text, explain what is wrong and why. The more detail you give, the faster I can fix it."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="amendment">Recommended amendment <span class="optional">(optional)</span></label>
+        <textarea id="amendment" name="recommended_amendment" style="min-height:90px;" placeholder="What do you think the correct version should say?"></textarea>
+        <p class="form-hint">If you know the correct answer, sharing it here saves me having to research from scratch &#8212; much appreciated.</p>
+      </div>
+
+      <!-- ── YOUR DETAILS ── -->
+      <h2 class="form-section-title">Your details <span style="font-weight:400;font-size:14px;color:var(--muted);font-family:'Source Sans 3',sans-serif;">(optional)</span></h2>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label" for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="your@email.com">
+          <p class="form-hint">Only used if I need to ask a follow-up question about your report.</p>
+        </div>
+      </div>
+
+      <div class="form-submit-row">
+        <button type="submit" class="btn-submit" id="submitBtn">Send Feedback &#8594;</button>
+        <p class="form-privacy">Your details are never shared with third parties and are only used to follow up on your report if needed.</p>
+      </div>
+
+    </form><!-- /feedbackForm -->
+
+  </div><!-- /form-card -->
+
+</main>
+
+<!-- ══ FOOTER ══ -->
+
+<style>@media(max-width:700px){#beta-banner{display:none!important}}</style>
+<footer class="site-footer">
+  <p>&#169; 2025 <strong>Adrian Dane</strong> &middot; Bulgarian 60&times;60 &middot; Free forever &middot; No ads &middot;
+    <a href="index.html">Course home</a> &middot;
+    <a href="https://www.linkedin.com/in/adrian-dane-9227b5347/" target="_blank" rel="noopener">LinkedIn</a> &middot;
+    <a href="https://www.buymeacoffee.com/adriandane" target="_blank" rel="noopener">Buy me a coffee &#9749;</a>
+  </p>
+</footer>
+
+<script>
+(function(){
+  var form = document.getElementById('feedbackForm');
+  var success = document.getElementById('formSuccess');
+  var btn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async function(e){
+    e.preventDefault();
+    var data = new FormData(form);
+    btn.textContent = 'Sending\u2026';
+    btn.disabled = true;
+    try {
+      var res = await fetch(form.action, {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if(res.ok){
+        form.style.display = 'none';
+        success.style.display = 'block';
+      } else {
+        btn.textContent = 'Send Feedback \u2192';
+        btn.disabled = false;
+        alert('Sorry, there was a problem sending your feedback. Please try again.');
+      }
+    } catch(err){
+      btn.textContent = 'Send Feedback \u2192';
+      btn.disabled = false;
+      alert('Sorry, there was a connection problem. Please check your internet and try again.');
+    }
+  });
+})();
+</script>
+</body>
+</html>

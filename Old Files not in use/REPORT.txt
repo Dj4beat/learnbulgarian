@@ -1,0 +1,38 @@
+Archive folder created on 2026-04-08.
+
+Purpose:
+- Hold files that appear not to be part of the current live site structure.
+- Keep the active site unchanged while separating likely redundant material.
+
+Copied here:
+- backup/
+- bulgarian-course-redesign-plan.html
+- Handover.pdf
+- module01.html
+- module02.html
+- module03.html
+- generate_audio.py
+- generate_pro_audio.py
+- update_audio_ad.py
+- update_audio_amended.py
+- update_audio_remove_special.py
+- fix_bulgarian_fonts.py
+- fix_bulgarian_fonts_2.py
+- install-fonts.php
+- gen-lang-client-0451405897-25b8e7e0a115.json
+- o-0bIpQlx3QUlC5A4PNB6Ryti20_6n1iPHjc5ardu2ui.woff2
+- o-0kIpQlx3QUlC5A4PNr4C5OaxRsfNNlKbCePevHtVtX57DGjDU1QDce2VTSyFtY.woff2
+- а_ама.mp3
+
+Notes:
+- Current live structure appears to be index.html, day01.html to day60.html, feedback.html, media.html, and exam-b1.html.
+- module01.html to module03.html are internally linked but not linked from index.html or sitemap.xml.
+- backup/ is a historical snapshot set.
+- The copied scripts and helper files appear to be maintenance or generation utilities rather than runtime pages.
+- The root-level .woff2 files and root-level а_ама.mp3 do not appear to be referenced by the current site files.
+- venv/ was not copied because it is a local Python environment, not website content.
+
+Known issues still present in live files:
+- index.html links to exam-a2.html, but exam-a2.html is missing.
+- sitemap.xml also lists exam-a2.html.
+- Dynamic audio folders are missing locally for day35, day50, day60, and exam-b1.
