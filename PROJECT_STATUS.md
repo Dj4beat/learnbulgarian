@@ -46,13 +46,23 @@ curl --insecure -T day01.html \
 
 ## Audio Generation
 
-### How it works
+### IMPORTANT — Two scripts exist, only one works
+
+| Script | Status | Notes |
+|--------|--------|-------|
+| `generate_pro_audio.py` | ✅ **USE THIS** | Google Cloud TTS, bg-BG-Standard-A, produces all course MP3s |
+| `generate_audio.py` | ❌ **DO NOT USE** | Old prototype — uses `gemini-2.5-flash-tts` which does not exist; fails on every call |
+
+**Never run `generate_audio.py`.** It is an abandoned prototype and will error on every single audio item. The Google API key it previously contained has been revoked and replaced with an environment variable. The script is kept only for historical reference.
+
+### How generate_pro_audio.py works
 
 - Each play button in the HTML has a `data-text` attribute (Bulgarian text to speak)
-- The script `generate_pro_audio.py` scans all `data-text` values and calls Google Cloud TTS
+- The script scans all `data-text` values and calls Google Cloud TTS
 - Voice: **bg-BG-Standard-A** (female Bulgarian)
 - MP3s are saved to `audio/<day-name>/`
 - The page JavaScript tries the MP3 first; if it fails it falls back to browser Web Speech API
+- Uses a Google Cloud service account credential file — **not** the `GOOGLE_API_KEY` environment variable
 
 ### Commands
 

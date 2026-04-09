@@ -176,13 +176,20 @@ done</code></pre>
   <section class="section">
     <h2>🎙️ Audio Generation</h2>
 
-    <h3>How it works</h3>
+    <div class="callout red">
+      <strong>Two scripts exist — only one works.</strong><br>
+      ✅ <code>generate_pro_audio.py</code> — use this always<br>
+      ❌ <code>generate_audio.py</code> — do NOT run this. It is an abandoned prototype using <code>gemini-2.5-flash-tts</code> which does not exist as a valid model. It fails on every call. The hardcoded API key it contained has been revoked.
+    </div>
+
+    <h3>How generate_pro_audio.py works</h3>
     <ul>
       <li>Every play button in the HTML has a <code>data-text</code> attribute containing Bulgarian text</li>
       <li><code>generate_pro_audio.py</code> scans those values and calls Google Cloud TTS</li>
       <li>Voice: <strong>bg-BG-Standard-A</strong> (female Bulgarian)</li>
       <li>MP3 files are saved to <code>audio/&lt;page-name&gt;/</code></li>
       <li>The page JavaScript tries the MP3 first; falls back to browser Web Speech API only if the file is missing</li>
+      <li>Uses a Google Cloud service account credential file — <strong>not</strong> the <code>GOOGLE_API_KEY</code> environment variable</li>
     </ul>
 
     <div class="callout">
