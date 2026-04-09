@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bulgarian Course Project Info</title>
+  <title>Learn Bulgarian — Project Dashboard</title>
   <style>
     :root{
       --bg:#f6f1e8;
@@ -11,718 +11,525 @@
       --ink:#1d2430;
       --muted:#5d6775;
       --line:#d8cdbb;
-      --accent:#9a3412;
-      --accent-2:#0f3d3e;
+      --gold:#c8973a;
+      --gold-light:#f5e9d0;
+      --teal:#0f3d3e;
+      --red:#9a3412;
+      --green:#166534;
+      --blue:#1e40af;
       --soft:#efe2cf;
     }
-    *{box-sizing:border-box}
-    body{margin:0;font-family:Georgia,"Times New Roman",serif;background:linear-gradient(180deg,#efe4d3 0%,var(--bg) 100%);color:var(--ink);line-height:1.6}
-    .wrap{max-width:980px;margin:0 auto;padding:32px 20px 60px}
-    .hero{background:linear-gradient(135deg,#fffaf2 0%,#f2e4cf 100%);border:1px solid var(--line);border-radius:20px;padding:28px 26px;box-shadow:0 10px 30px rgba(0,0,0,.06)}
-    h1,h2,h3{margin:0 0 12px}
-    h1{font-size:clamp(32px,5vw,52px);line-height:1.05;color:var(--accent-2)}
-    h2{margin-top:26px;font-size:24px;color:var(--accent-2)}
-    h3{margin-top:18px;font-size:18px;color:var(--accent)}
-    p,li{font-size:17px}
-    .meta{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 4px}
-    .chip{display:inline-block;padding:7px 10px;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:13px;font-weight:700;color:var(--accent-2)}
-    .card{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:22px 22px;margin-top:18px}
-    code,pre{font-family:"Courier New",monospace}
-    pre{background:#1f2937;color:#f9fafb;padding:14px 16px;border-radius:14px;overflow:auto;font-size:14px}
-    ul{padding-left:22px}
-    .notice{border-left:5px solid var(--accent);padding-left:14px;color:var(--muted)}
-    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-    .small{font-size:14px;color:var(--muted)}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:Georgia,"Times New Roman",serif;background:linear-gradient(180deg,#efe4d3 0%,var(--bg) 100%);color:var(--ink);line-height:1.65;font-size:16px}
+    a{color:var(--teal)}
+    .wrap{max-width:1020px;margin:0 auto;padding:32px 20px 80px}
+
+    /* ── Hero ── */
+    .hero{background:linear-gradient(135deg,var(--teal) 0%,#1a5f61 100%);border-radius:20px;padding:36px 32px;color:#fff;box-shadow:0 12px 40px rgba(0,0,0,.18);margin-bottom:28px}
+    .hero h1{font-size:clamp(28px,4vw,46px);line-height:1.1;margin-bottom:10px}
+    .hero p{font-size:17px;opacity:.88;max-width:680px}
+    .chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+    .chip{padding:5px 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.5px;border:1.5px solid rgba(255,255,255,.35);color:rgba(255,255,255,.9)}
+    .chip.green{background:rgba(22,101,52,.55)}
+    .chip.gold{background:rgba(200,151,58,.45)}
+    .chip.blue{background:rgba(30,64,175,.45)}
+
+    /* ── Sections ── */
+    .section{background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:26px 28px;margin-bottom:22px;box-shadow:0 2px 12px rgba(0,0,0,.04)}
+    .section h2{font-size:22px;color:var(--teal);margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid var(--gold-light)}
+    .section h3{font-size:17px;color:var(--red);margin:18px 0 8px}
+    .section h4{font-size:15px;color:var(--ink);margin:14px 0 6px;font-style:italic}
+    p{margin-bottom:10px}
+    ul,ol{padding-left:22px;margin-bottom:10px}
+    li{margin-bottom:5px}
+
+    /* ── Code blocks ── */
+    code{font-family:"Courier New",monospace;background:#e8e0d2;padding:1px 5px;border-radius:4px;font-size:14px}
+    pre{background:#1f2937;color:#e5e7eb;padding:16px 18px;border-radius:14px;overflow:auto;font-size:13.5px;margin:12px 0;line-height:1.5}
+    pre code{background:none;padding:0;font-size:inherit;color:inherit}
+
+    /* ── Tables ── */
+    table{width:100%;border-collapse:collapse;margin:12px 0;font-size:15px}
+    th{background:var(--soft);text-align:left;padding:9px 12px;font-size:13px;color:var(--teal)}
+    td{padding:8px 12px;border-bottom:1px solid var(--line)}
+    tr:last-child td{border-bottom:none}
+
+    /* ── Status badge ── */
+    .status-ok{display:inline-block;background:#dcfce7;color:#166534;border:1.5px solid #bbf7d0;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+    .status-warn{display:inline-block;background:#fef9c3;color:#854d0e;border:1.5px solid #fde68a;border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+
+    /* ── Notice / callout ── */
+    .callout{border-left:4px solid var(--gold);background:var(--gold-light);padding:14px 18px;border-radius:0 12px 12px 0;margin:14px 0}
+    .callout.red{border-color:var(--red);background:#fef2f2}
+    .callout.teal{border-color:var(--teal);background:#f0fafa}
+
+    /* ── Grid ── */
+    .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:14px}
+    .mini-card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+    .mini-card h4{margin-top:0;font-style:normal;color:var(--teal)}
+
+    /* ── Banner / promo ── */
+    .promo-strip{background:linear-gradient(135deg,#fffaf2,#f2e8d9);border:1px solid var(--line);border-radius:16px;padding:20px 24px;margin-bottom:22px;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+    .promo-strip .promo-label{font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+    .promo-strip .promo-title{font-size:17px;font-weight:700;color:var(--teal);margin-bottom:3px}
+    .promo-strip .promo-desc{font-size:14px;color:var(--muted)}
+    .promo-strip .promo-links{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .promo-link{display:inline-block;padding:7px 16px;border-radius:999px;font-size:13px;font-weight:700;text-decoration:none;border:2px solid var(--teal);color:var(--teal);transition:background .2s,color .2s}
+    .promo-link:hover{background:var(--teal);color:#fff}
+    .promo-link.filled{background:var(--teal);color:#fff}
+    .promo-link.filled:hover{background:#0a2b2c}
+    .promo-icon{font-size:36px;flex-shrink:0}
+
+    /* ── Day status grid ── */
+    .day-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(52px,1fr));gap:6px;margin:12px 0}
+    .day-pip{text-align:center;padding:6px 4px;border-radius:8px;font-size:11px;font-weight:700;background:#dcfce7;color:#166534;border:1px solid #bbf7d0}
+
+    /* ── CEFR key ── */
+    .cefr-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+    .cefr-badge{padding:5px 14px;border-radius:999px;font-size:13px;font-weight:700}
+    .badge-a1{background:#dbeafe;color:#1e3a8a}
+    .badge-a2{background:#e0f2fe;color:#0c4a6e}
+    .badge-b1{background:#ede9fe;color:#4c1d95}
+
+    @media(max-width:600px){
+      .hero{padding:24px 18px}
+      .section{padding:18px 16px}
+      .promo-strip{flex-direction:column}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <section class="hero">
-      <h1>Bulgarian Course Project Info</h1>
-      <p>This file is the human-readable overview for continuing work on the course after an interruption. It must be updated after every meaningful project change.</p>
-      <div class="meta">
-        <span class="chip">Last updated: 2026-04-08 16:34:00 +03:00</span>
-        <span class="chip">Reference lesson: day16.html</span>
-        <span class="chip">Current lesson: day19.html</span>
-        <span class="chip">Priority: quality over speed</span>
+<div class="wrap">
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="hero">
+    <h1>🇧🇬 Learn Bulgarian — Project Dashboard</h1>
+    <p>The complete reference for anyone continuing work on the 60-day Bulgarian course at <strong>learnbulgarian.io</strong>. Read this before touching anything.</p>
+    <div class="chips">
+      <span class="chip green">✓ All 60 days live</span>
+      <span class="chip gold">Last updated: 9 April 2026</span>
+      <span class="chip blue">A1 → B1 Pre-intermediate / Intermediate</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ PROMO — Novel ═══════════════════ -->
+  <div class="promo-strip">
+    <div class="promo-icon">📖</div>
+    <div style="flex:1">
+      <div class="promo-label">From the creator</div>
+      <div class="promo-title">The Lennykins Chronicles: Foxwood Mystery</div>
+      <div class="promo-desc">A debut novel — now available on Amazon.</div>
+      <div class="promo-links">
+        <a class="promo-link filled" href="https://www.amazon.co.uk/Lennykins-Chronicles-Foxwood-Mystery/dp/B0FTX9JY1H/" target="_blank" rel="noopener">Buy on Amazon UK</a>
+        <a class="promo-link" href="https://www.amazon.de/-/en/Lennykins-Chronicles-Foxwood-Mystery/dp/B0FTX9JY1H/" target="_blank" rel="noopener">Amazon DE (Bulgaria)</a>
       </div>
-    </section>
-
-    <section class="card">
-      <h2>What This Project Is Doing</h2>
-      <p>The later lessons are being upgraded one day at a time so they match the stronger early lessons in teaching quality, Bulgarian naturalness, and audio usefulness. The model lesson for this phase is <code>day16.html</code>.</p>
-      <p class="notice">The work should not be treated as finished when a lesson merely has a few grouped audio buttons. The goal is a fully improved lesson: better Bulgarian, better teaching, more examples, richer topic coverage, new teaching elements where needed, and dense useful audio.</p>
-    </section>
-
-    <section class="card">
-      <h2>Key Project Files</h2>
-      <div class="grid">
-        <div>
-          <h3>Workflow</h3>
-          <ul>
-            <li><code>DAY_UPGRADE_WORKFLOW.md</code></li>
-            <li><code>PROJECT_STATUS.md</code></li>
-          </ul>
-        </div>
-        <div>
-          <h3>Quality Control</h3>
-          <ul>
-            <li><code>QUALITY_CHECK_AGENT.md</code></li>
-            <li><code>ENGAGEMENT_AGENT.md</code></li>
-          </ul>
-        </div>
-        <div>
-          <h3>Audio Generation</h3>
-          <ul>
-            <li><code>generate_pro_audio.py</code></li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <section class="card">
-      <h2>How The Audio Is Created</h2>
-      <p>The course pages use <code>data-text</code> attributes on audio buttons. The generator script scans those values and creates MP3 files for each target phrase.</p>
-      <h3>Generator script</h3>
-      <p><code>generate_pro_audio.py</code></p>
-      <h3>What it expects</h3>
-      <ul>
-        <li>HTML pages with <code>play-audio</code> buttons and <code>data-text</code> values</li>
-        <li>A working Python environment in <code>venv</code></li>
-        <li>Running from the project folder on Windows</li>
-      </ul>
-      <h3>Where audio goes</h3>
-      <p>Generated files are written into <code>audio/&lt;page-name&gt;/</code>.</p>
-      <h3>Important filename rule</h3>
-      <p>The page JavaScript and the Python generator must sanitize Bulgarian text the same way. If they do not, the site will miss the MP3 file and silently fall back to browser speech synthesis.</p>
-      <h3>Command</h3>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py day17.html</code></pre>
-      <h3>Multi-file example</h3>
-      <pre><code>venv\Scripts\python.exe generate_pro_audio.py day43.html day49.html day52.html</code></pre>
-      <h3>Force regeneration</h3>
-      <p>If an MP3 already exists and the lesson text has been improved, use <code>--force</code> to overwrite the old file. This is important for fixing stale audio.</p>
-      <pre><code>venv\Scripts\python.exe generate_pro_audio.py --force day01.html</code></pre>
-    </section>
-
-    <section class="card">
-      <h2>Quality Rules</h2>
-      <ul>
-        <li>Review every lesson as if checking work for a native Bulgarian teacher teaching English-speaking adults.</li>
-        <li>Reject Russian intrusions, false friends, awkward calques, and unnatural Bulgarian.</li>
-        <li>Keep CEFR wording correct: A2 = Pre-intermediate, B1 = Intermediate.</li>
-        <li>Use <code>day16.html</code> as the standard for audio density and pedagogical richness.</li>
-        <li>Add new teaching elements if the page needs them: extra examples, mini-dialogues, contrast notes, grouped practice, or stronger recap material.</li>
-        <li>Prefer generous topic examples over minimal coverage. Visitors value lots of useful examples tied to the lesson topic.</li>
-        <li>Lessons must also pass an engagement check: they should not feel like flat word lists.</li>
-        <li>Add Bulgarian-specific facts, customs, etiquette, or practical local details where they genuinely help the learner.</li>
-        <li>After every meaningful change, update both <code>PROJECT_STATUS.md</code> and this file.</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Engagement Standard</h2>
-      <p>The course now has an explicit engagement requirement in addition to accuracy and audio coverage.</p>
-      <ul>
-        <li>Use <code>ENGAGEMENT_AGENT.md</code> to review whether a lesson feels interesting, useful, and connected to Bulgarian life.</li>
-        <li>Prefer memorable examples, reusable speaking chunks, and realistic scenarios over raw vocabulary-only sections.</li>
-        <li>Add Bulgarian context when it helps: customs, expectations, travel detail, etiquette, or local cultural habits.</li>
-        <li>Previously rebuilt lessons also need an engagement pass if they still feel too list-like.</li>
-        <li>Every module should aim to be informative, entertaining, and educational, not just correct and comprehensive.</li>
-        <li>Where the topic allows it, lessons should begin with a proper scene-setting introduction before Section 1 rather than jumping straight into lists.</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Important Corrections Already Made</h2>
-      <ul>
-        <li>Broken <code>exam-a2.html</code> references removed from <code>index.html</code> and <code>sitemap.xml</code>.</li>
-        <li>CEFR labels normalized so A2 is no longer shown as Intermediate and B1 is no longer shown as Advanced.</li>
-        <li>Russian contamination fixed in <code>day07.html</code>, <code>day10.html</code>, <code>day38.html</code>, and <code>day46.html</code>.</li>
-        <li>Several later pages already received grouped or expanded audio support, including <code>day43</code>, <code>day49</code>, <code>day52</code>, <code>day53</code>, <code>day54</code>, <code>day59</code>, <code>day35</code>, <code>day50</code>, <code>day60</code>, and <code>exam-b1</code>.</li>
-        <li><code>day17.html</code>, <code>day18.html</code>, and <code>day19.html</code> received a stronger mobile usability fix: upgraded vocab tables now stack into mobile cards and the per-word audio controls are explicitly labeled as <code>Play</code>/<code>Stop</code> on phones.</li>
-        <li><code>day17.html</code> now also has an explicit mobile-only vocabulary card fallback for Section 1 so the individual word audio cannot disappear behind table rendering quirks.</li>
-        <li><code>generate_pro_audio.py</code> now supports <code>--force</code> so stale MP3 files can be regenerated when lesson text or pacing has changed.</li>
-        <li><code>day01.html</code> had a beginning-alphabet regression review; the <code>Е</code> example was restored to <code>Е. Ема</code> and Day 1 should now be regenerated with <code>--force</code> to restore correct pacing in the MP3 files.</li>
-        <li>A major audio-path bug was fixed across the HTML pages: the browser-side filename logic now preserves Cyrillic letters, so pages should request the real Bulgarian MP3 filenames instead of falling back to system speech.</li>
-        <li>A shared mobile layout pass was applied across <code>day01.html</code> to <code>day60.html</code> and <code>exam-b1.html</code> to improve phone rendering for tables, roleplays, recap blocks, audio controls, and dense lesson cards.</li>
-        <li><code>day02.html</code> then received an additional page-specific mobile fix: its main tables now convert into labeled stacked cards on phones instead of compressed multi-column desktop tables.</li>
-        <li><code>day03.html</code> to <code>day16.html</code> then received a stronger mobile table pass: vocabulary, recap, grammar-comparison, and article tables now show stacked cards with automatic header labels on phones.</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Mobile Policy</h2>
-      <ul>
-        <li>The course should be treated as mobile-first, not desktop-first.</li>
-        <li>Every lesson update must include a mobile acceptance check, especially for vocab tables, dialogues, recap sections, and audio controls.</li>
-        <li>If a page uses custom section layouts, it may still need lesson-specific mobile CSS after the shared responsive layer.</li>
-        <li>Because the mobile fixes live in the HTML files, updated pages must be uploaded before the live site changes.</li>
-      </ul>
-    </section>
-
-    <section class="card">
-      <h2>Current Lesson Status</h2>
-      <h3>Day 17</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 75 <code>data-text</code> targets.</li>
-        <li>Per-item audio added to major tables.</li>
-        <li>Dialogue line-by-line audio added.</li>
-        <li>Pedagogical correction made for the vegetarian example.</li>
-        <li>Dialogue naturalness improved.</li>
-      </ul>
-      <p>Day 17 is ready for MP3 generation.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py day17.html</code></pre>
-      <h3>Day 18</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 51 <code>data-text</code> targets.</li>
-        <li>Bad or awkward shop names were corrected.</li>
-        <li>Mixed-script transliteration contamination was cleaned up.</li>
-        <li>A more practical receipt phrase was added: <code>Касова бележка, моля.</code></li>
-        <li>New market-request examples and line-by-line dialogue audio were added.</li>
-      </ul>
-      <p>Day 18 is also ready for MP3 generation.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py day18.html</code></pre>
-      <h3>Day 19</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 61 <code>data-text</code> targets.</li>
-        <li>The professions table was rebuilt with per-item audio.</li>
-        <li>Workplace, work-description, and work-verbs sections were expanded.</li>
-        <li>Extra work-conversation examples were added for practical speaking support.</li>
-        <li>Mixed-script transliteration contamination was cleaned.</li>
-      </ul>
-      <p>Day 19 is also ready for MP3 generation.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py day19.html</code></pre>
-      <h3>Day 20</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 57 <code>data-text</code> targets.</li>
-        <li>The routine-verbs, frequency, and time-expression tables were rebuilt with per-item audio.</li>
-        <li>A new practical routine-phrases section was added for conversational support.</li>
-        <li>The model routine and dialogue were corrected to sound more natural in Bulgarian.</li>
-        <li>Day 20 also received a page-level mobile table fix with automatic header labels on phones.</li>
-      </ul>
-      <p>Day 20 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day20.html</code></pre>
-      <h3>Day 21</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 60 <code>data-text</code> targets.</li>
-        <li>The transport, station, ticket-buying, and bus/metro tables were rebuilt with per-item audio.</li>
-        <li>A new practical travel-phrases section was added for real-world station and transport use.</li>
-        <li>The lesson dialogue and transport notes were corrected to sound more natural and reliable.</li>
-        <li>Day 21 also received a page-level mobile table fix with automatic header labels on phones.</li>
-      </ul>
-      <p>Day 21 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day21.html</code></pre>
-      <h3>Day 22</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 69 <code>data-text</code> targets.</li>
-        <li>The body-parts, pain-expression, symptoms, and doctor/pharmacy tables were rebuilt with per-item audio.</li>
-        <li>A new practical health-phrases section was added for doctor and pharmacy situations.</li>
-        <li>The pharmacy dialogue and support wording were corrected to sound more natural in Bulgarian.</li>
-        <li>Day 22 also received a page-level mobile table fix with automatic header labels on phones.</li>
-      </ul>
-      <p>Day 22 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day22.html</code></pre>
-      <h3>Day 23</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 50 <code>data-text</code> targets.</li>
-        <li>The aorist explanation was tightened and a new trigger-examples table was added.</li>
-        <li>Group 1, Group 2, irregular aorists, and time-expression sections were expanded with more practical examples and per-item audio.</li>
-        <li>A new past-story phrases section and a line-by-line dialogue were added for speaking practice.</li>
-        <li>Day 23 also received a page-level mobile table fix with automatic header labels on phones.</li>
-      </ul>
-      <p>Day 23 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day23.html</code></pre>
-      <h3>Day 24</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 39 <code>data-text</code> targets.</li>
-        <li>The future-tense explanation was strengthened and a present-vs-future comparison table was added.</li>
-        <li>The wrong example <code>Ще валя</code> was corrected to <code>Ще вали</code>.</li>
-        <li>The negative future, time expressions, and future questions sections were rebuilt with more per-item audio.</li>
-        <li>A new useful future-chunks section and line-by-line dialogue were added, and Day 24 received a page-level mobile table fix with automatic header labels on phones.</li>
-      </ul>
-      <p>Day 24 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day24.html</code></pre>
-      <h3>Day 25</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 53 <code>data-text</code> targets.</li>
-        <li>The Russian contamination in the emotions table was removed and the adjective pairs were corrected.</li>
-        <li>The core emotions, feeling expressions, questions, and personality sections were rebuilt with more per-item audio.</li>
-        <li>A new comforting-and-responding section was added for more natural personal conversation.</li>
-        <li>Day 25 also received a page-level mobile table fix with automatic header labels on phones.</li>
-      </ul>
-      <p>Day 25 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day25.html</code></pre>
-      <h3>Day 26</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 63 <code>data-text</code> targets.</li>
-        <li>The broken <code>дъга</code> row and other mixed-script weather/transliteration errors were corrected.</li>
-        <li>The weather, weather-expression, seasons, and forecast sections were rebuilt with more per-item audio.</li>
-        <li>A new useful weather-chunks section and line-by-line dialogue were added for more natural spoken practice.</li>
-        <li>Day 26 also received a page-level mobile table fix with automatic header labels on phones.</li>
-      </ul>
-      <p>Day 26 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day26.html</code></pre>
-      <h3>Day 27</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 77 <code>data-text</code> targets.</li>
-        <li>The broken transliteration on <code>колекциониране</code> and the unnatural phrase <code>Четенето е моят любим хоби</code> were corrected.</li>
-        <li>The main hobbies, sports, interests, and frequency sections were rebuilt with dense per-item audio.</li>
-        <li>A new useful hobby-phrases section and a line-by-line dialogue were added for more natural speaking practice.</li>
-        <li>Day 27 also received a stronger mobile table fix: stacked cards with header labels, so audio buttons stay visible on phones without horizontal scrolling.</li>
-      </ul>
-      <p>Day 27 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day27.html</code></pre>
-      <h3>Day 28</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 87 <code>data-text</code> targets after the teaching and engagement passes.</li>
-        <li>The mixed-script corruption and weak hotel phrasing were corrected, including <code>hizha</code>, <code>pochistena</code>, and <code>Много е шумно</code>.</li>
-        <li>The accommodation, room-features, check-in, and problem-reporting sections were rebuilt with dense per-item audio.</li>
-        <li>A new scene-setting introduction, Bulgarian stay-culture section, richer hotel-phrases block, and a line-by-line reception dialogue were added for more natural speaking practice.</li>
-        <li>Day 28 also received the stronger mobile table fix so audio buttons stay visible on phones without horizontal scrolling.</li>
-      </ul>
-      <p>Day 28 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day28.html</code></pre>
-      <h3>Day 29</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 83 <code>data-text</code> targets.</li>
-        <li>Mixed-script transliteration corruption was corrected across the airport and travel sections.</li>
-        <li>A new scene-setting introduction and a Bulgarian-airport-reality section were added so the lesson starts with real travel context.</li>
-        <li>The intro and airport-context sections now include Sofia, Varna, Burgas, Plovdiv, and the practical difference between Schengen and non-Schengen arrivals such as the UK.</li>
-        <li>The airport vocabulary, check-in, problems, and travel-essentials sections were rebuilt with dense per-item audio.</li>
-        <li>The lost-luggage dialogue was rebuilt line by line, and Day 29 also received the stronger mobile table fix.</li>
-      </ul>
-      <p>Day 29 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day29.html</code></pre>
-      <h3>Day 30</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 93 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with Bulgarian shopping context instead of a flat clothing list.</li>
-        <li>The page now includes a Bulgaria-specific shopping section covering boutiques, second-hand shopping, seaside seasonality, and traditional motifs such as <code>шевица</code>.</li>
-        <li>The clothing, fit, materials, purchase, and dialogue sections were rebuilt with dense per-item audio and more natural examples.</li>
-        <li>Day 30 also received the stronger mobile table fix, updated selector options, and corrected pager labels.</li>
-      </ul>
-      <p>Day 30 now needs MP3 generation for the new items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day30.html</code></pre>
-      <h3>Day 31</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 67 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the culture/history lesson starts with context rather than exam pressure alone.</li>
-        <li>Outdated Schengen and currency wording was corrected, and broken quote usage inside existing audio buttons was removed.</li>
-        <li>Grouped summary audio was replaced with far denser per-item playback for names: symbols, holidays, famous Bulgarians, major traditions, geography names, monasteries, and food items.</li>
-        <li>The customs, geography, and famous-Bulgarians sections were cleaned for credibility, and the large tables now work better on mobile.</li>
-        <li>Day 31 also received the stronger mobile table fix and corrected pager labels.</li>
-      </ul>
-      <p>Day 31 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day31.html</code></pre>
-      <h3>Maintenance: Day 56</h3>
-      <ul>
-        <li>The euro debate section was corrected so it reflects the post-<code>1 January 2026</code> reality instead of asking whether Bulgaria should adopt the euro in the future.</li>
-        <li>The dialogue now debates the effects of euro adoption, including easier travel, price-rounding concerns, and the need for oversight.</li>
-        <li>Stale pager labels were corrected to the actual Day 55 and Day 57 lesson titles.</li>
-      </ul>
-      <p>This was a maintenance accuracy fix. The forward rebuild sequence still continues with <code>day32.html</code>.</p>
-      <h3>Day 32</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 53 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian city context: Sofia, Plovdiv, Varna, and Burgas.</li>
-        <li>The directions, asking, and imperative sections were rebuilt with denser per-item audio, and a new route-building phrases section was added.</li>
-        <li>A city-landmarks section now teaches the real names people use in Bulgarian directions, such as <code>НДК</code>, <code>Орлов мост</code>, and <code>Морската градина</code>.</li>
-        <li>Day 32 also received the stronger mobile table fix, an updated A2 mobile selector, and corrected pager labels.</li>
-      </ul>
-      <p>Day 32 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day32.html</code></pre>
-      <h3>Day 33</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 53 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with Bulgarian family culture and social context.</li>
-        <li>The extended-family, relationship-status, and life-events sections were rebuilt with much denser per-item audio.</li>
-        <li>The family dialogue was corrected for natural Bulgarian, including <code>Много ми липсва</code> and a more natural description of the grandmother.</li>
-        <li>Day 33 also received the stronger mobile table fix, an updated A2 mobile selector, and corrected pager labels.</li>
-      </ul>
-      <p>Day 33 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day33.html</code></pre>
-      <h3>Day 34</h3>
-      <ul>
-        <li>Audio coverage increased from 6 to 52 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian discussion culture and everyday debate.</li>
-        <li>The main opinion, agreeing, disagreeing, asking, and connector tables were rebuilt with dense per-item playback.</li>
-        <li>Day 34 also received the stronger mobile table fix, an updated A2 mobile selector, and corrected pager labels.</li>
-      </ul>
-      <p>Day 34 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day34.html</code></pre>
-      <h3>Day 35</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 55 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the checkpoint now explains what A2 actually unlocks in daily Bulgarian life.</li>
-        <li>The grammar reference and topic self-check tables were rebuilt with much denser per-item playback.</li>
-        <li>The typo in the seasons row was corrected from <code>через</code> to <code>през</code>.</li>
-        <li>The citizenship-exam guide was rewritten to be safer and more accurate, focusing on preparation and official verification instead of brittle procedural claims.</li>
-        <li>Day 35 now explicitly tells learners that the official public sample tests are fully in Bulgarian, and it includes a second 20-question Bulgarian-only mock.</li>
-        <li>The stale Day 35 quiz header was corrected so it now points learners toward the real pass target of 12 correct answers out of 20.</li>
-        <li>Day 35 also received the stronger mobile table fix, an updated A2 mobile selector, and corrected pager labels. The stale previous-page label on <code>day36.html</code> was also fixed.</li>
-      </ul>
-      <p>Day 35 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day35.html</code></pre>
-      <h3>Day 36</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 85 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the first B1 lesson starts with Bulgarian memory, atmosphere, and storytelling rather than a cold grammar jump.</li>
-        <li>The core imperfect explanation was rebuilt to remove the misleading <code>гледех</code> model and replace it with safer high-frequency patterns.</li>
-        <li>The main tables for patterns, high-frequency verbs, irregulars, and imperfect-vs-aorist contrasts were rebuilt with dense per-item playback.</li>
-        <li>A new memory-phrases section was added so learners can start telling stories naturally, not just reciting endings.</li>
-        <li>The dialogue now has stronger line-level audio support, and the lesson received the stronger mobile table fix, updated mobile selector, and mobile table-label script.</li>
-      </ul>
-      <p>Day 36 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day36.html</code></pre>
-      <h3>Day 37</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 48 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian message-passing, media, and family communication instead of a bare grammar explanation.</li>
-        <li>The reported-speech explanation was tightened so it no longer overstates the tense rule as an absolute mechanical contrast with English.</li>
-        <li>The main tables for statements, reporting verbs, indirect questions, and reported commands were rebuilt with denser per-item playback.</li>
-        <li>The dialogue now has stronger line-level audio support, and the lesson received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 37 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day37.html</code></pre>
-      <h3>Day 38</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 50 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian hopes, regrets, migration talk, and alternative-life conversations instead of an abstract grammar jump.</li>
-        <li>The real-conditionals, hypothetical-conditionals, wishes, and regret sections were rebuilt with denser per-item playback.</li>
-        <li>The dialogue was corrected for more natural Bulgarian, especially around the moving-house regret phrasing.</li>
-        <li>The lesson now has stronger line-level dialogue audio, plus the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 38 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day38.html</code></pre>
-      <h3>Day 39</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 53 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian comparison talk about cities, salaries, rents, regions, and life quality.</li>
-        <li>The review, comparison, superlative, and progressive-comparison sections were rebuilt with denser per-item playback.</li>
-        <li>The superlative section was corrected for real Bulgarian agreement, including <code>Коя е най-дългата река</code>.</li>
-        <li>The dialogue audio and quiz were cleaned for credibility, and the lesson received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 39 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day39.html</code></pre>
-      <h3>Day 40</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 54 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian signs, property adverts, museum labels, heritage descriptions, and public notices.</li>
-        <li>The <code>се</code>-passive section was rebuilt with denser per-item playback and more realistic daily examples.</li>
-        <li>The full passive section was rebuilt around safer example-led participle teaching instead of an over-rigid rule statement.</li>
-        <li>The <code>от</code> agent section and the fixed passive expressions section were both rebuilt with denser per-item audio.</li>
-        <li>The Boyana Church dialogue was corrected for Bulgarian naturalness and credibility, and it now has line-level audio as well as summary playback.</li>
-        <li>Day 40 also received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 40 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day40.html</code></pre>
-      <h3>Day 41</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 71 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian media use and why news language matters for understanding the country.</li>
-        <li>The media vocabulary, news topics, reaction phrases, and news-perfect sections were rebuilt with much denser per-item playback.</li>
-        <li>The real language error <code>кризис</code> was corrected to <code>криза</code>.</li>
-        <li>The media-landscape section was rebuilt around safer source-aware framing, focusing on BNT, BNR, Horizont, BTA, bTV, Nova, and Dnevnik without overclaiming neutrality or quality rankings.</li>
-        <li>The dialogue and romanisation were cleaned up, and the page now includes line-level dialogue audio as well as the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 41 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day41.html</code></pre>
-      <h3>Day 42</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 41 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with what idioms reveal about Bulgarian humour, emotion, and folk mentality.</li>
-        <li>The body-idiom, common-idiom, proverb, and set-expression sections were rebuilt with denser per-item playback.</li>
-        <li>Several weak or doubtful items were removed instead of being taught as high-confidence standard idioms.</li>
-        <li>The proverb spelling was corrected from <code>Без труд, нема плод</code> to <code>Без труд няма плод</code>.</li>
-        <li>The dialogue and romanisation were rebuilt around cleaner natural Bulgarian, and the page now includes line-level dialogue audio as well as the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 42 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day42.html</code></pre>
-      <h3>Day 43</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 34 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian institutional, residence, work, and administrative communication rather than exam-only framing.</li>
-        <li>The register, greeting, sign-off, formal-request, and official-document sections were rebuilt with denser per-item playback.</li>
-        <li>The model letter was corrected by removing broken mixed-script text and damaged romanisation.</li>
-        <li>The official-documents section was tightened around safer high-frequency bureaucracy vocabulary instead of a looser list.</li>
-        <li>Day 43 also received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 43 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day43.html</code></pre>
-      <h3>Day 44</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 49 <code>data-text</code> targets.</li>
-        <li>A proper scene-setting intro was added so the lesson starts with real Bulgarian life: jobs, qualifications, family expectations, and residence-related paperwork.</li>
-        <li>The education-system, subject, academic-vocabulary, qualification, and personal-background sections were rebuilt with denser per-item playback.</li>
-        <li>The dialogue was tightened around cleaner natural Bulgarian and safer wording about recognition of foreign diplomas.</li>
-        <li>Day 44 also received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 44 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day44.html</code></pre>
-      <h3>Day 45</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 44 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson explains why aspect matters in real Bulgarian life before the learner reaches the grammar tables.</li>
-        <li>The weak Section 2 prefix teaching was corrected, including the bad <code>ивам</code> row, and the aspect-formation section was rebuilt around safer clearer pair examples.</li>
-        <li>The page now has denser per-item playback across the core contrast section, pair-formation section, tense-usage section, essential pair list, and dialogue lines.</li>
-        <li>Broken romanisation artifacts were cleaned, the writing-task typo was corrected, and the page received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 45 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day45.html</code></pre>
-      <h3>Day 46</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 30 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson starts with why relative clauses matter in real Bulgarian speech and writing.</li>
-        <li>The lesson now has denser per-item playback across the core pronoun forms, relative-clause patterns, preposition patterns, <code>чийто</code> possession patterns, and dialogue phrases.</li>
-        <li>Mixed-script and romanisation issues were corrected, including the broken <code>говориш</code> line and damaged <code>poznavam</code> transcription.</li>
-        <li>The answer key was improved to teach the more natural Bulgarian sentence order, and the page received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 46 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day46.html</code></pre>
-      <h3>Day 47</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 94 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson starts with real housing decisions in Bulgaria, not just generic renting vocabulary.</li>
-        <li>The lesson was expanded well beyond renting with new sections on buying a home in Bulgaria, legal/process language, renovation language, and DIY / practical home tasks.</li>
-        <li>The lesson now has dense per-item playback across housing types, renting terms, buying vocabulary, legal/process language, property-description phrases, renovation language, DIY language, complaint phrases, and dialogue lines.</li>
-        <li>Multiple mixed-script and damaged romanisation issues were corrected in the renting section, property-description section, and flat-hunting dialogue.</li>
-        <li>Bulgaria-specific housing context was added around older panel blocks versus newer residential complexes, and official market context was added using current Bulgarian housing-price statistics.</li>
-        <li>The page also received the stronger mobile table fix, updated mobile selector, corrected pager labels, and mobile table-label script.</li>
-      </ul>
-      <p>Day 47 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day47.html</code></pre>
-      <h3>Day 48</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 58 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson starts with real Bulgarian work-life relevance rather than a flat office glossary.</li>
-        <li>The meeting, negotiation, and presentation sections were rebuilt with much denser per-item playback.</li>
-        <li>Broken mixed-script and damaged romanisation strings were corrected across the meeting table, presentation section, and main dialogue.</li>
-        <li>The business-culture section was expanded with Bulgaria-specific context around hierarchy, relationship-building, indirect refusal, coffee meetings, and decision-making.</li>
-        <li>The dialogue now has line-level playback for key business phrases instead of relying on one short grouped clip.</li>
-        <li>The page also received corrected pager labels and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 48 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day48.html</code></pre>
-      <h3>Day 49</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 77 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson starts with the reality of Bulgarian bureaucracy rather than a flat admin glossary.</li>
-        <li>The outdated citizenship-exam wording was corrected: the page no longer teaches an old combined exam or credits the wrong institution.</li>
-        <li>The immigration vocabulary, institutions, pathway, office-language, document-checklist, and dialogue sections were rebuilt with much denser per-item playback.</li>
-        <li>A new British-nationals section explains the practical difference before and after <code>1 January 2021</code>.</li>
-        <li>A new visa-and-residence section now covers <code>Visa D</code>, work/study/family routes, long-term residence, permanent residence, and the need for a valid legal basis.</li>
-        <li>A direct official-sources section was added inside the lesson with GOV.UK, MVR, MFA, Ministry of Justice, and Institute of Education links.</li>
-        <li>Broken romanisation, stale pager labels, and a damaged quiz option were corrected.</li>
-        <li>The page also received the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 49 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day49.html</code></pre>
-      <h3>Day 50</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 29 <code>data-text</code> targets.</li>
-        <li>The page was finished from a partial local state and turned into a more guided reading-skills module.</li>
-        <li>A stronger scene-setting intro was added so the lesson frames B1 reading as work with register, not just translation.</li>
-        <li>Phrase-level playback was added to the key vocabulary from the news text, literary extract, and official-style notice.</li>
-        <li>The brittle fake-specific official notice was replaced with a clearly marked practice notice in the style of Bulgarian administrative language.</li>
-        <li>The comprehension and writing tasks were synced to the revised notice.</li>
-        <li>The page also received corrected pager labels and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 50 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day50.html</code></pre>
-      <h3>Day 51</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 44 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson frames fluency as managing real conversation, not just speaking faster.</li>
-        <li>The spoken-particle, filler-word, conversation-strategy, photo-description, and dialogue sections were rebuilt with much denser per-item playback.</li>
-        <li>Broken and mixed-script romanisation artifacts were corrected in the filler section, conversation-strategy table, and extended dialogue.</li>
-        <li>The page now teaches spoken Bulgarian in a more structured way, separating particles, fillers, recovery phrases, exam phrases, and dialogue patterns more clearly.</li>
-        <li>The page also received corrected pager labels and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 51 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day51.html</code></pre>
-      <h3>Day 52</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 33 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the history lesson starts with why Bulgarian history matters in daily life, identity, travel, and citizenship preparation.</li>
-        <li>The page now has per-item audio for the major historical names, places, dates, and figures instead of relying almost entirely on grouped playback.</li>
-        <li>The modern-history section was corrected so it now reflects the real timeline: EU membership from <code>1 January 2007</code>, Schengen from <code>31 March 2024</code>, and euro adoption from <code>1 January 2026</code>.</li>
-        <li>The history phrase cards now include the missing layout styling, so Bulgarian and English labels display with proper spacing instead of collapsing together.</li>
-        <li>The page also received corrected pager labels and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 52 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day52.html</code></pre>
-      <h3>Day 53</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 43 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the grammar revision day starts with real Bulgarian usage contexts instead of feeling like a compressed rules sheet.</li>
-        <li>The tense, aspect, passive, conditionals, reported-speech, relative-clause, and comparison sections now all have denser phrase-level audio support.</li>
-        <li>The stale relative-clause subtitle was removed, the possession form was corrected from <code>чиити</code> to <code>чиито</code>, and the recap wording was cleaned up.</li>
-        <li>The page also received corrected pager labels, corrected mobile selector text, phrase-card styling, and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 53 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day53.html</code></pre>
-      <h3>Day 54</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 59 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the vocabulary revision day feels practical and guided instead of reading like a flat glossary.</li>
-        <li>The essential words, people, places, time, health, shopping, work, opinion, and idioms sections now all have denser phrase-level audio support.</li>
-        <li>The money section was corrected to the euro era, replacing <code>лев / стотинка</code> with <code>евро / цент</code>, and the proverb was corrected to <code>Без труд няма плод</code> everywhere on the page.</li>
-        <li>The page also received corrected pager labels, corrected mobile selector text, phrase-card styling, and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 54 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day54.html</code></pre>
-      <h3>Day 55</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 31 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson starts with real Bulgarian uses for dates, deadlines, floors, forms, and planning.</li>
-        <li>The lesson now has denser phrase-level audio across ordinal numbers, date expressions, collective numbers, counting expressions, and key dialogue lines.</li>
-        <li>The date explanation was corrected so it no longer teaches the wrong neuter/genitive rule, and several damaged romanisation strings and broken number forms were fixed.</li>
-        <li>The page also received phrase-card styling and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 55 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day55.html</code></pre>
-      <h3>Day 56</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 30 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the debate lesson starts with real Bulgarian use cases like interviews, oral exams, and serious discussion.</li>
-        <li>The strong-opinion, argument-connector, concession, debate-phrase, and euro-debate sections now have denser phrase-level audio support.</li>
-        <li>The lesson was cleaned for accuracy: the stale slang-like <code>Тва е</code> wording was replaced with standard Bulgarian, and the euro dialogue now uses <code>спекулации</code> instead of the wrong singular form.</li>
-        <li>The page also received corrected mobile selector text, phrase-card styling, and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 56 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day56.html</code></pre>
-      <h3>Day 57</h3>
-      <ul>
-        <li>Audio coverage increased from 6 to 30 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the complex-sentence lesson starts with real Bulgarian writing and speaking contexts instead of abstract grammar theory.</li>
-        <li>The purpose, result, concessive, temporal, stacked-clause, and dialogue sections now have denser phrase-level audio support.</li>
-        <li>Several damaged examples and romanisation strings were corrected, especially in the result-clause section, the stacked-sentence audio, and the dialogue block.</li>
-        <li>The page also received corrected mobile selector text, corrected pager labels, phrase-card styling, and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 57 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day57.html</code></pre>
-      <h3>Day 58</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 40 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson starts with real Bulgarian health situations rather than going straight into a symptoms list.</li>
-        <li>The symptoms, body-parts, healthcare-system, doctor-phrases, and emergency sections now all have denser phrase-level audio support.</li>
-        <li>The patient-fee wording was corrected to the current euro-era amounts, using the NHIF euro FAQ rather than the old lev figure.</li>
-        <li>Damaged mixed-script and romanisation issues were corrected across the symptoms table, doctor section, emergency section, and GP dialogue.</li>
-        <li>The page also received corrected mobile selector text, corrected pager labels, phrase-card styling, and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 58 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day58.html</code></pre>
-      <h3>Day 59</h3>
-      <ul>
-        <li>Audio coverage increased from 5 to 35 <code>data-text</code> targets.</li>
-        <li>A stronger scene-setting intro was added so the lesson frames the oral exam as real communication under pressure, not just a scripted test page.</li>
-        <li>The self-introduction, photo-description, discussion, roleplay, and exam-day tips sections now all have denser phrase-level audio support.</li>
-        <li>The risky overconfident wording about one exact named exam format was removed; the page now presents itself more honestly as B1 oral-preparation training and tells learners to check the current instructions from the institution where they will sit the exam.</li>
-        <li>Damaged Bulgarian and transliteration issues were corrected, including the photo-description model, the hotel roleplay audio transliteration, and the writing-task answer.</li>
-        <li>The page also received corrected mobile selector text, corrected pager labels, phrase-card styling, and the stronger mobile table-label script so stacked cards behave properly on phones.</li>
-      </ul>
-      <p>Day 59 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day59.html</code></pre>
-      <h3>Day 60</h3>
-      <ul>
-        <li>Audio coverage increased from 4 to 10 <code>data-text</code> targets.</li>
-        <li>The final page was reframed more honestly as the course's own B1-style final mock instead of teaching a brittle named-exam claim.</li>
-        <li>Stronger scene-setting and test-taking guidance were added so the page feels like a real final checkpoint rather than just a 20-question dump.</li>
-        <li>Per-item audio was added for a small set of high-value final-review phrases including <code>Според мен</code>, <code>На първо място</code>, <code>С уважение</code>, <code>Разрешение за пребиваване</code>, and <code>Без труд няма плод</code>.</li>
-        <li>The stale quiz threshold was corrected from <code>6+</code> to <code>12+</code>, the old proverb spelling was corrected, and recap rows were updated for <code>бордна карта</code> and the safer Day 59 wording.</li>
-        <li>The page also received corrected mobile selector text, phrase-card styling, and the stronger mobile table-label script so the large recap table behaves better on phones.</li>
-      </ul>
-      <p>Day 60 now needs MP3 generation for the refreshed items.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day60.html</code></pre>
-      <h3>Day 17 Engagement Pass</h3>
-      <ul>
-        <li>Audio coverage increased from 84 to 85 <code>data-text</code> targets.</li>
-        <li>A stronger retroactive scene-setting intro was added so the page now teaches why eating out matters socially in Bulgaria instead of opening like a pure glossary.</li>
-        <li>A Bulgarian restaurant-culture section was added with <code>механа</code>, regional food differences, local eating habits, and iconic dishes such as <code>шопска салата</code>, <code>мусака</code>, <code>кебапчета</code>, and <code>таратор</code>.</li>
-        <li>The tipping and dialogue examples were updated to the euro era, replacing the stale lev wording.</li>
-        <li>The new cultural framing also received its own grouped audio support, while keeping the dense per-word audio from the earlier rebuild.</li>
-      </ul>
-      <p>Day 17 now needs MP3 regeneration because the new cultural-audio item changed the page.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day17.html</code></pre>
-      <h3>Programme Reset</h3>
-      <ul>
-        <li>The review strategy has been widened from “continue forward from the latest edited A2 pages” to “run a full course review from Day 1 onward”.</li>
-        <li>The project now explicitly keeps the course's wide vocabulary coverage while rejecting the risk that modules feel like flat phrase-book pages.</li>
-        <li>A new programme-management layer was added with four files: <code>COURSE_REVIEW_ROADMAP.md</code>, <code>PROJECT_MANAGER_AGENT.md</code>, <code>RESEARCH_AGENT.md</code>, and <code>FACT_CHECK_AGENT.md</code>.</li>
-        <li>The upgrade workflow now formally includes research, engagement review, language QA, factual QA, and PM sign-off.</li>
-        <li>The retroactive enhancement pass will now restart from <code>day01.html</code> so the course feels strong and coherent from the very beginning.</li>
-      </ul>
-      <h3>Day 1 Engagement Pass</h3>
-      <ul>
-        <li><code>day01.html</code> was upgraded from <code>75</code> to <code>76</code> <code>data-text</code> audio targets.</li>
-        <li>The lesson now opens with scene-setting context about where learners meet Cyrillic in real Bulgarian life: signs, menus, pharmacies, stations, and official documents.</li>
-        <li>A new cultural note explains why <code>24 май</code> matters in Bulgaria, so the alphabet is introduced as part of Bulgarian identity rather than just a character list.</li>
-        <li>A new grouped audio item, <code>Cyrillic in real Bulgarian life</code>, was added to support the new introduction.</li>
-        <li>The Day 1 selector was also cleaned so the A2 lesson labels now match the current course titles and CEFR wording.</li>
-      </ul>
-      <p>Day 1 now needs MP3 regeneration because the new contextual-audio item changed the page.</p>
-      <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
-venv\Scripts\python.exe generate_pro_audio.py --force day01.html</code></pre>
-    </section>
-
-    <section class="card">
-      <h2>What To Do Next</h2>
-      <ol>
-        <li>Generate the MP3 files for <code>day01.html</code> and upload the updated HTML/audio when the page is ready to go live.</li>
-        <li>Continue the full retroactive review with <code>day02.html</code> using the roadmap-driven process.</li>
-        <li>Continue using official sources for any time-sensitive legal, institutional, or economic claims.</li>
-        <li>Keep upgrading dense audio, mobile behavior, and engagement together rather than treating them as separate later cleanups.</li>
-        <li>Use the handover files as the restart point for the next phase of improvement work.</li>
-      </ol>
-    </section>
-
-    <p class="small">Maintenance rule: these two handover files are part of the workflow and must be refreshed after every significant project change.</p>
+    </div>
   </div>
+
+  <!-- ═══════════════════ SITE DETAILS ═══════════════════ -->
+  <section class="section">
+    <h2>🌐 Site Details</h2>
+    <table>
+      <tr><th>Property</th><th>Value</th></tr>
+      <tr><td>Live URL</td><td><a href="https://learnbulgarian.io/bulgarian/" target="_blank">https://learnbulgarian.io/bulgarian/</a></td></tr>
+      <tr><td>Course files</td><td>day01.html → day60.html in project root</td></tr>
+      <tr><td>Audio files</td><td>audio/dayXX/ subdirectories</td></tr>
+      <tr><td>Reference lesson</td><td>day16.html (model for audio density and quality)</td></tr>
+      <tr><td>Tech</td><td>Static HTML, CSS, vanilla JS, Google Cloud TTS (bg-BG-Standard-A)</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════════ SFTP / HOSTING ═══════════════════ -->
+  <section class="section">
+    <h2>🔐 Hosting &amp; SFTP</h2>
+    <div class="callout red">
+      <strong>Important:</strong> FTP is disabled on this server. You must use SFTP (port 22).
+    </div>
+    <table>
+      <tr><th>Key</th><th>Value</th></tr>
+      <tr><td>SFTP Host</td><td><code>access811018624.webspace-data.io</code></td></tr>
+      <tr><td>Username</td><td><code>u99549562</code></td></tr>
+      <tr><td>Password</td><td><code>United!!001ad</code></td></tr>
+      <tr><td>Port</td><td>22</td></tr>
+      <tr><td>Remote site root</td><td><code>/app811033055/bulgarian/</code></td></tr>
+      <tr><td>Remote audio root</td><td><code>/app811033055/bulgarian/audio/</code></td></tr>
+    </table>
+
+    <h3>Upload a single HTML file (curl)</h3>
+    <pre><code>curl --insecure -T day01.html \
+  "sftp://access811018624.webspace-data.io/app811033055/bulgarian/day01.html" \
+  --user "u99549562:United!!001ad"</code></pre>
+
+    <h3>Upload audio + HTML (Python / paramiko) — use for Cyrillic filenames</h3>
+    <pre><code>PYTHONUTF8=1 ./venv/Scripts/python.exe upload_sftp.py</code></pre>
+    <p>See the <code>upload_sftp.py</code> template in <code>PROJECT_STATUS.md</code> for the full script pattern.</p>
+
+    <h3>Batch upload multiple HTML files</h3>
+    <pre><code>for f in day18.html day21.html day22.html; do
+  curl --insecure -T "$f" \
+    "sftp://access811018624.webspace-data.io/app811033055/bulgarian/$f" \
+    --user "u99549562:United!!001ad"
+done</code></pre>
+  </section>
+
+  <!-- ═══════════════════ AUDIO GENERATION ═══════════════════ -->
+  <section class="section">
+    <h2>🎙️ Audio Generation</h2>
+
+    <div class="callout red">
+      <strong>Two scripts exist — only one works.</strong><br>
+      ✅ <code>generate_pro_audio.py</code> — use this always<br>
+      ❌ <code>generate_audio.py</code> — do NOT run this. It is an abandoned prototype using <code>gemini-2.5-flash-tts</code> which does not exist as a valid model. It fails on every call. The hardcoded API key it contained has been revoked.
+    </div>
+
+    <h3>How generate_pro_audio.py works</h3>
+    <ul>
+      <li>Every play button in the HTML has a <code>data-text</code> attribute containing Bulgarian text</li>
+      <li><code>generate_pro_audio.py</code> scans those values and calls Google Cloud TTS</li>
+      <li>Voice: <strong>bg-BG-Standard-A</strong> (female Bulgarian)</li>
+      <li>MP3 files are saved to <code>audio/&lt;page-name&gt;/</code></li>
+      <li>The page JavaScript tries the MP3 first; falls back to browser Web Speech API only if the file is missing</li>
+      <li>Uses a Google Cloud service account credential file — <strong>not</strong> the <code>GOOGLE_API_KEY</code> environment variable</li>
+    </ul>
+
+    <div class="callout">
+      <strong>Always run from the project folder using the venv Python</strong> — not the system Python.
+    </div>
+
+    <h3>Basic command — generate new audio</h3>
+    <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
+venv\Scripts\python.exe generate_pro_audio.py --force day17.html</code></pre>
+
+    <h3>Multiple files at once</h3>
+    <pre><code>venv\Scripts\python.exe generate_pro_audio.py --force day17.html day18.html day19.html</code></pre>
+
+    <h3>When to use --force</h3>
+    <p>Always use <code>--force</code> if you have edited any <code>data-text</code> values in the HTML. Without it, existing MP3 files are skipped even if the text changed.</p>
+
+    <h3>Critical: Cyrillic filename rule</h3>
+    <p>The browser's <code>makeFilename()</code> function and the Python generator must sanitise text <strong>identically</strong>. If they differ, pages silently fall back to speech synthesis instead of playing the stored MP3. This was fixed in the shared JS across all pages — do not alter the filename logic without updating both sides.</p>
+
+    <h3>Full workflow for amending a day</h3>
+    <ol>
+      <li>Edit the root <code>dayXX.html</code></li>
+      <li>Regenerate audio: <code>venv\Scripts\python.exe generate_pro_audio.py --force dayXX.html</code></li>
+      <li>Upload HTML to server: <code>/app811033055/bulgarian/dayXX.html</code></li>
+      <li>Upload audio folder to server: <code>/app811033055/bulgarian/audio/dayXX/</code></li>
+      <li>Commit to git: <code>git add dayXX.html audio/dayXX/ &amp;&amp; git commit -m "Description"</code></li>
+      <li>Update PROJECT_STATUS.md</li>
+    </ol>
+  </section>
+
+  <!-- ═══════════════════ CEFR ═══════════════════ -->
+  <section class="section">
+    <h2>📊 CEFR Level Labels</h2>
+    <p>The CEFR (Common European Framework of Reference) was created after decades of level-naming practice in English language teaching. There is no perfect one-to-one correspondence between CEFR codes and the traditional ELT level names. Use these as the authoritative mapping:</p>
+    <table>
+      <tr><th>CEFR Level</th><th>Correct Label</th><th>In badges / nav</th></tr>
+      <tr><td>A1</td><td>Beginner / Elementary</td><td>A1 — Beginner</td></tr>
+      <tr><td>A2</td><td>Elementary / Pre-intermediate</td><td>A2 — Pre-intermediate</td></tr>
+      <tr><td>B1</td><td>Pre-intermediate / Intermediate</td><td>B1 — Pre-intermediate / Intermediate</td></tr>
+    </table>
+    <div class="callout red">
+      <strong>A2 is NOT Intermediate.</strong> This was a common error in early versions. A2 straddles Elementary and Pre-intermediate. B1 straddles Pre-intermediate and Intermediate. Both labels are now correct across all 60 day files.
+    </div>
+    <div class="cefr-row">
+      <span class="cefr-badge badge-a1">A1 — Days 1–15</span>
+      <span class="cefr-badge badge-a2">A2 — Days 16–35</span>
+      <span class="cefr-badge badge-b1">B1 — Days 36–60</span>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CURRENT STATUS ═══════════════════ -->
+  <section class="section">
+    <h2>✅ Current Status of All 60 Days</h2>
+    <p><span class="status-ok">ALL COMPLETE &amp; LIVE</span> — last verified 9 April 2026</p>
+
+    <h3>What every day file now contains</h3>
+    <ul>
+      <li>JSON-LD structured data schema (@graph: LearningResource + BreadcrumbList + FAQPage)</li>
+      <li>Open Graph and Twitter Card meta tags for social sharing</li>
+      <li>Scene-setting cultural introduction before Section 1</li>
+      <li>Cultural enrichment row in the recap table</li>
+      <li>Dense MP3 audio (all data-text buttons served from audio/ directory)</li>
+      <li>Mobile-responsive layout with stacked table cards on phones</li>
+      <li>Correct CEFR labels (A2 = Pre-intermediate, B1 = Pre-intermediate / Intermediate)</li>
+      <li>All URLs pointing to learnbulgarian.io — zero whatchan.co.uk references in root files</li>
+      <li>All prices in euros (Bulgaria adopted the euro on 1 January 2026)</li>
+    </ul>
+
+    <h3>Day completion status</h3>
+    <div class="day-grid">
+      <div class="day-pip">01</div><div class="day-pip">02</div><div class="day-pip">03</div>
+      <div class="day-pip">04</div><div class="day-pip">05</div><div class="day-pip">06</div>
+      <div class="day-pip">07</div><div class="day-pip">08</div><div class="day-pip">09</div>
+      <div class="day-pip">10</div><div class="day-pip">11</div><div class="day-pip">12</div>
+      <div class="day-pip">13</div><div class="day-pip">14</div><div class="day-pip">15</div>
+      <div class="day-pip">16</div><div class="day-pip">17</div><div class="day-pip">18</div>
+      <div class="day-pip">19</div><div class="day-pip">20</div><div class="day-pip">21</div>
+      <div class="day-pip">22</div><div class="day-pip">23</div><div class="day-pip">24</div>
+      <div class="day-pip">25</div><div class="day-pip">26</div><div class="day-pip">27</div>
+      <div class="day-pip">28</div><div class="day-pip">29</div><div class="day-pip">30</div>
+      <div class="day-pip">31</div><div class="day-pip">32</div><div class="day-pip">33</div>
+      <div class="day-pip">34</div><div class="day-pip">35</div><div class="day-pip">36</div>
+      <div class="day-pip">37</div><div class="day-pip">38</div><div class="day-pip">39</div>
+      <div class="day-pip">40</div><div class="day-pip">41</div><div class="day-pip">42</div>
+      <div class="day-pip">43</div><div class="day-pip">44</div><div class="day-pip">45</div>
+      <div class="day-pip">46</div><div class="day-pip">47</div><div class="day-pip">48</div>
+      <div class="day-pip">49</div><div class="day-pip">50</div><div class="day-pip">51</div>
+      <div class="day-pip">52</div><div class="day-pip">53</div><div class="day-pip">54</div>
+      <div class="day-pip">55</div><div class="day-pip">56</div><div class="day-pip">57</div>
+      <div class="day-pip">58</div><div class="day-pip">59</div><div class="day-pip">60</div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CHANGES HISTORY ═══════════════════ -->
+  <section class="section">
+    <h2>🔧 Major Changes Made</h2>
+
+    <h3>Phase 1 — Structure &amp; credibility</h3>
+    <ul>
+      <li>Audited all files; created <code>Old Files not in use/</code> archive</li>
+      <li>Removed broken <code>exam-a2.html</code> references from <code>index.html</code> and <code>sitemap.xml</code></li>
+      <li>Fixed CEFR labels: A2 "Intermediate" → "Pre-intermediate"; B1 "Advanced" → "Intermediate"</li>
+      <li>Fixed Russian contamination: <code>это</code>→<code>това</code>, <code>новый</code>→<code>нов</code>, <code>где</code>→<code>къде</code>, <code>который</code>→<code>който</code></li>
+    </ul>
+
+    <h3>Phase 2 — Audio &amp; teaching quality (Days 17–34)</h3>
+    <ul>
+      <li>Rebuilt each lesson with dense per-item audio (data-text on every table row)</li>
+      <li>Added scene-setting intros, practical phrase sections, line-by-line dialogue audio</li>
+      <li>Corrected unnatural Bulgarian, awkward transliterations, mixed-script bugs</li>
+      <li>Added mobile table stacking (cards with header labels) for phone usability</li>
+      <li>Fixed <code>generate_pro_audio.py</code> to support <code>--force</code> flag</li>
+      <li>Fixed browser <code>makeFilename()</code> to preserve Cyrillic → correct MP3 filenames</li>
+    </ul>
+
+    <h3>Phase 3 — SEO &amp; engagement (Days 18–60)</h3>
+    <ul>
+      <li>Added JSON-LD structured data schema to every day (LearningResource + BreadcrumbList + FAQPage)</li>
+      <li>Added Open Graph and Twitter Card meta tags to all pages</li>
+      <li>Added cultural scene-setting intro to Days 18–27 (Days 28–60 already had them)</li>
+      <li>Added cultural recap row to every day's recap table</li>
+      <li>Fixed mixed Cyrillic/Latin character bugs across Days 21, 24, 25, 32, 33, 34, 37</li>
+    </ul>
+
+    <h3>Phase 4 — Domain migration</h3>
+    <ul>
+      <li>Replaced all 120 whatchan.co.uk font references with learnbulgarian.io across all 60 root files</li>
+      <li>Zero whatchan.co.uk references remain in root files (backup files not changed by design)</li>
+    </ul>
+
+    <h3>Phase 5 — Euro currency (1 January 2026)</h3>
+    <ul>
+      <li>Bulgaria adopted the euro on 1 January 2026; rate: 1 EUR = 1.95583 BGN (irrevocable)</li>
+      <li>Converted all лева/лв dialogue prices to евро: Days 18, 21, 22, 30, 47, 59</li>
+      <li>Updated Bulgarian text, romanisation, English, and audio data attributes in all six files</li>
+      <li>Regenerated and uploaded MP3 audio for all six days</li>
+      <li>Educational references and quiz distractors mentioning лева left as-is (intentional)</li>
+    </ul>
+
+    <h3>Phase 6 — Final CEFR correction (9 April 2026)</h3>
+    <ul>
+      <li>B1 badge label: "Intermediate" → "Pre-intermediate / Intermediate" across 25 files</li>
+      <li>day01.html course description: "to pre-intermediate (B1)" → "to intermediate (B1)"</li>
+    </ul>
+  </section>
+
+  <!-- ═══════════════════ PROMO — Music ═══════════════════ -->
+  <div class="promo-strip">
+    <div class="promo-icon">🎸</div>
+    <div style="flex:1">
+      <div class="promo-label">Also from the creator</div>
+      <div class="promo-title">The Village Rejects</div>
+      <div class="promo-desc">Stream or download the music.</div>
+      <div class="promo-links">
+        <a class="promo-link filled" href="https://open.spotify.com/artist/5nwOizoo2PKZeLoCyZxeUm" target="_blank" rel="noopener">Spotify</a>
+        <a class="promo-link" href="https://thevillagerejects.bandcamp.com/" target="_blank" rel="noopener">Bandcamp</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ QUALITY RULES ═══════════════════ -->
+  <section class="section">
+    <h2>📐 Quality Rules</h2>
+    <div class="grid2">
+      <div class="mini-card">
+        <h4>Language accuracy</h4>
+        <ul>
+          <li>Review as a native Bulgarian teacher</li>
+          <li>Reject Russian words, false friends, awkward calques</li>
+          <li>Unnatural Bulgarian must be corrected, not left in</li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <h4>CEFR labels</h4>
+        <ul>
+          <li>A2 = Pre-intermediate (never "Intermediate")</li>
+          <li>B1 = Pre-intermediate / Intermediate (never "Advanced")</li>
+          <li>Check badges, optgroups, meta descriptions</li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <h4>Audio</h4>
+        <ul>
+          <li>Every table row should have a data-text button</li>
+          <li>Use --force when regenerating edited dialogue</li>
+          <li>Upload audio/ folder after regeneration</li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <h4>Engagement</h4>
+        <ul>
+          <li>Not a flat word list — add scene context</li>
+          <li>Include Bulgarian customs, local detail, practical tips</li>
+          <li>Every lesson should feel useful and interesting</li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <h4>Mobile</h4>
+        <ul>
+          <li>Treat as mobile-first, not desktop-first</li>
+          <li>Tables stack as cards on phones</li>
+          <li>Audio buttons must stay visible and tappable</li>
+        </ul>
+      </div>
+      <div class="mini-card">
+        <h4>Currency (from Jan 2026)</h4>
+        <ul>
+          <li>All prices in euros — лева is history</li>
+          <li>1 EUR = 1.95583 BGN (irrevocable rate)</li>
+          <li>Euro subunit: евро/цент or евро/стотинки</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FILE STRUCTURE ═══════════════════ -->
+  <section class="section">
+    <h2>📁 File Structure</h2>
+    <pre><code>C:\Users\Dj4be\Desktop\New Bulgarian\
+├── day01.html … day60.html       ← EDIT THESE (working files)
+├── audio/
+│   ├── day01/                    ← MP3s for day 01
+│   │   ├── добър_ден.mp3
+│   │   └── …
+│   ├── day02/ … day60/
+├── backup/                       ← Auto-backups (do not edit)
+├── Old Files not in use/         ← Archive (do not edit)
+├── generate_pro_audio.py         ← Audio generator script
+├── venv/                         ← Python virtual environment
+│   └── Scripts/python.exe        ← Always use THIS Python
+├── PROJECT_STATUS.md             ← Handover log (text)
+└── PROJECT_INFO.html             ← This file (visual dashboard)</code></pre>
+
+    <div class="callout red">
+      <strong>Always edit root files, never backup/ or Old Files not in use/.</strong>
+    </div>
+
+    <h3>Key MD files</h3>
+    <table>
+      <tr><th>File</th><th>Purpose</th></tr>
+      <tr><td><code>PROJECT_STATUS.md</code></td><td>Handover log — current state, all changes, commands</td></tr>
+      <tr><td><code>QUALITY_CHECK_AGENT.md</code></td><td>QA checklist for lesson review</td></tr>
+      <tr><td><code>ENGAGEMENT_AGENT.md</code></td><td>Engagement review standard</td></tr>
+      <tr><td><code>DAY_UPGRADE_WORKFLOW.md</code></td><td>Step-by-step lesson upgrade process</td></tr>
+      <tr><td><code>COURSE_REVIEW_ROADMAP.md</code></td><td>Long-term improvement plan</td></tr>
+    </table>
+  </section>
+
+  <!-- ═══════════════════ AMENDMENT GUIDE ═══════════════════ -->
+  <section class="section">
+    <h2>✏️ How to Make Amendments</h2>
+
+    <h3>Editing a lesson (text only — no audio change)</h3>
+    <ol>
+      <li>Edit the root <code>dayXX.html</code> file</li>
+      <li>Upload to server:<br>
+        <pre><code>curl --insecure -T dayXX.html \
+  "sftp://access811018624.webspace-data.io/app811033055/bulgarian/dayXX.html" \
+  --user "u99549562:United!!001ad"</code></pre>
+      </li>
+      <li>Commit: <code>git add dayXX.html &amp;&amp; git commit -m "Description"</code></li>
+    </ol>
+
+    <h3>Editing a lesson (changing data-text values)</h3>
+    <ol>
+      <li>Edit the root <code>dayXX.html</code></li>
+      <li>Regenerate audio:
+        <pre><code>cd /d "C:\Users\Dj4be\Desktop\New Bulgarian"
+venv\Scripts\python.exe generate_pro_audio.py --force dayXX.html</code></pre>
+      </li>
+      <li>Upload HTML and audio folder using paramiko script</li>
+      <li>Commit: <code>git add dayXX.html audio/dayXX/ &amp;&amp; git commit -m "Description"</code></li>
+    </ol>
+
+    <h3>Adding a new audio button</h3>
+    <p>Add a button with class <code>play-audio</code> and <code>data-text</code> (Bulgarian) and <code>data-phonetic</code> (romanisation) attributes:</p>
+    <pre><code>&lt;button class="play-audio audio-controls"
+  data-text="Добър ден"
+  data-phonetic="Dobar den"&gt;▶ Play&lt;/button&gt;</code></pre>
+    <p>Then run <code>generate_pro_audio.py --force dayXX.html</code> to create the MP3.</p>
+
+    <h3>Adding a phrase row</h3>
+    <pre><code>&lt;div class="phrase-row"&gt;
+  &lt;div class="phrase-main"&gt;
+    &lt;span class="phrase-bg" lang="bg"&gt;Добър ден.&lt;/span&gt;
+    &lt;span class="phrase-rom"&gt;Dobar den.&lt;/span&gt;
+    &lt;span class="phrase-en"&gt;Good afternoon.&lt;/span&gt;
+  &lt;/div&gt;
+  &lt;button class="play-inline play-audio audio-controls"
+    data-text="Добър ден."
+    data-phonetic="Dobar den."&gt;▶ Listen&lt;/button&gt;
+&lt;/div&gt;</code></pre>
+
+    <h3>Checking for mixed Cyrillic/Latin bugs</h3>
+    <pre><code>python -c "
+import re, sys
+text = open('dayXX.html', encoding='utf-8').read()
+# Find romanisation spans with Cyrillic chars
+matches = re.findall(r'reading-rom[^&gt;]*&gt;([^&lt;]{0,200})', text)
+for m in matches:
+    if re.search(r'[\u0400-\u04FF]', m):
+        print('MIXED:', m[:80])
+"</code></pre>
+  </section>
+
+  <!-- ═══════════════════ PROMO — WhatChan ═══════════════════ -->
+  <div class="promo-strip">
+    <div class="promo-icon">👨‍👩‍👧‍👦</div>
+    <div style="flex:1">
+      <div class="promo-label">Also from the creator</div>
+      <div class="promo-title">The WhatChan Family</div>
+      <div class="promo-desc">More projects, ideas, and things we make.</div>
+      <div class="promo-links">
+        <a class="promo-link filled" href="https://whatchan.co.uk/" target="_blank" rel="noopener">Visit whatchan.co.uk</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════ KNOWN ISSUES ═══════════════════ -->
+  <section class="section">
+    <h2>⚠️ Known Issues &amp; Risks</h2>
+    <ul>
+      <li>Pages with unusual custom sections may still need page-specific mobile CSS after live spot checks</li>
+      <li><code>day01.html</code> alphabet audio should be spot-checked live (MP3 pause between letter and example)</li>
+      <li>Audio generation requires Google Cloud credentials configured in the venv environment</li>
+      <li>Cyrillic filenames must be uploaded via paramiko or a tool that handles Unicode paths — curl fails on Cyrillic filenames</li>
+    </ul>
+  </section>
+
+  <!-- ═══════════════════ FOOTER ═══════════════════ -->
+  <footer style="text-align:center;margin-top:40px;font-size:13px;color:var(--muted);padding-top:20px;border-top:1px solid var(--line)">
+    <p>learnbulgarian.io — 60-day Bulgarian course &mdash; Project dashboard last updated 9 April 2026</p>
+    <p style="margin-top:6px">
+      <a href="https://learnbulgarian.io/bulgarian/day01.html">Start the course</a> &nbsp;·&nbsp;
+      <a href="https://whatchan.co.uk/">WhatChan</a> &nbsp;·&nbsp;
+      <a href="https://www.amazon.co.uk/Lennykins-Chronicles-Foxwood-Mystery/dp/B0FTX9JY1H/">The Lennykins Chronicles</a> &nbsp;·&nbsp;
+      <a href="https://open.spotify.com/artist/5nwOizoo2PKZeLoCyZxeUm">The Village Rejects</a>
+    </p>
+  </footer>
+
+</div>
 </body>
 </html>

@@ -1,8 +1,16 @@
 # Python virtual environment
 venv/
 
-# Google Cloud credentials (sensitive)
+# Google Cloud credentials and API keys — never commit these
 **/gen-lang-client-*.json
+credentials.json
+service-account*.json
+.env
+*.env
+secrets.json
+
+# Claude Code local settings
+.claude/settings.local.json
 
 # OS files
 Thumbs.db

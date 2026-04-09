@@ -5,7 +5,8 @@ from google import genai
 from google.genai import types
 
 # --- CONFIGURATION ---
-API_KEY = "REDACTED_ROTATE_THIS_KEY"
+# Set GOOGLE_API_KEY as an environment variable — never hard-code keys here
+API_KEY = os.environ.get("GOOGLE_API_KEY", "")
 HTML_FILE = "day01.html" 
 OUTPUT_FOLDER = "audio"
 
