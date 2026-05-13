@@ -384,6 +384,51 @@ When the user QAs the prototype next session, these should all work:
 
 ---
 
+## Session work done while user was away (2026-05-14 late)
+
+While the user was offline, two improvements were made based on their parting feedback:
+
+### 1. Audio button alignment fix
+- Detected the ~3.89s drift between source audio (408.41s) and rendered MP4 (404.52s).
+- `Bulgarian-avatars-test/day02_prototype/scale_segments.py` — scales segment timings by `mp4_dur / src_dur = 0.99047`.
+- Output: `Bulgarian-avatars-test/assets/elena/day02-master-segments-scaled.json`.
+- Replaced inlined SEGS block in `day02-prototype.html` with scaled values.
+- Buttons in the existing prototype should now land within ~100-200ms of target (was 3-4s off).
+
+### 2. v2 prototype preserving all original text
+- New file: `Bulgarian-avatars-test/day02-prototype-v2.html` (~133 KB)
+- Built by `Bulgarian-avatars-test/day02_prototype/build_v2.py` which:
+  - Reads the live `day02.html` (1364 lines, 103 KB)
+  - Adds `data-seg="..."` to every existing `.play-audio` button (59 of them mapped)
+  - Injects Elena CSS in a new `<style>` block (no conflict with existing styles)
+  - Injects 6 content blocks: cold-open hero, recap card, section pills, spotlight buttons, mega-soundboard, outro card, floating mini-avatar
+  - Adds the controller JS using capture-phase click delegation to intercept the existing audio.js handler — Elena's MP4 wins
+- **All original text is preserved.** Every table column, info-box, scenario, roleplay, quiz question, recap entry, and writing task remains exactly as in `day02.html`.
+
+### What the user should QA on the v2 prototype
+Open:
+`C:\Users\Dj4be\Desktop\New Bulgarian\.claude\worktrees\blissful-bouman-36288c\Bulgarian-avatars-test\day02-prototype-v2.html`
+
+Check:
+- Is ALL the original text still there? (Should be — verify a few sections.)
+- Do existing `▶ Listen` buttons now play Elena's voice instead of browser TTS?
+- Does the cold-open hero block appear AFTER the bakery story info-box?
+- Does the recap card appear at the top of the main content?
+- Do section pills appear next to each Section X header (Sections 2-8)?
+- Do "Hear Elena explain" buttons appear on the cultural sidebars?
+- Does the mega-soundboard appear at the end before the footer?
+- Does the floating mini-avatar appear bottom-right when Elena is speaking?
+- Are the audio buttons now lined up with the right phrases?
+
+Potential issues to look for:
+- **Double audio**: if both Elena AND the existing audio.js fire, you'll hear two voices. The capture-phase + preventDefault should prevent this, but the existing handler might be attached differently than expected. If you hear doubles, we add a hard `.play-audio` handler nuke at init.
+- **CSS conflicts**: Elena CSS uses scoped class names (elena-*) but variable references (`--navy`, etc.) inherit from day02.html's :root. Should look consistent. If anything looks broken, easy to tweak the elena-css block.
+- **Layout overlap**: the mega-soundboard sits inside `<main>` near the bottom; if there's any conflict with the existing footer/recap table, we adjust the injection anchor.
+
+If v2 looks right, we kill `day02-prototype.html` (the stripped-down original) and treat v2 as the canonical prototype going forward.
+
+---
+
 ## Tomorrow's first task (carry-over)
 
 **Walk through user's QA amendments one-by-one.** For each:
