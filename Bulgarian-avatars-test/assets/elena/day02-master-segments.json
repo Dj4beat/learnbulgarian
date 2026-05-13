@@ -1,0 +1,463 @@
+{
+  "voice": "Elena (Bulgarian native, Sofia accent)",
+  "model": "eleven_multilingual_v2",
+  "total_seconds": 408.41,
+  "segments": [
+    {
+      "id": "cold_open",
+      "start": 0.25,
+      "end": 19.69
+    },
+    {
+      "id": "recap_intro",
+      "start": 20.89,
+      "end": 25.28
+    },
+    {
+      "id": "recap_1",
+      "start": 26.13,
+      "end": 27.75
+    },
+    {
+      "id": "recap_2",
+      "start": 28.6,
+      "end": 31.03
+    },
+    {
+      "id": "recap_3",
+      "start": 31.88,
+      "end": 33.37
+    },
+    {
+      "id": "recap_4",
+      "start": 34.22,
+      "end": 35.79
+    },
+    {
+      "id": "recap_5",
+      "start": 36.64,
+      "end": 38.52
+    },
+    {
+      "id": "recap_6",
+      "start": 39.37,
+      "end": 42.14
+    },
+    {
+      "id": "recap_7",
+      "start": 42.99,
+      "end": 44.61
+    },
+    {
+      "id": "recap_8",
+      "start": 45.46,
+      "end": 47.21
+    },
+    {
+      "id": "recap_9",
+      "start": 48.06,
+      "end": 50.02
+    },
+    {
+      "id": "recap_10",
+      "start": 50.87,
+      "end": 53.12
+    },
+    {
+      "id": "recap_11",
+      "start": 53.97,
+      "end": 57.21
+    },
+    {
+      "id": "intro_s2",
+      "start": 58.41,
+      "end": 70.69
+    },
+    {
+      "id": "intro_s3",
+      "start": 71.89,
+      "end": 78.26
+    },
+    {
+      "id": "intro_s4",
+      "start": 79.46,
+      "end": 84.01
+    },
+    {
+      "id": "intro_s5",
+      "start": 85.21,
+      "end": 90.96
+    },
+    {
+      "id": "intro_s6",
+      "start": 92.16,
+      "end": 99.53
+    },
+    {
+      "id": "intro_s7",
+      "start": 100.73,
+      "end": 106.53
+    },
+    {
+      "id": "intro_s8",
+      "start": 107.73,
+      "end": 113.58
+    },
+    {
+      "id": "intro_roleplays",
+      "start": 114.78,
+      "end": 120.79
+    },
+    {
+      "id": "p_zdravey",
+      "start": 121.99,
+      "end": 123.14
+    },
+    {
+      "id": "p_zdraveite",
+      "start": 123.99,
+      "end": 125.22
+    },
+    {
+      "id": "p_dobro_utro",
+      "start": 126.07,
+      "end": 127.27
+    },
+    {
+      "id": "p_dobar_den",
+      "start": 128.12,
+      "end": 129.27
+    },
+    {
+      "id": "p_dobar_vecher",
+      "start": 130.12,
+      "end": 131.35
+    },
+    {
+      "id": "p_dovizhdane",
+      "start": 132.2,
+      "end": 133.3
+    },
+    {
+      "id": "p_chao",
+      "start": 134.15,
+      "end": 135.22
+    },
+    {
+      "id": "p_do_skoro",
+      "start": 136.07,
+      "end": 137.17
+    },
+    {
+      "id": "p_leka_nosht",
+      "start": 138.02,
+      "end": 139.12
+    },
+    {
+      "id": "p_priyaten_den",
+      "start": 139.97,
+      "end": 141.2
+    },
+    {
+      "id": "p_izvini",
+      "start": 142.05,
+      "end": 143.25
+    },
+    {
+      "id": "p_izvinete",
+      "start": 144.1,
+      "end": 145.25
+    },
+    {
+      "id": "p_chakay",
+      "start": 146.1,
+      "end": 147.17
+    },
+    {
+      "id": "p_chakayte",
+      "start": 148.02,
+      "end": 149.22
+    },
+    {
+      "id": "p_govori",
+      "start": 150.07,
+      "end": 151.22
+    },
+    {
+      "id": "p_govorete",
+      "start": 152.07,
+      "end": 153.22
+    },
+    {
+      "id": "p_zapovyaday",
+      "start": 154.07,
+      "end": 155.3
+    },
+    {
+      "id": "p_zapovyadayte",
+      "start": 156.15,
+      "end": 157.38
+    },
+    {
+      "id": "p_molya",
+      "start": 158.23,
+      "end": 159.43
+    },
+    {
+      "id": "p_blagodarya",
+      "start": 160.28,
+      "end": 161.43
+    },
+    {
+      "id": "p_mnogo_blag",
+      "start": 162.28,
+      "end": 163.64
+    },
+    {
+      "id": "p_nyama_nishto",
+      "start": 164.49,
+      "end": 165.51
+    },
+    {
+      "id": "p_nazdrave",
+      "start": 166.36,
+      "end": 167.64
+    },
+    {
+      "id": "p_mersi",
+      "start": 168.49,
+      "end": 169.59
+    },
+    {
+      "id": "p_dobre_doshli",
+      "start": 170.44,
+      "end": 171.59
+    },
+    {
+      "id": "p_s_udovolstvie",
+      "start": 172.44,
+      "end": 174.01
+    },
+    {
+      "id": "p_dostatachno",
+      "start": 174.86,
+      "end": 176.53
+    },
+    {
+      "id": "p_ne_razbiram",
+      "start": 177.38,
+      "end": 178.48
+    },
+    {
+      "id": "p_ne_govoria",
+      "start": 179.33,
+      "end": 180.9
+    },
+    {
+      "id": "p_govorite_en",
+      "start": 181.75,
+      "end": 183.24
+    },
+    {
+      "id": "p_po_bavno",
+      "start": 184.09,
+      "end": 185.66
+    },
+    {
+      "id": "p_kak_se_kazva",
+      "start": 186.51,
+      "end": 187.92
+    },
+    {
+      "id": "p_razbrah",
+      "start": 188.77,
+      "end": 189.97
+    },
+    {
+      "id": "p_ucha_bg",
+      "start": 190.82,
+      "end": 192.1
+    },
+    {
+      "id": "p_povtorete",
+      "start": 192.95,
+      "end": 194.49
+    },
+    {
+      "id": "p_mozhem_na_ti",
+      "start": 195.34,
+      "end": 196.49
+    },
+    {
+      "id": "p_utro",
+      "start": 197.34,
+      "end": 198.54
+    },
+    {
+      "id": "p_banichka",
+      "start": 199.39,
+      "end": 200.54
+    },
+    {
+      "id": "p_zdrave",
+      "start": 201.39,
+      "end": 202.54
+    },
+    {
+      "id": "p_dobro",
+      "start": 203.39,
+      "end": 204.49
+    },
+    {
+      "id": "p_dobar",
+      "start": 205.34,
+      "end": 206.49
+    },
+    {
+      "id": "p_dobra_vecher",
+      "start": 207.34,
+      "end": 208.54
+    },
+    {
+      "id": "rp1_owner_1",
+      "start": 209.39,
+      "end": 210.54
+    },
+    {
+      "id": "rp1_you_1",
+      "start": 211.39,
+      "end": 214.29
+    },
+    {
+      "id": "rp1_owner_2",
+      "start": 215.14,
+      "end": 216.89
+    },
+    {
+      "id": "rp1_you_2",
+      "start": 217.74,
+      "end": 220.04
+    },
+    {
+      "id": "rp1_owner_3",
+      "start": 220.89,
+      "end": 223.24
+    },
+    {
+      "id": "rp1_you_3",
+      "start": 224.09,
+      "end": 225.84
+    },
+    {
+      "id": "rp1_owner_4",
+      "start": 226.69,
+      "end": 228.31
+    },
+    {
+      "id": "rp2_ivan",
+      "start": 229.16,
+      "end": 231.88
+    },
+    {
+      "id": "rp2_baba_1",
+      "start": 232.73,
+      "end": 234.48
+    },
+    {
+      "id": "rp2_you_1",
+      "start": 235.33,
+      "end": 239.04
+    },
+    {
+      "id": "rp2_baba_2",
+      "start": 239.89,
+      "end": 241.93
+    },
+    {
+      "id": "rp2_you_2",
+      "start": 242.78,
+      "end": 245.03
+    },
+    {
+      "id": "rp2_baba_3",
+      "start": 245.88,
+      "end": 247.24
+    },
+    {
+      "id": "rp2_you_3",
+      "start": 248.09,
+      "end": 249.63
+    },
+    {
+      "id": "rp3_friend_1",
+      "start": 250.48,
+      "end": 252.18
+    },
+    {
+      "id": "rp3_you_1",
+      "start": 253.03,
+      "end": 254.78
+    },
+    {
+      "id": "rp3_friend_2",
+      "start": 255.63,
+      "end": 256.99
+    },
+    {
+      "id": "rp3_you_2",
+      "start": 257.84,
+      "end": 260.87
+    },
+    {
+      "id": "rp3_friend_3",
+      "start": 261.72,
+      "end": 263.81
+    },
+    {
+      "id": "rp3_you_3",
+      "start": 264.66,
+      "end": 266.23
+    },
+    {
+      "id": "rp3_friend_4",
+      "start": 267.08,
+      "end": 269.59
+    },
+    {
+      "id": "spotlight_te",
+      "start": 270.79,
+      "end": 291.87
+    },
+    {
+      "id": "spotlight_mersi",
+      "start": 293.07,
+      "end": 312.19
+    },
+    {
+      "id": "spotlight_zapovyadayte",
+      "start": 313.39,
+      "end": 336.85
+    },
+    {
+      "id": "spotlight_vie",
+      "start": 338.05,
+      "end": 354.64
+    },
+    {
+      "id": "spotlight_dobra_vs_dobar",
+      "start": 355.84,
+      "end": 377.55
+    },
+    {
+      "id": "spotlight_ucha_bg",
+      "start": 378.75,
+      "end": 395.34
+    },
+    {
+      "id": "outro",
+      "start": 396.54,
+      "end": 408.01
+    }
+  ],
+  "post_process": "narration slowed by atempo=0.92"
+}
