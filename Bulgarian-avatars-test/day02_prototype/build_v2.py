@@ -1,0 +1,786 @@
+"""Build day02-prototype-v2.html by layering avatar features on top of
+the full day02.html — preserving every word of the original text.
+
+Strategy: read day02.html, apply targeted regex insertions to add:
+  - data-seg="..." attributes to existing audio buttons (wires them to
+    Elena's master MP4 via timestamp seek)
+  - Elena master <video> + segments JS + controller (injected before </body>)
+  - Elena CSS (injected in <head>, after the existing <style>)
+  - Cold-open hero block (after the bakery story paragraph)
+  - Cold-recap card (at the top of main content)
+  - Section-intro pills (inside each Section X .section-header)
+  - "Hear Elena explain" buttons (inside specific info-boxes that map
+    to spotlight segments)
+  - Mega-soundboard at the end of the lesson content
+  - Outro card after the mega-soundboard
+
+Output: ../day02-prototype-v2.html
+"""
+from __future__ import annotations
+import json
+import re
+import sys
+from pathlib import Path
+
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+
+ROOT = Path(__file__).resolve().parents[2]  # worktree root
+SOURCE_HTML = ROOT / "day02.html"
+DEST_HTML = ROOT / "Bulgarian-avatars-test" / "day02-prototype-v2.html"
+SEGS_JSON = ROOT / "Bulgarian-avatars-test" / "assets" / "elena" / "day02-master-segments-scaled.json"
+
+
+# ---------------------------------------------------------------------------
+# 1. Mapping data-text → segment_id
+# ---------------------------------------------------------------------------
+# Normalize by stripping punctuation and collapsing whitespace.
+
+def normalize(text: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[!?.,—:;]", "", text)).strip().lower()
+
+
+# Source-of-truth mapping. KEYS are normalised data-text values; VALUES
+# are segment IDs that exist in day02-master-segments-scaled.json.
+RAW_MAPPING = {
+    # Greetings & farewells (single words)
+    "Здравей": "p_zdravey",
+    "Здравейте": "p_zdraveite",
+    "Добро утро": "p_dobro_utro",
+    "Добър ден": "p_dobar_den",
+    "Добър вечер": "p_dobar_vecher",
+    "Довиждане": "p_dovizhdane",
+    "Чао": "p_chao",
+    "До скоро": "p_do_skoro",
+    "Лека нощ": "p_leka_nosht",
+    "Приятен ден": "p_priyaten_den",
+    # -те pairs
+    "Извини": "p_izvini",
+    "Извинете": "p_izvinete",
+    "Чакай": "p_chakay",
+    "Чакайте": "p_chakayte",
+    "Говори": "p_govori",
+    "Говорете": "p_govorete",
+    "Заповядай": "p_zapovyaday",
+    "Заповядайте": "p_zapovyadayte",
+    # Polite
+    "Моля": "p_molya",
+    "Благодаря": "p_blagodarya",
+    "Много благодаря": "p_mnogo_blag",
+    "Няма нищо": "p_nyama_nishto",
+    "Наздраве": "p_nazdrave",
+    "Мерси": "p_mersi",
+    "Добре дошли": "p_dobre_doshli",
+    # Survival
+    "Не разбирам": "p_ne_razbiram",
+    "Не говоря добре български": "p_ne_govoria",
+    "Говорите ли английски?": "p_govorite_en",
+    "Моля, говорете по-бавно": "p_po_bavno",
+    "Как се казва това?": "p_kak_se_kazva",
+    "Разбрах": "p_razbrah",
+    "Уча български": "p_ucha_bg",
+    "Моля, повторете": "p_povtorete",
+    # Roleplay 1 lines
+    "Добър ден!": "rp1_owner_1",
+    "Добър ден. Извинете — говорите ли английски?": "rp1_you_1",
+    "Малко. Нещо желаете?": "rp1_owner_2",
+    "Уча български. Не говоря добре още.": "rp1_you_2",
+    "Браво! Много добре! Заповядайте.": "rp1_owner_3",
+    "Благодаря! Довиждане.": "rp1_you_3",
+    "Довиждане! Приятен ден.": "rp1_owner_4",
+    # Roleplay 2 (Babà)
+    "Бабо, това е приятелят ми. Той учи български!": "rp2_ivan",
+    "О, здравейте! Много приятно.": "rp2_baba_1",
+    "Здравейте! Много приятно и за мен. Уча български — радвам се.": "rp2_you_1",
+    "Браво! Харесва ли ви България?": "rp2_baba_2",
+    "Да, много! Много красива страна.": "rp2_you_2",
+    "Чудесно! Кафе?": "rp2_baba_3",
+    "Да, моля. Благодаря много.": "rp2_you_3",
+    # Roleplay 3 (Sofia café)
+    "Здравей! Какво ще вземеш?": "rp3_friend_1",
+    "Здравей! Едно кафе, моля.": "rp3_you_1",
+    "Голямо или малко?": "rp3_friend_2",
+    "Голямо, моля. Извини — говориш ли английски?": "rp3_you_2",
+    "Да, малко. Учиш ли български?": "rp3_friend_3",
+    "Да! Уча от два дни.": "rp3_you_3",
+    "Готино! Заповядай. Приятна сутрин.": "rp3_friend_4",
+}
+
+NORMALIZED_MAPPING = {normalize(k): v for k, v in RAW_MAPPING.items()}
+
+
+def attach_data_seg(html: str) -> tuple[str, int, set[str]]:
+    """Add data-seg="..." to every <button class="...play-audio..." data-text="X">."""
+    pattern = re.compile(
+        r'(<button[^>]*class="[^"]*play-audio[^"]*"[^>]*data-text=")([^"]+)("[^>]*)>'
+    )
+    matched = 0
+    unmatched: set[str] = set()
+
+    def repl(m: re.Match) -> str:
+        nonlocal matched
+        text = m.group(2)
+        norm = normalize(text)
+        seg_id = NORMALIZED_MAPPING.get(norm)
+        if not seg_id:
+            unmatched.add(text)
+            return m.group(0)  # leave unchanged
+        matched += 1
+        return f'{m.group(1)}{text}{m.group(3)} data-seg="{seg_id}">'
+
+    new_html = pattern.sub(repl, html)
+    return new_html, matched, unmatched
+
+
+# ---------------------------------------------------------------------------
+# 2. CSS for new avatar features (injected after the existing <style>)
+# ---------------------------------------------------------------------------
+
+ELENA_CSS = """
+<style id="elena-css">
+/* Cold-open hero */
+.elena-cold-open {
+  background: var(--cream-dark);
+  border-radius: 18px;
+  padding: 28px 20px;
+  margin: 24px auto 36px;
+  max-width: 900px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 18px;
+  align-items: center;
+}
+@media (min-width: 600px) { .elena-cold-open { grid-template-columns: 240px 1fr; } }
+.elena-cold-open .ec-avatar {
+  aspect-ratio: 1 / 1; border-radius: 16px; overflow: hidden;
+  background: #000; position: relative; box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+.elena-cold-open .ec-avatar img, .elena-cold-open .ec-avatar video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.elena-cold-open .ec-avatar img.poster { transition: opacity 0.3s; }
+.elena-cold-open .ec-avatar.playing img.poster { opacity: 0; }
+.elena-cold-open .ec-avatar .ec-overlay {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  background: rgba(0,0,0,0.25); cursor: pointer; transition: opacity 0.2s;
+}
+.elena-cold-open .ec-avatar.playing .ec-overlay { opacity: 0; pointer-events: none; }
+.elena-cold-open .ec-avatar .ec-btn {
+  background: var(--gold); color: var(--navy); border-radius: 50%;
+  width: 64px; height: 64px; display: grid; place-items: center;
+  font-size: 26px; box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
+.elena-cold-open h3 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 22px; margin-bottom: 8px; color: var(--rose);
+}
+.elena-cold-open p { color: var(--ink); margin-bottom: 8px; }
+.elena-cold-open .ec-hint {
+  font-size: 13px; color: var(--gold); font-style: italic; margin-top: 8px;
+}
+
+/* Recap card (top of page) */
+.elena-recap-card {
+  background: var(--navy); color: var(--cream);
+  border-radius: 16px; padding: 18px; margin: 24px auto 16px;
+  max-width: 900px;
+  display: flex; gap: 16px; align-items: center;
+  box-shadow: 0 6px 20px rgba(26,31,78,0.18);
+}
+.elena-recap-card .er-thumb {
+  width: 72px; height: 72px; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0; border: 2px solid var(--gold);
+}
+.elena-recap-card .er-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.elena-recap-card .er-text { flex: 1; }
+.elena-recap-card .er-label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--gold-light);
+}
+.elena-recap-card .er-title {
+  font-family: 'Playfair Display', serif; font-size: 18px;
+  margin: 3px 0 4px;
+}
+.elena-recap-card .er-meta { font-size: 13px; opacity: 0.85; }
+.elena-recap-card button {
+  background: var(--gold); color: var(--navy); border: 0;
+  border-radius: 10px; padding: 10px 16px;
+  font-family: inherit; font-weight: 700; font-size: 14px;
+  cursor: pointer; flex-shrink: 0;
+}
+.elena-recap-card button:hover { background: #f0b340; }
+
+/* Section-intro pill (added to existing .section-header elements) */
+.elena-intro-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--navy); color: var(--cream); border: 0;
+  border-radius: 999px; padding: 6px 14px 6px 6px;
+  font-family: inherit; font-size: 13px; cursor: pointer;
+  margin-left: 12px; vertical-align: middle;
+}
+.elena-intro-pill img {
+  width: 26px; height: 26px; border-radius: 50%; object-fit: cover;
+}
+.elena-intro-pill:hover { background: var(--navy-mid); }
+.elena-intro-pill.playing { background: var(--gold); color: var(--navy); }
+
+/* "Hear Elena explain" button inside info-boxes */
+.elena-spotlight-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--navy); color: var(--cream); border: 0;
+  border-radius: 8px; padding: 8px 14px;
+  font-family: inherit; font-size: 13px; cursor: pointer;
+  margin-top: 10px;
+}
+.elena-spotlight-btn img {
+  width: 22px; height: 22px; border-radius: 50%; object-fit: cover;
+}
+.elena-spotlight-btn:hover { background: var(--navy-mid); }
+.elena-spotlight-btn.playing { background: var(--gold); color: var(--navy); }
+
+/* Make existing .play-audio buttons show "playing" state via Elena MP4 */
+.play-audio.elena-playing {
+  background: var(--gold) !important;
+  color: var(--navy) !important;
+}
+
+/* Mega-soundboard */
+.elena-soundboard {
+  background: var(--cream-dark); border-radius: 16px;
+  padding: 22px; margin: 36px auto 24px; max-width: 900px;
+}
+.elena-soundboard .esb-head {
+  display: flex; gap: 14px; align-items: center;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+.elena-soundboard .esb-avatar {
+  width: 56px; height: 56px; border-radius: 50%;
+  overflow: hidden; border: 2px solid var(--gold);
+}
+.elena-soundboard .esb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.elena-soundboard .esb-text { flex: 1; min-width: 0; }
+.elena-soundboard h2 {
+  margin: 0; color: var(--navy);
+  font-family: 'Playfair Display', serif; font-size: 22px;
+}
+.elena-soundboard .esb-sub { margin: 2px 0 0; font-size: 13px; color: var(--muted); font-style: italic; }
+.elena-soundboard .esb-filters {
+  display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;
+}
+.elena-soundboard .esb-filter {
+  background: #fff; border: 1px solid var(--border);
+  border-radius: 999px; padding: 6px 14px;
+  font-family: 'Source Sans 3', sans-serif; font-size: 12px;
+  cursor: pointer; color: var(--muted);
+}
+.elena-soundboard .esb-filter.active {
+  background: var(--navy); color: var(--cream); border-color: var(--navy);
+}
+.elena-soundboard .esb-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 8px;
+}
+.elena-soundboard .esb-tile {
+  background: #fff; border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; cursor: pointer; text-align: left;
+  font-family: 'Source Sans 3', sans-serif; font-size: 14px;
+}
+.elena-soundboard .esb-tile .bg { color: var(--rose); font-weight: 600; }
+.elena-soundboard .esb-tile .en { color: var(--muted); font-size: 12px; margin-top: 2px; }
+.elena-soundboard .esb-tile:hover { border-color: var(--gold); transform: translateY(-1px); }
+.elena-soundboard .esb-tile.playing {
+  background: var(--gold-light); border-color: var(--gold);
+}
+
+/* Outro card */
+.elena-outro {
+  background: var(--rose); color: #fff; border-radius: 16px;
+  padding: 22px; margin: 24px auto; max-width: 900px;
+  display: flex; gap: 18px; align-items: center;
+}
+.elena-outro .eo-avatar {
+  width: 72px; height: 72px; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0; border: 2px solid var(--gold);
+}
+.elena-outro .eo-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.elena-outro h2 {
+  margin: 0 0 6px;
+  font-family: 'Playfair Display', serif; font-size: 22px;
+  color: var(--gold-light);
+}
+.elena-outro p { margin: 0 0 10px; }
+.elena-outro button {
+  background: var(--gold); color: var(--navy); border: 0;
+  border-radius: 10px; padding: 10px 18px;
+  font-family: inherit; font-weight: 700; cursor: pointer; font-size: 14px;
+}
+
+/* Floating mini-avatar */
+.elena-mini {
+  position: fixed; bottom: 16px; right: 16px;
+  width: 180px; background: var(--navy); border-radius: 14px;
+  overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+  z-index: 1000; opacity: 0; transform: translateY(20px);
+  transition: opacity 0.25s, transform 0.25s; pointer-events: none;
+}
+.elena-mini.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.elena-mini .em-video { aspect-ratio: 1 / 1; background: #000; position: relative; }
+.elena-mini .em-video video {
+  position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+}
+.elena-mini .em-caption {
+  padding: 8px 12px; color: var(--cream); font-size: 12px;
+  display: flex; align-items: center; gap: 8px;
+}
+.elena-mini .em-pulse {
+  width: 8px; height: 8px; background: var(--gold);
+  border-radius: 50%; flex-shrink: 0;
+  animation: elenaPulse 1.2s infinite;
+}
+@keyframes elenaPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
+
+.elena-banner {
+  background: var(--gold); color: var(--navy);
+  padding: 8px 16px; text-align: center;
+  font-family: 'Source Sans 3', sans-serif;
+  font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+}
+</style>
+"""
+
+
+# ---------------------------------------------------------------------------
+# 3. Cold-open block (injected after the bakery story paragraph)
+# ---------------------------------------------------------------------------
+
+COLD_OPEN_BLOCK = """
+<div class="elena-cold-open" id="elenaColdOpen">
+  <div class="ec-avatar" id="elenaColdAvatar">
+    <img class="poster" src="Bulgarian-avatars-test/assets/elena/02-greetings.jpg" alt="Elena">
+    <div class="ec-overlay"><div class="ec-btn">▶</div></div>
+  </div>
+  <div class="ec-prose">
+    <h3>Hear it from Elena</h3>
+    <p>Press play, or just keep scrolling — Elena will narrate the bakery story for visual and auditory learners. The full text is right above; this is the audio layer on top.</p>
+    <p class="ec-hint">Auto-plays once when you scroll past, mutes after.</p>
+  </div>
+</div>
+"""
+
+RECAP_CARD = """
+<div class="elena-recap-card">
+  <div class="er-thumb"><img src="Bulgarian-avatars-test/assets/elena/01-workhorse.jpg" alt="Elena"></div>
+  <div class="er-text">
+    <div class="er-label">Returning learner?</div>
+    <div class="er-title">Elena's 90-second recap</div>
+    <div class="er-meta">Eleven phrases — the ones that matter most.</div>
+  </div>
+  <button data-elena-action="play-recap">▶ Play recap</button>
+</div>
+"""
+
+
+def section_intro_pill(seg_id: str, label: str = "Hear Elena introduce") -> str:
+    return (
+        f'<button class="elena-intro-pill" data-elena-action="play-segment" '
+        f'data-seg="{seg_id}"><img src="Bulgarian-avatars-test/assets/elena/01-workhorse.jpg" alt=""> {label}</button>'
+    )
+
+
+def spotlight_btn(seg_id: str, pose: str = "05-grammar.jpg") -> str:
+    return (
+        f'<button class="elena-spotlight-btn" data-elena-action="play-segment" '
+        f'data-seg="{seg_id}"><img src="Bulgarian-avatars-test/assets/elena/{pose}" alt=""> Hear Elena explain</button>'
+    )
+
+
+# Trailing blocks injected at the end (before the existing footer)
+
+SOUNDBOARD_BLOCK = """
+<div class="elena-soundboard" id="elenaSoundboard">
+  <div class="esb-head">
+    <div class="esb-avatar"><img src="Bulgarian-avatars-test/assets/elena/06-outro.jpg" alt="Elena"></div>
+    <div class="esb-text">
+      <h2>Day 2 Mega-Soundboard</h2>
+      <p class="esb-sub">Every Bulgarian phrase from today. Tap to hear Elena.</p>
+    </div>
+  </div>
+  <div class="esb-filters" id="esbFilters">
+    <button class="esb-filter active" data-filter="all">All</button>
+    <button class="esb-filter" data-filter="greetings">Greetings</button>
+    <button class="esb-filter" data-filter="formality">Formality</button>
+    <button class="esb-filter" data-filter="polite">Polite</button>
+    <button class="esb-filter" data-filter="survival">Survival</button>
+    <button class="esb-filter" data-filter="dialogue">Dialogue</button>
+  </div>
+  <div class="esb-grid" id="esbGrid"></div>
+</div>
+
+<div class="elena-outro">
+  <div class="eo-avatar"><img src="Bulgarian-avatars-test/assets/elena/06-outro.jpg" alt="Elena"></div>
+  <div class="eo-content">
+    <h2>Браво!</h2>
+    <p>You've stocked up on the foundation. Tomorrow: questions — how to ask anything you need.</p>
+    <button data-elena-action="play-segment" data-seg="outro">▶ Hear Elena sign off</button>
+  </div>
+</div>
+
+<div class="elena-mini" id="elenaMini">
+  <div class="em-video"><video id="elenaVideo" src="Bulgarian-avatars-test/clips/day02/elena-day02-master-fs.mp4" preload="auto" playsinline></video></div>
+  <div class="em-caption"><span class="em-pulse"></span><span id="elenaCaption">Elena is speaking</span></div>
+</div>
+"""
+
+
+# Elena controller JS — placed before </body>
+def build_controller_js(segs_data: dict) -> str:
+    segs_lit = json.dumps(segs_data, ensure_ascii=False)
+    return f"""
+<script id="elena-controller">
+(() => {{
+  const SEGS = {segs_lit};
+  const SEG_BY_ID = Object.fromEntries(SEGS.segments.map(s => [s.id, s]));
+
+  // Master video lives in the floating mini-avatar; cold-open hero
+  // gets its own <video> appended on demand.
+  const video = document.getElementById('elenaVideo');
+  const mini = document.getElementById('elenaMini');
+  const caption = document.getElementById('elenaCaption');
+  const coldAvatar = document.getElementById('elenaColdAvatar');
+  const coldVideo = document.createElement('video');
+  coldVideo.src = 'Bulgarian-avatars-test/clips/day02/elena-day02-master-fs.mp4';
+  coldVideo.preload = 'auto';
+  coldVideo.playsInline = true;
+  if (coldAvatar) coldAvatar.appendChild(coldVideo);
+
+  let currentTarget = null, currentButton = null, currentQueue = [], currentVideo = video;
+
+  // ----- soundboard tile data -----
+  const SOUNDBOARD = [
+    {{id:'p_zdravey', bg:'Здравей', en:'Hello (informal)', cats:['greetings']}},
+    {{id:'p_zdraveite', bg:'Здравейте', en:'Hello (formal)', cats:['greetings','formality']}},
+    {{id:'p_dobro_utro', bg:'Добро утро', en:'Good morning', cats:['greetings']}},
+    {{id:'p_dobar_den', bg:'Добър ден', en:'Good day', cats:['greetings']}},
+    {{id:'p_dobar_vecher', bg:'Добър вечер', en:'Good evening', cats:['greetings']}},
+    {{id:'p_dovizhdane', bg:'Довиждане', en:'Goodbye', cats:['greetings']}},
+    {{id:'p_chao', bg:'Чао', en:'Bye (informal)', cats:['greetings']}},
+    {{id:'p_do_skoro', bg:'До скоро', en:'See you soon', cats:['greetings']}},
+    {{id:'p_leka_nosht', bg:'Лека нощ', en:'Good night', cats:['greetings']}},
+    {{id:'p_priyaten_den', bg:'Приятен ден', en:'Have a nice day', cats:['greetings']}},
+    {{id:'p_izvini', bg:'Извини', en:'Sorry (informal)', cats:['formality']}},
+    {{id:'p_izvinete', bg:'Извинете', en:'Sorry (formal)', cats:['formality']}},
+    {{id:'p_chakay', bg:'Чакай', en:'Wait (informal)', cats:['formality']}},
+    {{id:'p_chakayte', bg:'Чакайте', en:'Wait (formal)', cats:['formality']}},
+    {{id:'p_govori', bg:'Говори', en:'Speak (informal)', cats:['formality']}},
+    {{id:'p_govorete', bg:'Говорете', en:'Speak (formal)', cats:['formality']}},
+    {{id:'p_zapovyaday', bg:'Заповядай', en:'Here you go (inf)', cats:['formality','polite']}},
+    {{id:'p_zapovyadayte', bg:'Заповядайте', en:'Here you go (formal)', cats:['formality','polite']}},
+    {{id:'p_molya', bg:'Моля', en:'Please / pardon', cats:['polite']}},
+    {{id:'p_blagodarya', bg:'Благодаря', en:'Thank you', cats:['polite']}},
+    {{id:'p_mnogo_blag', bg:'Много благодаря', en:'Thank you very much', cats:['polite']}},
+    {{id:'p_nyama_nishto', bg:'Няма нищо', en:"It's nothing", cats:['polite']}},
+    {{id:'p_nazdrave', bg:'Наздраве', en:'Cheers / bless you', cats:['polite']}},
+    {{id:'p_mersi', bg:'Мерси', en:'Thanks (casual)', cats:['polite']}},
+    {{id:'p_dobre_doshli', bg:'Добре дошли', en:'Welcome', cats:['polite']}},
+    {{id:'p_ne_razbiram', bg:'Не разбирам', en:"I don't understand", cats:['survival']}},
+    {{id:'p_ne_govoria', bg:'Не говоря добре български', en:"I don't speak BG well", cats:['survival']}},
+    {{id:'p_govorite_en', bg:'Говорите ли английски?', en:'Do you speak English?', cats:['survival']}},
+    {{id:'p_po_bavno', bg:'Моля, говорете по-бавно', en:'Speak more slowly', cats:['survival']}},
+    {{id:'p_kak_se_kazva', bg:'Как се казва това?', en:'What is this called?', cats:['survival']}},
+    {{id:'p_razbrah', bg:'Разбрах', en:'Got it', cats:['survival']}},
+    {{id:'p_ucha_bg', bg:'Уча български', en:"I'm learning Bulgarian", cats:['survival']}},
+    {{id:'p_povtorete', bg:'Моля, повторете', en:'Please repeat', cats:['survival']}},
+    {{id:'rp1_owner_1', bg:'Добър ден!', en:'(Shop owner)', cats:['dialogue']}},
+    {{id:'rp1_owner_3', bg:'Браво! Много добре!', en:'(Owner) Well done!', cats:['dialogue']}},
+    {{id:'rp2_baba_1', bg:'О, здравейте!', en:'(Grandma) Hello!', cats:['dialogue']}},
+    {{id:'rp3_friend_1', bg:'Здравей! Какво ще вземеш?', en:'(Friend) What will you have?', cats:['dialogue']}},
+  ];
+
+  const RECAP_QUEUE = ['recap_intro','recap_1','recap_2','recap_3','recap_4','recap_5',
+                       'recap_6','recap_7','recap_8','recap_9','recap_10','recap_11'];
+
+  function bufferedCovers(v, t) {{
+    for (let i = 0; i < v.buffered.length; i++) {{
+      if (v.buffered.start(i) <= t && v.buffered.end(i) > t + 0.2) return true;
+    }}
+    return false;
+  }}
+
+  async function ensureBuffered(v, t, timeoutMs = 8000) {{
+    if (bufferedCovers(v, t)) return;
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {{
+      if (bufferedCovers(v, t)) return;
+      await new Promise(r => {{
+        const onP = () => {{ cleanup(); r(); }};
+        const onL = () => {{ cleanup(); r(); }};
+        const to = setTimeout(() => {{ cleanup(); r(); }}, 250);
+        function cleanup() {{
+          clearTimeout(to);
+          v.removeEventListener('progress', onP);
+          v.removeEventListener('loadeddata', onL);
+        }}
+        v.addEventListener('progress', onP);
+        v.addEventListener('loadeddata', onL);
+      }});
+    }}
+  }}
+
+  async function seekTo(v, t) {{
+    if (v.readyState < 1) await new Promise(r => v.addEventListener('loadedmetadata', r, {{ once: true }}));
+    v.pause();
+    await ensureBuffered(v, t);
+    const p = new Promise(res => {{
+      if (Math.abs(v.currentTime - t) < 0.03) res();
+      else v.addEventListener('seeked', res, {{ once: true }});
+    }});
+    v.currentTime = t;
+    return p;
+  }}
+
+  function clearButtonStates() {{
+    document.querySelectorAll('.elena-playing, .elena-intro-pill.playing, .elena-spotlight-btn.playing, .esb-tile.playing')
+      .forEach(b => {{
+        b.classList.remove('elena-playing', 'playing');
+      }});
+  }}
+
+  function setCurrentButton(btn) {{
+    clearButtonStates();
+    currentButton = btn;
+    if (!btn) return;
+    if (btn.classList.contains('play-audio')) btn.classList.add('elena-playing');
+    else btn.classList.add('playing');
+  }}
+
+  function showMini(label = 'Elena is speaking') {{
+    if (currentVideo === video) mini.classList.add('show');
+    if (caption) caption.textContent = label;
+  }}
+  function hideMini() {{ mini.classList.remove('show'); }}
+
+  function stopPlayback() {{
+    if (currentTarget) {{
+      video.pause();
+      coldVideo.pause();
+      if (coldAvatar) coldAvatar.classList.remove('playing');
+      currentTarget = null;
+      setCurrentButton(null);
+      currentQueue = [];
+      hideMini();
+    }}
+  }}
+
+  async function playSegmentOn(v, segId, btn, label) {{
+    const seg = SEG_BY_ID[segId];
+    if (!seg) {{ console.warn('unknown elena segment', segId); return; }}
+    stopPlayback();
+    currentTarget = seg;
+    currentVideo = v;
+    setCurrentButton(btn);
+    if (v === video) showMini(label || 'Elena is speaking');
+    v.muted = false;
+    await seekTo(v, seg.start);
+    if (currentTarget !== seg) return;
+    if (v === coldVideo && coldAvatar) coldAvatar.classList.add('playing');
+    v.play().catch(e => console.warn('elena play() rejected', e));
+  }}
+
+  function playSegment(id, btn, label) {{ return playSegmentOn(video, id, btn, label); }}
+
+  function onTimeUpdate(v) {{
+    return () => {{
+      if (!currentTarget || v !== currentVideo) return;
+      if (v.currentTime >= currentTarget.end) {{
+        v.pause();
+        currentTarget = null;
+        if (currentQueue.length) {{
+          const next = currentQueue.shift();
+          setTimeout(() => playSegmentOn(v, next, currentButton), 250);
+        }} else {{
+          setCurrentButton(null);
+          hideMini();
+          if (coldAvatar) coldAvatar.classList.remove('playing');
+        }}
+      }}
+    }};
+  }}
+  video.addEventListener('timeupdate', onTimeUpdate(video));
+  coldVideo.addEventListener('timeupdate', onTimeUpdate(coldVideo));
+
+  function playQueue(ids, label) {{
+    if (!ids.length) return;
+    stopPlayback();
+    const [first, ...rest] = ids;
+    currentQueue = rest;
+    playSegment(first, null, label);
+  }}
+
+  // ----- click delegation -----
+  // (a) any element with data-elena-action / data-seg
+  // (b) the existing .play-audio buttons (with data-seg added at build time)
+  document.body.addEventListener('click', e => {{
+    // First: existing play-audio buttons rewired with data-seg
+    const audioBtn = e.target.closest('.play-audio[data-seg]');
+    if (audioBtn) {{
+      e.preventDefault();
+      e.stopPropagation();
+      if (currentButton === audioBtn) {{ stopPlayback(); return; }}
+      playSegment(audioBtn.dataset.seg, audioBtn);
+      return;
+    }}
+    // Then: new Elena buttons
+    const t = e.target.closest('[data-elena-action]');
+    if (!t) return;
+    const action = t.dataset.elenaAction;
+    if (action === 'play-segment') {{
+      if (currentButton === t) {{ stopPlayback(); return; }}
+      playSegment(t.dataset.seg, t);
+    }} else if (action === 'play-recap') {{
+      playQueue(RECAP_QUEUE, 'Day 2 recap');
+    }}
+  }}, true);  // capture phase — intercept BEFORE the old audio.js handler runs
+
+  // Cold-open auto-play on first scroll-into-view
+  let coldOpenAutoplayed = false;
+  if (coldAvatar) {{
+    const obs = new IntersectionObserver(entries => {{
+      entries.forEach(en => {{
+        if (en.isIntersecting && !coldOpenAutoplayed) {{
+          coldOpenAutoplayed = true;
+          playSegmentOn(coldVideo, 'cold_open', null, 'Cold-open');
+        }}
+      }});
+    }}, {{ threshold: 0.6 }});
+    obs.observe(document.getElementById('elenaColdOpen'));
+    coldAvatar.addEventListener('click', () => {{
+      playSegmentOn(coldVideo, 'cold_open', null, 'Cold-open');
+    }});
+  }}
+
+  // Render soundboard tiles
+  const grid = document.getElementById('esbGrid');
+  function renderBoard(filter) {{
+    if (!grid) return;
+    grid.innerHTML = '';
+    SOUNDBOARD
+      .filter(s => filter === 'all' || s.cats.includes(filter))
+      .forEach(s => {{
+        const tile = document.createElement('button');
+        tile.className = 'esb-tile';
+        tile.dataset.elenaAction = 'play-segment';
+        tile.dataset.seg = s.id;
+        tile.innerHTML = `<div class="bg">${{s.bg}}</div><div class="en">${{s.en}}</div>`;
+        grid.appendChild(tile);
+      }});
+  }}
+  renderBoard('all');
+  const filters = document.getElementById('esbFilters');
+  if (filters) {{
+    filters.addEventListener('click', e => {{
+      const btn = e.target.closest('.esb-filter');
+      if (!btn) return;
+      filters.querySelectorAll('.esb-filter').forEach(b => b.classList.toggle('active', b === btn));
+      renderBoard(btn.dataset.filter);
+    }});
+  }}
+
+  video.load();
+}})();
+</script>
+"""
+
+
+# ---------------------------------------------------------------------------
+# Build
+# ---------------------------------------------------------------------------
+
+def main() -> None:
+    html = SOURCE_HTML.read_text(encoding="utf-8")
+    print(f"Source: {SOURCE_HTML.name}, {len(html)} chars")
+
+    segs_data = json.loads(SEGS_JSON.read_text(encoding="utf-8"))
+
+    # --- 1. Add data-seg to audio buttons ---
+    html, matched, unmatched = attach_data_seg(html)
+    print(f"Wired {matched} audio buttons to Elena segments")
+    if unmatched:
+        print(f"  unmapped data-text values ({len(unmatched)}):")
+        for u in sorted(unmatched):
+            print(f"    {u!r}")
+
+    # --- 2. Inject Elena CSS after the existing </style> ---
+    html, n = re.subn(r"</style>", "</style>" + ELENA_CSS, html, count=1)
+    if not n:
+        sys.exit("could not find </style> to inject Elena CSS")
+
+    # --- 3. Inject the recap card right after <main class="page-body"> ---
+    pat = re.compile(r'(<main class="page-body">)')
+    html, n = pat.subn(lambda m: m.group(1) + RECAP_CARD, html, count=1)
+    print(f"Recap card injection: {'ok' if n else 'FAILED — main.page-body anchor not found'}")
+
+    # --- 4. Inject cold-open hero after the bakery story info-box closes ---
+    # The info-box has 2 paragraphs; we insert just after the closing </div> of
+    # the .info-box.blue containing "баничка". Anchor on the unique баничка phrase.
+    pat = re.compile(
+        r'(<div class="info-box blue"[^>]*>\s*<p class="info-box-title">[^<]*Your first conversation[^<]*</p>.*?</div>)',
+        re.DOTALL
+    )
+    html, n = pat.subn(lambda m: m.group(1) + COLD_OPEN_BLOCK, html, count=1)
+    print(f"Cold-open injection: {'ok' if n else 'FAILED — bakery info-box anchor not found'}")
+
+    # --- 5. Inject section-intro pills into each <div class="section-header"> ---
+    # Each section has a Section X label. We'll match Section 2 through 8/9.
+    section_map = {
+        "Section 2": "intro_s2",
+        "Section 3": "intro_s3",
+        "Section 4": "intro_s4",
+        "Section 5": "intro_s5",
+        "Section 6": "intro_s6",
+        "Section 7": "intro_s7",
+        "Section 8": "intro_s8",
+    }
+    for label, seg_id in section_map.items():
+        # Anchor: <p class="sh-label">Section N</p>  → inject pill after this <p>
+        pat = re.compile(rf'(<p class="sh-label">{re.escape(label)}</p>)')
+        pill = '\n  ' + section_intro_pill(seg_id)
+        html, n = pat.subn(lambda m: m.group(1) + pill, html, count=1)
+        if not n:
+            print(f"  section pill MISS: {label}")
+
+    # --- 6. Inject "Hear Elena explain" buttons into specific info-boxes ---
+    spotlight_anchors = [
+        ("⚠️ The golden rule",                 "spotlight_vie",            "04-rules.jpg"),
+        ("💡 Memory tip — Здравей",            "spotlight_te",             "05-grammar.jpg"),
+        ("💡 Why this matters",                "spotlight_te",             "05-grammar.jpg"),
+        ("💡 Моля — the most versatile word",  "spotlight_ucha_bg",        "05-grammar.jpg"),
+        ("🇧🇬 Мерси — the French connection",  "spotlight_mersi",          "03-cultural.jpg"),
+        ("🏠 Bulgarian hospitality",           "spotlight_zapovyadayte",   "03-cultural.jpg"),
+        ("💡 The most useful phrase",          "spotlight_ucha_bg",        "05-grammar.jpg"),
+    ]
+    for anchor, seg_id, pose in spotlight_anchors:
+        # Find the info-box title containing this anchor text, inject the btn before </div> of that box
+        pat = re.compile(
+            rf'(<p class="info-box-title">[^<]*{re.escape(anchor)}[^<]*</p>.*?)(</div>)',
+            re.DOTALL
+        )
+        btn_html = spotlight_btn(seg_id, pose)
+        html, n = pat.subn(lambda m: m.group(1) + btn_html + m.group(2), html, count=1)
+        if not n:
+            print(f"  spotlight MISS: {anchor}")
+
+    # --- 7. Inject soundboard + outro + mini avatar before </body> ---
+    html, n = re.subn(r"(</body>)", SOUNDBOARD_BLOCK + build_controller_js(segs_data) + r"\1", html, count=1)
+    if not n:
+        sys.exit("could not find </body> to inject Elena footer blocks")
+
+    # --- 8. Update page title and add a small banner so the user knows this is the v2 prototype ---
+    html = html.replace("<title>", "<!--ORIGINAL_TITLE--><title>")  # mark for reference
+    html, _ = re.subn(r"<body[^>]*>", lambda m: m.group(0) + '\n<div class="elena-banner">ELENA v2 PROTOTYPE — full Day 2 text preserved · all existing audio buttons wired to Elena\'s MP4 · new features added on top</div>', html, count=1)
+
+    DEST_HTML.write_text(html, encoding="utf-8")
+    print(f"\nWrote {DEST_HTML}  ({len(html)} chars)")
+
+
+if __name__ == "__main__":
+    main()
