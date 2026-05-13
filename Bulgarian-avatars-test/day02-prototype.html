@@ -1,0 +1,1283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 Prototype — Elena teaches Bulgarian greetings</title>
+<style>
+  :root {
+    --navy:#1a1f4e; --navy-mid:#252b68; --cream:#fdf8f0; --cream-dark:#f5ede0;
+    --gold:#e8a020; --gold-light:#fdf0d0; --rose:#8b1a2e; --rose-light:#fdf0f2;
+    --green:#1a6b3c; --green-light:#e8f5ee; --blue:#1a56a8; --blue-light:#e8f0fb;
+    --ink:#1c1c2e; --muted:#5c627a; --border:#e2ddd5;
+    --good:#1a6b3c; --warn:#a3520a;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font-family: Georgia, "Times New Roman", serif;
+    background: var(--cream);
+    color: var(--ink);
+    line-height: 1.55;
+    padding: 0 0 80px;
+  }
+  .container { max-width: 760px; margin: 0 auto; padding: 16px; }
+
+  /* ---------- Page header ---------- */
+  header.page-head {
+    background: var(--navy);
+    color: var(--cream);
+    padding: 28px 16px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  header.page-head .day-tag {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+  header.page-head h1 {
+    font-size: 26px;
+    margin: 6px 0 4px;
+  }
+  header.page-head .sub {
+    color: var(--gold-light);
+    font-size: 14px;
+    font-style: italic;
+  }
+
+  /* ---------- Recap card (top) ---------- */
+  .recap-card {
+    background: var(--navy);
+    color: var(--cream);
+    border-radius: 16px;
+    padding: 18px;
+    margin: 8px 0 32px;
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    box-shadow: 0 6px 20px rgba(26,31,78,0.18);
+  }
+  .recap-card .recap-thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--gold);
+    background: #000;
+  }
+  .recap-card .recap-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .recap-card .recap-text { flex: 1; }
+  .recap-card .recap-label {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold-light);
+  }
+  .recap-card .recap-title {
+    font-size: 18px;
+    margin: 3px 0 8px;
+  }
+  .recap-card .recap-meta { font-size: 13px; opacity: 0.8; }
+  .recap-card button {
+    background: var(--gold);
+    color: var(--navy);
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 16px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .recap-card button:hover { background: #f0b340; }
+
+  /* ---------- Cold-open hero ---------- */
+  .cold-open {
+    background: var(--cream-dark);
+    border-radius: 18px;
+    padding: 28px 20px;
+    margin-bottom: 36px;
+    position: relative;
+    overflow: hidden;
+  }
+  .cold-open-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    align-items: center;
+  }
+  @media (min-width: 600px) {
+    .cold-open-grid { grid-template-columns: 240px 1fr; }
+  }
+  .cold-open-avatar {
+    aspect-ratio: 1 / 1;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #000;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+  }
+  .cold-open-avatar img, .cold-open-avatar video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  .cold-open-avatar img.poster { transition: opacity 0.3s; }
+  .cold-open-avatar.playing img.poster { opacity: 0; }
+  .cold-open-avatar .play-overlay {
+    position: absolute; inset: 0;
+    display: grid; place-items: center;
+    background: rgba(0,0,0,0.25);
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .cold-open-avatar.playing .play-overlay { opacity: 0; pointer-events: none; }
+  .cold-open-avatar .play-overlay .btn {
+    background: var(--gold);
+    color: var(--navy);
+    border-radius: 50%;
+    width: 64px; height: 64px;
+    display: grid; place-items: center;
+    font-size: 26px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  }
+  .cold-open-prose h2 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    color: var(--rose);
+  }
+  .cold-open-prose p { margin: 0; color: var(--muted); }
+  .cold-open-prose .hint {
+    margin-top: 12px;
+    font-size: 13px;
+    color: var(--gold);
+    font-style: italic;
+  }
+
+  /* ---------- Section headers ---------- */
+  .section-header {
+    margin: 48px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--gold);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .section-header .sh-emoji {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .section-header .sh-content { flex: 1; min-width: 0; }
+  .section-header .sh-label {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    text-transform: uppercase;
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin: 0;
+  }
+  .section-header h2 {
+    font-size: 22px;
+    color: var(--navy);
+    margin: 2px 0 0;
+  }
+  .section-header .sh-sub {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    margin: 4px 0 0;
+  }
+  /* Mini-avatar that pops in next to a section header when an intro is played */
+  .section-header .sh-intro-btn {
+    background: var(--navy);
+    color: var(--cream);
+    border: 0;
+    border-radius: 999px;
+    padding: 6px 14px 6px 6px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .section-header .sh-intro-btn img {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .section-header .sh-intro-btn:hover { background: var(--navy-mid); }
+  .section-header .sh-intro-btn.playing {
+    background: var(--gold);
+    color: var(--navy);
+  }
+
+  /* ---------- Vocab tables ---------- */
+  .vocab-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 12px 0;
+  }
+  .vocab-table th, .vocab-table td {
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+    font-family: Georgia, serif;
+  }
+  .vocab-table th {
+    background: var(--cream-dark);
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .vocab-table tr:last-child td { border-bottom: 0; }
+  .vocab-table [lang="bg"] {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--rose);
+  }
+  .listen-btn {
+    background: var(--navy);
+    color: var(--cream);
+    border: 0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: -apple-system, sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .listen-btn:hover { background: var(--navy-mid); }
+  .listen-btn.playing {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .listen-btn::before {
+    content: "►";
+    font-size: 10px;
+  }
+  .listen-btn.playing::before { content: "♪"; }
+
+  /* ---------- Register toggle ---------- */
+  .register-pair {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .register-pair .pair-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-style: italic;
+    flex-shrink: 0;
+  }
+  .register-pair .rocker {
+    display: inline-flex;
+    background: var(--cream-dark);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .register-pair .rocker button {
+    background: transparent;
+    border: 0;
+    border-radius: 999px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 15px;
+    color: var(--ink);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .register-pair .rocker button .tag {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: var(--border);
+    color: var(--muted);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .register-pair .rocker button.active {
+    background: var(--navy);
+    color: var(--cream);
+  }
+  .register-pair .rocker button.active .tag {
+    background: var(--gold);
+    color: var(--navy);
+  }
+  .register-pair .rocker button:hover:not(.active) {
+    background: rgba(232,160,32,0.15);
+  }
+  .register-pair .rocker button.playing {
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+
+  /* ---------- Info boxes & spotlight ---------- */
+  .info-box {
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    border-left: 4px solid;
+    position: relative;
+  }
+  .info-box.gold { background: var(--gold-light); border-color: var(--gold); }
+  .info-box.green { background: var(--green-light); border-color: var(--green); }
+  .info-box.blue { background: var(--blue-light); border-color: var(--blue); }
+  .info-box.rose { background: var(--rose-light); border-color: var(--rose); }
+  .info-box .info-title {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    margin: 0 0 6px;
+    color: var(--navy);
+  }
+  .info-box p { margin: 4px 0; font-size: 15px; }
+  .info-box .spotlight-btn {
+    margin-top: 10px;
+    background: var(--navy);
+    color: var(--cream);
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .info-box .spotlight-btn img {
+    width: 22px; height: 22px; border-radius: 50%; object-fit: cover;
+  }
+  .info-box .spotlight-btn:hover { background: var(--navy-mid); }
+  .info-box .spotlight-btn.playing { background: var(--gold); color: var(--navy); }
+
+  /* ---------- Roleplay ---------- */
+  .roleplay-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+    margin: 16px 0;
+  }
+  .roleplay-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+  .roleplay-title { font-weight: 700; color: var(--navy); }
+  .rb-formal {
+    background: var(--rose);
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-family: -apple-system, sans-serif;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .rp-scene { font-style: italic; color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+  .rp-controls {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .rp-controls label { font-size: 13px; color: var(--muted); display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .rp-controls .shadow-toggle {
+    background: var(--navy);
+    color: var(--cream);
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .rp-controls .shadow-toggle.active { background: var(--gold); color: var(--navy); }
+  .rp-line {
+    display: flex;
+    gap: 10px;
+    margin: 8px 0;
+    align-items: flex-start;
+  }
+  .rp-line.you { flex-direction: row-reverse; }
+  .rp-avatar {
+    flex-shrink: 0;
+    font-size: 22px;
+    width: 36px; height: 36px;
+    display: grid; place-items: center;
+    background: var(--cream-dark);
+    border-radius: 50%;
+  }
+  .rp-line.you .rp-avatar { background: var(--navy); }
+  .rp-bubble {
+    flex: 1;
+    background: var(--cream-dark);
+    padding: 10px 12px;
+    border-radius: 12px;
+    max-width: 80%;
+  }
+  .rp-line.you .rp-bubble { background: var(--blue-light); }
+  .rp-speaker { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+  .rp-bg { color: var(--rose); font-weight: 600; margin: 2px 0; }
+  .rp-en { font-size: 14px; color: var(--muted); font-style: italic; }
+
+  /* ---------- Quiz ---------- */
+  .quiz-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 14px 0;
+  }
+  .quiz-card .q-text { font-weight: 600; color: var(--navy); margin-bottom: 10px; }
+  .quiz-card .q-opts { display: flex; flex-direction: column; gap: 8px; }
+  .quiz-card .q-opt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    text-align: left;
+  }
+  .quiz-card .q-opt:hover { border-color: var(--gold); }
+  .quiz-card .q-opt.correct {
+    background: var(--green-light);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .quiz-card .q-opt.wrong {
+    background: var(--rose-light);
+    border-color: var(--rose);
+    color: var(--rose);
+  }
+  .quiz-card .q-opt .audio-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: var(--cream);
+    display: none;
+    place-items: center;
+    font-size: 10px;
+    flex-shrink: 0;
+  }
+  .quiz-card .q-opt.wrong .audio-icon { display: grid; }
+  .quiz-card .q-opt .audio-icon:hover { background: var(--gold); color: var(--navy); }
+
+  /* ---------- Mega soundboard ---------- */
+  .soundboard {
+    background: var(--cream-dark);
+    border-radius: 16px;
+    padding: 22px;
+    margin: 48px 0 24px;
+  }
+  .soundboard-head { display: flex; gap: 14px; align-items: center; margin-bottom: 16px; flex-wrap: wrap; }
+  .soundboard-head .sb-avatar {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid var(--gold);
+  }
+  .soundboard-head .sb-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .soundboard-head .sb-text { flex: 1; min-width: 0; }
+  .soundboard-head h2 {
+    margin: 0; color: var(--navy); font-size: 20px;
+  }
+  .soundboard-head p {
+    margin: 2px 0 0; font-size: 13px; color: var(--muted); font-style: italic;
+  }
+  .soundboard-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  .sb-filter {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--muted);
+  }
+  .sb-filter.active {
+    background: var(--navy);
+    color: var(--cream);
+    border-color: var(--navy);
+  }
+  .soundboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+  .sb-tile {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    font-family: Georgia, serif;
+    text-align: left;
+    font-size: 14px;
+    transition: all 0.1s;
+  }
+  .sb-tile .bg { color: var(--rose); font-weight: 600; }
+  .sb-tile .en { color: var(--muted); font-size: 12px; margin-top: 2px; }
+  .sb-tile:hover { border-color: var(--gold); transform: translateY(-1px); }
+  .sb-tile.playing {
+    background: var(--gold-light);
+    border-color: var(--gold);
+    box-shadow: 0 2px 8px rgba(232,160,32,0.3);
+  }
+
+  /* ---------- Floating mini avatar (corner) ---------- */
+  .mini-avatar {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    width: 180px;
+    background: var(--navy);
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    z-index: 100;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.25s, transform 0.25s;
+    pointer-events: none;
+  }
+  .mini-avatar.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+  .mini-avatar .ma-video {
+    aspect-ratio: 1 / 1;
+    background: #000;
+    position: relative;
+  }
+  .mini-avatar .ma-video video {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  .mini-avatar .ma-caption {
+    padding: 10px 12px;
+    color: var(--cream);
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .mini-avatar .ma-caption .pulse {
+    width: 8px; height: 8px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+    animation: pulse 1.2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  /* ---------- Outro / final ---------- */
+  .outro-card {
+    background: var(--rose);
+    color: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    margin: 48px 0 0;
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  .outro-card .ot-avatar {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    border: 2px solid var(--gold);
+  }
+  .outro-card .ot-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .outro-card .ot-content { flex: 1; }
+  .outro-card h2 { margin: 0 0 6px; font-size: 22px; color: var(--gold-light); }
+  .outro-card p { margin: 0 0 10px; }
+  .outro-card button {
+    background: var(--gold);
+    color: var(--navy);
+    border: 0;
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-family: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .prototype-banner {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 8px 16px;
+    text-align: center;
+    font-family: -apple-system, sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<div class="prototype-banner">
+  AVATAR PROTOTYPE · Tier-1 features sourced from a single 6:48 Elena MP4 ($0.23 to render)
+</div>
+
+<header class="page-head">
+  <div class="day-tag">Day 02 · prototype</div>
+  <h1>Greetings &amp; politeness</h1>
+  <div class="sub">Formal vs informal, city vs rural, and your first real Bulgarian conversations.</div>
+</header>
+
+<div class="container">
+
+  <!-- 90-sec cold recap card -->
+  <div class="recap-card">
+    <div class="recap-thumb"><img src="assets/elena/01-workhorse.jpg" alt="Elena"></div>
+    <div class="recap-text">
+      <div class="recap-label">Returning learner?</div>
+      <div class="recap-title">Elena's 90-second recap</div>
+      <div class="recap-meta">Eleven phrases — the ones that matter most.</div>
+    </div>
+    <button data-action="play-recap">▶ Play recap</button>
+  </div>
+
+  <!-- Cold-open hero (auto-plays on scroll into view, first time only) -->
+  <div class="cold-open" id="coldOpen">
+    <div class="cold-open-grid">
+      <div class="cold-open-avatar" id="coldOpenAvatar">
+        <img class="poster" src="assets/elena/02-greetings.jpg" alt="Elena">
+        <div class="play-overlay"><div class="btn">▶</div></div>
+      </div>
+      <div class="cold-open-prose">
+        <h2>The bakery problem</h2>
+        <p>You walk into a Bulgarian bakery at 8am. The woman behind the counter says something warm — you catch the word <em lang="bg" style="color:var(--rose);font-style:normal;font-weight:600">утро</em>. She hands you a <em lang="bg" style="color:var(--rose);font-style:normal;font-weight:600">баничка</em>, still warm. You smile, say "thank you" in English, and leave feeling like you missed a whole conversation.</p>
+        <p class="hint">Tap Elena to hear her tell the story. (Auto-plays on scroll, mutes after first listen.)</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ SECTION 3 — Greetings ============================ -->
+  <div class="section-header">
+    <div class="sh-emoji">☀️</div>
+    <div class="sh-content">
+      <p class="sh-label">Section 3</p>
+      <h2>Greetings by time of day</h2>
+      <p class="sh-sub">Three forms. Pick the one that matches the clock.</p>
+    </div>
+    <button class="sh-intro-btn" data-action="play-segment" data-seg="intro_s3">
+      <img src="assets/elena/01-workhorse.jpg" alt=""> Hear Elena introduce
+    </button>
+  </div>
+
+  <table class="vocab-table">
+    <thead><tr><th>Bulgarian</th><th>English</th><th>Audio</th></tr></thead>
+    <tbody>
+      <tr>
+        <td lang="bg">Добро утро</td><td>Good morning</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_dobro_utro">Listen</button></td>
+      </tr>
+      <tr>
+        <td lang="bg">Добър ден</td><td>Good day / afternoon</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_dobar_den">Listen</button></td>
+      </tr>
+      <tr>
+        <td lang="bg">Добър вечер</td><td>Good evening</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_dobar_vecher">Listen</button></td>
+      </tr>
+      <tr>
+        <td lang="bg">Лека нощ</td><td>Good night</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_leka_nosht">Listen</button></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="info-box gold">
+    <p class="info-title">Spotlight — Добра vs Добър</p>
+    <p>You'll sometimes see <em lang="bg">Добра вечер</em> instead of <em lang="bg">Добър вечер</em>. Both are heard, but <strong lang="bg">Добър</strong> is the standard.</p>
+    <button class="spotlight-btn" data-action="play-segment" data-seg="spotlight_dobra_vs_dobar">
+      <img src="assets/elena/05-grammar.jpg" alt=""> Hear Elena explain
+    </button>
+  </div>
+
+  <!-- ============================ SECTION 5 — the -те switch ============================ -->
+  <div class="section-header">
+    <div class="sh-emoji">🔀</div>
+    <div class="sh-content">
+      <p class="sh-label">Section 5</p>
+      <h2>The -те ending — your formality switch</h2>
+      <p class="sh-sub">Flip the rocker. Same word, formal version.</p>
+    </div>
+    <button class="sh-intro-btn" data-action="play-segment" data-seg="intro_s5">
+      <img src="assets/elena/05-grammar.jpg" alt=""> Hear Elena introduce
+    </button>
+  </div>
+
+  <div class="register-pair" data-pair="zdravey">
+    <span class="pair-label">"Hello"</span>
+    <div class="rocker">
+      <button class="active" data-action="play-segment" data-seg="p_zdravey" lang="bg">Здравей <span class="tag">ти</span></button>
+      <button data-action="play-segment" data-seg="p_zdraveite" lang="bg">Здравейте <span class="tag">Вие</span></button>
+    </div>
+  </div>
+  <div class="register-pair" data-pair="izvini">
+    <span class="pair-label">"Sorry / excuse me"</span>
+    <div class="rocker">
+      <button class="active" data-action="play-segment" data-seg="p_izvini" lang="bg">Извини <span class="tag">ти</span></button>
+      <button data-action="play-segment" data-seg="p_izvinete" lang="bg">Извинете <span class="tag">Вие</span></button>
+    </div>
+  </div>
+  <div class="register-pair" data-pair="chakay">
+    <span class="pair-label">"Wait"</span>
+    <div class="rocker">
+      <button class="active" data-action="play-segment" data-seg="p_chakay" lang="bg">Чакай <span class="tag">ти</span></button>
+      <button data-action="play-segment" data-seg="p_chakayte" lang="bg">Чакайте <span class="tag">Вие</span></button>
+    </div>
+  </div>
+  <div class="register-pair" data-pair="govori">
+    <span class="pair-label">"Speak"</span>
+    <div class="rocker">
+      <button class="active" data-action="play-segment" data-seg="p_govori" lang="bg">Говори <span class="tag">ти</span></button>
+      <button data-action="play-segment" data-seg="p_govorete" lang="bg">Говорете <span class="tag">Вие</span></button>
+    </div>
+  </div>
+
+  <div class="info-box green">
+    <p class="info-title">Spotlight — the -те ending</p>
+    <p>Add -те for formal/plural, remove it for informal. Learn the informal once, the formal is free.</p>
+    <button class="spotlight-btn" data-action="play-segment" data-seg="spotlight_te">
+      <img src="assets/elena/05-grammar.jpg" alt=""> Hear Elena explain
+    </button>
+  </div>
+
+  <!-- ============================ SECTION 6 — Polite phrases ============================ -->
+  <div class="section-header">
+    <div class="sh-emoji">🙏</div>
+    <div class="sh-content">
+      <p class="sh-label">Section 6</p>
+      <h2>Essential polite phrases</h2>
+      <p class="sh-sub">Eight expressions that get you through almost anything.</p>
+    </div>
+    <button class="sh-intro-btn" data-action="play-segment" data-seg="intro_s6">
+      <img src="assets/elena/01-workhorse.jpg" alt=""> Hear Elena introduce
+    </button>
+  </div>
+
+  <table class="vocab-table">
+    <thead><tr><th>Bulgarian</th><th>English</th><th>Audio</th></tr></thead>
+    <tbody>
+      <tr><td lang="bg">Моля</td><td>Please / You're welcome / Pardon?</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_molya">Listen</button></td></tr>
+      <tr><td lang="bg">Благодаря</td><td>Thank you</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_blagodarya">Listen</button></td></tr>
+      <tr><td lang="bg">Много благодаря</td><td>Thank you very much</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_mnogo_blag">Listen</button></td></tr>
+      <tr><td lang="bg">Мерси</td><td>Thanks (casual, from French)</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_mersi">Listen</button></td></tr>
+      <tr><td lang="bg">Заповядайте</td><td>Here you are / Please come in</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_zapovyadayte">Listen</button></td></tr>
+      <tr><td lang="bg">Няма нищо</td><td>It's nothing / no problem</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_nyama_nishto">Listen</button></td></tr>
+      <tr><td lang="bg">Наздраве</td><td>Cheers / bless you</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_nazdrave">Listen</button></td></tr>
+      <tr><td lang="bg">Добре дошли</td><td>Welcome</td>
+        <td><button class="listen-btn" data-action="play-segment" data-seg="p_dobre_doshli">Listen</button></td></tr>
+    </tbody>
+  </table>
+
+  <div class="info-box gold">
+    <p class="info-title">Spotlight — Мерси, the French connection</p>
+    <p>Borrowed from French in the 19th century when French was the elite Bulgarian language. <em lang="bg">Мерси</em> is the casual cousin of <em lang="bg">Благодаря</em>.</p>
+    <button class="spotlight-btn" data-action="play-segment" data-seg="spotlight_mersi">
+      <img src="assets/elena/03-cultural.jpg" alt=""> Hear Elena explain
+    </button>
+  </div>
+
+  <div class="info-box rose">
+    <p class="info-title">Spotlight — the golden rule</p>
+    <p>When in doubt, use <strong lang="bg">Вие</strong>. Bulgarians switch to <em lang="bg">ти</em> when they're comfortable. Jumping to ти without invitation is the most noticeable mistake foreigners make.</p>
+    <button class="spotlight-btn" data-action="play-segment" data-seg="spotlight_vie">
+      <img src="assets/elena/04-rules.jpg" alt=""> Hear Elena explain
+    </button>
+  </div>
+
+  <!-- ============================ Roleplay 1 — the shop ============================ -->
+  <div class="section-header">
+    <div class="sh-emoji">🛒</div>
+    <div class="sh-content">
+      <p class="sh-label">Section 8 · Roleplay</p>
+      <h2>Entering a shop — formal</h2>
+      <p class="sh-sub">The most common scenario you'll face.</p>
+    </div>
+    <button class="sh-intro-btn" data-action="play-segment" data-seg="intro_roleplays">
+      <img src="assets/elena/01-workhorse.jpg" alt=""> How to use roleplays
+    </button>
+  </div>
+
+  <div class="roleplay-card">
+    <div class="roleplay-head">
+      <span class="roleplay-title">🎭 Grocery shop — small town, 2pm</span>
+      <span class="rb-formal">FORMAL — Вие</span>
+    </div>
+    <div class="rp-scene">You enter a grocery shop. The owner (woman, 50s) is behind the counter.</div>
+    <div class="rp-controls">
+      <button class="shadow-toggle" id="shadowToggle" data-action="toggle-shadow">🎤 Shadow mode</button>
+      <label><input type="checkbox" id="autoplayDialog"> Auto-play next line</label>
+      <button class="listen-btn" data-action="play-dialogue" data-dialogue="rp1">▶ Play whole scene</button>
+    </div>
+    <div class="rp-line">
+      <div class="rp-avatar">👩</div>
+      <div class="rp-bubble">
+        <div class="rp-speaker">Owner</div>
+        <div class="rp-bg" lang="bg">Добър ден!</div>
+        <div class="rp-en">Good afternoon!</div>
+        <button class="listen-btn" data-action="play-segment" data-seg="rp1_owner_1" style="margin-top:4px">Listen</button>
+      </div>
+    </div>
+    <div class="rp-line you">
+      <div class="rp-avatar">🧑</div>
+      <div class="rp-bubble">
+        <div class="rp-speaker">You</div>
+        <div class="rp-bg" lang="bg">Добър ден. Извинете — говорите ли английски?</div>
+        <div class="rp-en">Good afternoon. Excuse me — do you speak English?</div>
+        <button class="listen-btn" data-action="play-segment" data-seg="rp1_you_1" style="margin-top:4px">Listen</button>
+      </div>
+    </div>
+    <div class="rp-line">
+      <div class="rp-avatar">👩</div>
+      <div class="rp-bubble">
+        <div class="rp-speaker">Owner</div>
+        <div class="rp-bg" lang="bg">Малко. Нещо желаете?</div>
+        <div class="rp-en">A little. Can I help you?</div>
+        <button class="listen-btn" data-action="play-segment" data-seg="rp1_owner_2" style="margin-top:4px">Listen</button>
+      </div>
+    </div>
+    <div class="rp-line you">
+      <div class="rp-avatar">🧑</div>
+      <div class="rp-bubble">
+        <div class="rp-speaker">You</div>
+        <div class="rp-bg" lang="bg">Уча български. Не говоря добре още.</div>
+        <div class="rp-en">I'm learning Bulgarian. I don't speak well yet.</div>
+        <button class="listen-btn" data-action="play-segment" data-seg="rp1_you_2" style="margin-top:4px">Listen</button>
+      </div>
+    </div>
+    <div class="rp-line">
+      <div class="rp-avatar">👩</div>
+      <div class="rp-bubble">
+        <div class="rp-speaker">Owner</div>
+        <div class="rp-bg" lang="bg">Браво! Много добре! Заповядайте.</div>
+        <div class="rp-en">Well done! Very good! Please, go ahead.</div>
+        <button class="listen-btn" data-action="play-segment" data-seg="rp1_owner_3" style="margin-top:4px">Listen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ Quiz mini ============================ -->
+  <div class="section-header">
+    <div class="sh-emoji">✏️</div>
+    <div class="sh-content">
+      <p class="sh-label">Mini-quiz</p>
+      <h2>Check your understanding</h2>
+      <p class="sh-sub">Wrong answers reveal a speaker icon — tap to hear Elena say it.</p>
+    </div>
+  </div>
+
+  <div class="quiz-card" data-correct="b">
+    <div class="q-text">1. You enter a shop owned by an elderly woman. Which greeting?</div>
+    <div class="q-opts">
+      <button class="q-opt" data-key="a" data-seg="p_zdravey">
+        <span class="audio-icon" data-audio-icon>♪</span> <span lang="bg">Здравей</span>
+      </button>
+      <button class="q-opt" data-key="b" data-seg="p_zdraveite">
+        <span class="audio-icon" data-audio-icon>♪</span> <span lang="bg">Здравейте</span>
+      </button>
+      <button class="q-opt" data-key="c" data-seg="p_chao">
+        <span class="audio-icon" data-audio-icon>♪</span> <span lang="bg">Чао</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="quiz-card" data-correct="c">
+    <div class="q-text">2. A Bulgarian thanks you. Which response sounds most natural?</div>
+    <div class="q-opts">
+      <button class="q-opt" data-key="a" data-seg="p_blagodarya">
+        <span class="audio-icon" data-audio-icon>♪</span> <span lang="bg">Благодаря</span>
+      </button>
+      <button class="q-opt" data-key="b" data-seg="p_dovizhdane">
+        <span class="audio-icon" data-audio-icon>♪</span> <span lang="bg">Довиждане</span>
+      </button>
+      <button class="q-opt" data-key="c" data-seg="p_molya">
+        <span class="audio-icon" data-audio-icon>♪</span> <span lang="bg">Моля</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================ Mega soundboard ============================ -->
+  <div class="soundboard" id="soundboard">
+    <div class="soundboard-head">
+      <div class="sb-avatar"><img src="assets/elena/06-outro.jpg" alt="Elena"></div>
+      <div class="sb-text">
+        <h2>Day 2 Mega-Soundboard</h2>
+        <p>Every Bulgarian phrase from today. Tap to hear Elena.</p>
+      </div>
+    </div>
+    <div class="soundboard-filters" id="sbFilters">
+      <button class="sb-filter active" data-filter="all">All</button>
+      <button class="sb-filter" data-filter="greetings">Greetings</button>
+      <button class="sb-filter" data-filter="formality">Formality</button>
+      <button class="sb-filter" data-filter="polite">Polite</button>
+      <button class="sb-filter" data-filter="survival">Survival</button>
+      <button class="sb-filter" data-filter="dialogue">Dialogue</button>
+    </div>
+    <div class="soundboard-grid" id="sbGrid"></div>
+  </div>
+
+  <!-- ============================ Outro ============================ -->
+  <div class="outro-card">
+    <div class="ot-avatar"><img src="assets/elena/06-outro.jpg" alt="Elena"></div>
+    <div class="ot-content">
+      <h2>Браво!</h2>
+      <p>You've stocked up. Tomorrow: questions — how to ask anything you need.</p>
+      <button data-action="play-segment" data-seg="outro">▶ Hear Elena sign off</button>
+    </div>
+  </div>
+
+</div>
+
+<!-- Floating mini avatar — appears when something is playing -->
+<div class="mini-avatar" id="miniAvatar">
+  <div class="ma-video">
+    <video id="masterVideo"
+           src="clips/day02/elena-day02-master.mp4"
+           preload="metadata"
+           playsinline></video>
+  </div>
+  <div class="ma-caption">
+    <span class="pulse"></span>
+    <span id="maCaption">Elena is speaking</span>
+  </div>
+</div>
+
+<script>
+(async () => {
+  // --------------------------- Data ---------------------------
+  const SEGS = await fetch('assets/elena/day02-master-segments.json').then(r => r.json());
+  const SEG_BY_ID = Object.fromEntries(SEGS.segments.map(s => [s.id, s]));
+
+  // Soundboard grid content
+  const SOUNDBOARD = [
+    // Greetings
+    { id:'p_zdravey',      bg:'Здравей',         en:'Hello (informal)',     cats:['greetings'] },
+    { id:'p_zdraveite',    bg:'Здравейте',       en:'Hello (formal)',       cats:['greetings','formality'] },
+    { id:'p_dobro_utro',   bg:'Добро утро',      en:'Good morning',         cats:['greetings'] },
+    { id:'p_dobar_den',    bg:'Добър ден',       en:'Good day',             cats:['greetings'] },
+    { id:'p_dobar_vecher', bg:'Добър вечер',     en:'Good evening',         cats:['greetings'] },
+    { id:'p_dovizhdane',   bg:'Довиждане',       en:'Goodbye',              cats:['greetings'] },
+    { id:'p_chao',         bg:'Чао',             en:'Bye (informal)',       cats:['greetings'] },
+    { id:'p_do_skoro',     bg:'До скоро',        en:'See you soon',         cats:['greetings'] },
+    { id:'p_leka_nosht',   bg:'Лека нощ',        en:'Good night',           cats:['greetings'] },
+    { id:'p_priyaten_den', bg:'Приятен ден',     en:'Have a nice day',      cats:['greetings'] },
+    // Formality pairs
+    { id:'p_izvini',       bg:'Извини',          en:'Sorry (informal)',     cats:['formality'] },
+    { id:'p_izvinete',     bg:'Извинете',        en:'Sorry (formal)',       cats:['formality'] },
+    { id:'p_chakay',       bg:'Чакай',           en:'Wait (informal)',      cats:['formality'] },
+    { id:'p_chakayte',     bg:'Чакайте',         en:'Wait (formal)',        cats:['formality'] },
+    { id:'p_govori',       bg:'Говори',          en:'Speak (informal)',     cats:['formality'] },
+    { id:'p_govorete',     bg:'Говорете',        en:'Speak (formal)',       cats:['formality'] },
+    { id:'p_zapovyaday',   bg:'Заповядай',       en:'Here you go (inf.)',   cats:['formality','polite'] },
+    { id:'p_zapovyadayte', bg:'Заповядайте',     en:'Here you go (formal)', cats:['formality','polite'] },
+    // Polite
+    { id:'p_molya',        bg:'Моля',            en:'Please / pardon',      cats:['polite'] },
+    { id:'p_blagodarya',   bg:'Благодаря',       en:'Thank you',            cats:['polite'] },
+    { id:'p_mnogo_blag',   bg:'Много благодаря', en:'Thank you very much',  cats:['polite'] },
+    { id:'p_nyama_nishto', bg:'Няма нищо',       en:"It's nothing",         cats:['polite'] },
+    { id:'p_nazdrave',     bg:'Наздраве',        en:'Cheers / bless you',   cats:['polite'] },
+    { id:'p_mersi',        bg:'Мерси',           en:'Thanks (casual)',      cats:['polite'] },
+    { id:'p_dobre_doshli', bg:'Добре дошли',     en:'Welcome',              cats:['polite'] },
+    // Survival
+    { id:'p_ne_razbiram',  bg:'Не разбирам',     en:"I don't understand",   cats:['survival'] },
+    { id:'p_ne_govoria',   bg:'Не говоря добре български', en:"I don't speak Bulgarian well", cats:['survival'] },
+    { id:'p_govorite_en',  bg:'Говорите ли английски?', en:'Do you speak English?', cats:['survival'] },
+    { id:'p_po_bavno',     bg:'Моля, говорете по-бавно', en:'Speak more slowly',  cats:['survival'] },
+    { id:'p_kak_se_kazva', bg:'Как се казва това?', en:'What is this called?', cats:['survival'] },
+    { id:'p_razbrah',      bg:'Разбрах',         en:'Got it',               cats:['survival'] },
+    { id:'p_ucha_bg',      bg:'Уча български',   en:"I'm learning Bulgarian", cats:['survival'] },
+    { id:'p_povtorete',    bg:'Моля, повторете', en:'Please repeat',        cats:['survival'] },
+    // Dialogue lines
+    { id:'rp1_owner_1',    bg:'Добър ден!',      en:'(Shop owner) Good afternoon', cats:['dialogue'] },
+    { id:'rp1_owner_3',    bg:'Браво! Много добре! Заповядайте.', en:'(Owner) Well done!', cats:['dialogue'] },
+    { id:'rp2_baba_1',     bg:'О, здравейте! Много приятно.', en:'(Grandma) Pleased to meet you', cats:['dialogue'] },
+    { id:'rp3_friend_1',   bg:'Здравей! Какво ще вземеш?', en:'(Friend) What will you have?', cats:['dialogue'] },
+  ];
+
+  // Recap playlist (sequence)
+  const RECAP_QUEUE = ['recap_intro','recap_1','recap_2','recap_3','recap_4','recap_5',
+                       'recap_6','recap_7','recap_8','recap_9','recap_10','recap_11'];
+  // Roleplay 1 dialogue queue
+  const RP1_QUEUE = ['rp1_owner_1','rp1_you_1','rp1_owner_2','rp1_you_2','rp1_owner_3'];
+
+  // --------------------------- Player ---------------------------
+  const video = document.getElementById('masterVideo');
+  const miniAvatar = document.getElementById('miniAvatar');
+  const maCaption = document.getElementById('maCaption');
+  const coldOpenAvatar = document.getElementById('coldOpenAvatar');
+  const coldOpenVideo = document.createElement('video');
+  coldOpenVideo.src = 'clips/day02/elena-day02-master.mp4';
+  coldOpenVideo.preload = 'metadata';
+  coldOpenVideo.playsInline = true;
+  coldOpenAvatar.appendChild(coldOpenVideo);
+
+  let currentTarget = null;     // segment object {id,start,end}
+  let currentButton = null;     // DOM button that triggered playback
+  let currentQueue = [];        // remaining segments to play after current
+  let currentVideo = video;     // which <video> element is active (master or coldOpen)
+  let shadowMode = false;       // pause for ~2s between dialogue lines
+  let coldOpenAutoplayed = false;
+
+  function setCurrentBtn(btn, label) {
+    if (currentButton) currentButton.classList.remove('playing');
+    currentButton = btn;
+    if (btn) btn.classList.add('playing');
+    if (label) maCaption.textContent = label;
+  }
+
+  function showMini(label = 'Elena is speaking') {
+    if (currentVideo === video) miniAvatar.classList.add('show');
+    maCaption.textContent = label;
+  }
+  function hideMini() {
+    miniAvatar.classList.remove('show');
+  }
+
+  async function seekTo(v, targetSec) {
+    if (v.readyState < 1) {
+      await new Promise(r => v.addEventListener('loadedmetadata', r, { once: true }));
+    }
+    v.pause();
+    const seekPromise = new Promise(resolve => {
+      if (Math.abs(v.currentTime - targetSec) < 0.03) resolve();
+      else v.addEventListener('seeked', resolve, { once: true });
+    });
+    v.currentTime = targetSec;
+    return seekPromise;
+  }
+
+  async function playSegmentOn(v, segId, btn, label) {
+    const seg = SEG_BY_ID[segId];
+    if (!seg) { console.warn('unknown seg', segId); return; }
+    stopPlayback();
+    currentTarget = seg;
+    currentVideo = v;
+    setCurrentBtn(btn || null, label || segId);
+    if (v === video) showMini(label || 'Elena is speaking');
+    v.muted = false;
+    await seekTo(v, seg.start);
+    if (currentTarget !== seg) return; // overridden
+    if (v === coldOpenVideo) coldOpenAvatar.classList.add('playing');
+    v.play().catch(err => console.warn('play rejected', err));
+  }
+
+  function playSegment(segId, btn, label) {
+    return playSegmentOn(video, segId, btn, label);
+  }
+
+  function stopPlayback() {
+    if (currentTarget) {
+      video.pause();
+      coldOpenVideo.pause();
+      coldOpenAvatar.classList.remove('playing');
+      currentTarget = null;
+      setCurrentBtn(null);
+      currentQueue = [];
+      hideMini();
+    }
+  }
+
+  function onTimeUpdate(v) {
+    return () => {
+      if (!currentTarget || v !== currentVideo) return;
+      if (v.currentTime >= currentTarget.end) {
+        // segment finished
+        v.pause();
+        const finished = currentTarget;
+        currentTarget = null;
+        // Queue continues?
+        if (currentQueue.length) {
+          const next = currentQueue.shift();
+          const delay = shadowMode ? 1800 : 250;
+          setTimeout(() => {
+            const seg = SEG_BY_ID[next];
+            if (!seg) return;
+            playSegmentOn(v, next, currentButton, 'Elena: ' + (next.startsWith('rp') ? 'roleplay' : next));
+          }, delay);
+        } else {
+          setCurrentBtn(null);
+          hideMini();
+          coldOpenAvatar.classList.remove('playing');
+        }
+      }
+    };
+  }
+
+  video.addEventListener('timeupdate', onTimeUpdate(video));
+  coldOpenVideo.addEventListener('timeupdate', onTimeUpdate(coldOpenVideo));
+
+  function playQueue(ids, label) {
+    if (!ids.length) return;
+    stopPlayback();
+    const [first, ...rest] = ids;
+    currentQueue = rest;
+    playSegment(first, null, label);
+  }
+
+  // --------------------------- Action delegation ---------------------------
+  document.body.addEventListener('click', e => {
+    const t = e.target.closest('[data-action]');
+    if (!t) return;
+    const action = t.dataset.action;
+
+    if (action === 'play-segment') {
+      const seg = t.dataset.seg;
+      // If already playing this exact button, stop
+      if (currentButton === t) { stopPlayback(); return; }
+      const label = t.textContent.trim().slice(0, 40);
+      playSegment(seg, t, label);
+    } else if (action === 'play-recap') {
+      playQueue(RECAP_QUEUE, 'Day 2 recap');
+    } else if (action === 'play-dialogue') {
+      const id = t.dataset.dialogue;
+      if (id === 'rp1') playQueue(RP1_QUEUE, 'Roleplay 1');
+    } else if (action === 'toggle-shadow') {
+      shadowMode = !shadowMode;
+      t.classList.toggle('active', shadowMode);
+      t.textContent = shadowMode ? '🎤 Shadow mode ON' : '🎤 Shadow mode';
+    }
+  });
+
+  // --------------------------- Register toggle behaviour ---------------------------
+  document.querySelectorAll('.register-pair .rocker').forEach(rocker => {
+    rocker.addEventListener('click', e => {
+      const btn = e.target.closest('button[data-seg]');
+      if (!btn) return;
+      // Mark active state on the pair (visual rocker)
+      rocker.querySelectorAll('button').forEach(b => b.classList.toggle('active', b === btn));
+    });
+  });
+
+  // --------------------------- Cold-open autoplay on first scroll-into-view ---------------------------
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(en => {
+      if (en.isIntersecting && !coldOpenAutoplayed) {
+        coldOpenAutoplayed = true;
+        playSegmentOn(coldOpenVideo, 'cold_open', null, 'Cold-open: the bakery');
+      }
+    });
+  }, { threshold: 0.6 });
+  obs.observe(document.getElementById('coldOpen'));
+
+  // Clicking the cold-open avatar replays
+  coldOpenAvatar.addEventListener('click', () => {
+    playSegmentOn(coldOpenVideo, 'cold_open', null, 'Cold-open: the bakery');
+  });
+
+  // --------------------------- Quiz behaviour ---------------------------
+  document.querySelectorAll('.quiz-card').forEach(card => {
+    const correct = card.dataset.correct;
+    card.querySelectorAll('.q-opt').forEach(opt => {
+      opt.addEventListener('click', e => {
+        if (e.target.closest('[data-audio-icon]')) return; // icon clicks bubble to audio
+        if (opt.classList.contains('correct') || opt.classList.contains('wrong')) return;
+        const isCorrect = opt.dataset.key === correct;
+        opt.classList.add(isCorrect ? 'correct' : 'wrong');
+        if (!isCorrect) {
+          // Reveal speaker icons on all options for re-attempt audio scan
+          card.querySelectorAll('.q-opt').forEach(o => {
+            o.querySelector('.audio-icon').style.display = 'grid';
+          });
+        }
+      });
+      // Audio-icon clicks play the segment
+      const icon = opt.querySelector('[data-audio-icon]');
+      icon.addEventListener('click', e => {
+        e.stopPropagation();
+        playSegment(opt.dataset.seg, icon, opt.querySelector('[lang="bg"]').textContent);
+      });
+    });
+  });
+
+  // --------------------------- Mega-soundboard rendering ---------------------------
+  const grid = document.getElementById('sbGrid');
+  function renderBoard(filter) {
+    grid.innerHTML = '';
+    SOUNDBOARD
+      .filter(s => filter === 'all' || s.cats.includes(filter))
+      .forEach(s => {
+        const tile = document.createElement('button');
+        tile.className = 'sb-tile';
+        tile.dataset.action = 'play-segment';
+        tile.dataset.seg = s.id;
+        tile.innerHTML = `<div class="bg" lang="bg">${s.bg}</div><div class="en">${s.en}</div>`;
+        grid.appendChild(tile);
+      });
+  }
+  renderBoard('all');
+  document.getElementById('sbFilters').addEventListener('click', e => {
+    const btn = e.target.closest('.sb-filter');
+    if (!btn) return;
+    document.querySelectorAll('.sb-filter').forEach(b => b.classList.toggle('active', b === btn));
+    renderBoard(btn.dataset.filter);
+  });
+
+  // --------------------------- Pre-load master video metadata ---------------------------
+  video.load();
+})();
+</script>
+
+</body>
+</html>
