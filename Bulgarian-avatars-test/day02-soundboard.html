@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 Soundboard — Elena (31-phrase duration test)</title>
+<style>
+  :root {
+    --bg: #0f1226; --panel: #1a1f4e; --panel-soft: #232a5e;
+    --accent: #f5c542; --accent-warm: #ffd66b;
+    --text: #eef0ff; --muted: #9aa0d0; --border: #3a4078; --good: #5fd49a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(180deg, #0a0d1f 0%, #131736 100%);
+    color: var(--text); min-height: 100vh;
+    padding: 24px 16px 48px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  header { text-align: center; margin: 8px 0 24px; max-width: 720px; }
+  h1 { font-size: 22px; margin: 0 0 6px; font-weight: 600; }
+  .sub { color: var(--muted); font-size: 13px; }
+  .meta-pill {
+    display: inline-block; margin-top: 8px; padding: 4px 10px;
+    background: rgba(95,212,154,0.15); color: var(--good);
+    border-radius: 999px; font-size: 12px;
+  }
+  .layout { width: 100%; max-width: 720px; display: grid; grid-template-columns: 1fr; gap: 18px; }
+  @media (min-width: 760px) { .layout { grid-template-columns: 280px 1fr; } }
+  .stage {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 18px; overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+    position: sticky; top: 16px; align-self: start;
+  }
+  .avatar-wrap { position: relative; aspect-ratio: 1 / 1; background: #000; }
+  .avatar-wrap video, .avatar-wrap img.poster {
+    position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+  }
+  .avatar-wrap img.poster { transition: opacity 0.25s; pointer-events: none; }
+  .avatar-wrap.playing img.poster { opacity: 0; }
+  .caption {
+    position: absolute; left: 12px; right: 12px; bottom: 12px;
+    text-align: center; background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);
+    border-radius: 10px; padding: 8px 12px; font-size: 14px; line-height: 1.3;
+    opacity: 0; transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s; pointer-events: none;
+  }
+  .caption.show { opacity: 1; transform: translateY(0); }
+  .caption .bg { font-size: 17px; font-weight: 600; color: var(--accent-warm); display: block; margin-bottom: 2px; }
+  .caption .en { color: var(--muted); font-size: 12px; }
+  .stage .label { padding: 10px 14px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12px; text-align: center; }
+  .board { display: flex; flex-direction: column; gap: 6px; }
+  .toggle-row {
+    display: flex; justify-content: space-between; align-items: center;
+    color: var(--muted); font-size: 12px; padding: 6px 4px;
+    border-bottom: 1px solid var(--border); margin-bottom: 4px;
+  }
+  .toggle-row label { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+  .toggle-row input { accent-color: var(--accent); }
+  button.phrase {
+    background: var(--panel-soft); color: var(--text);
+    border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-size: 14px; text-align: left;
+    cursor: pointer; display: flex; align-items: center; gap: 10px;
+    transition: background 0.15s, border-color 0.15s, transform 0.05s;
+    font-family: inherit;
+  }
+  button.phrase:hover { background: #2a3170; border-color: var(--accent); }
+  button.phrase:active { transform: scale(0.99); }
+  button.phrase.playing {
+    background: #2f3680; border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(245,197,66,0.25);
+  }
+  .icon {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: var(--accent); color: #1a1f4e;
+    display: grid; place-items: center; font-weight: 700; font-size: 12px;
+  }
+  .phrase.playing .icon { background: var(--good); color: #0f1226; }
+  .text { display: flex; flex-direction: column; min-width: 0; }
+  .text .bg { font-size: 15px; font-weight: 600; }
+  .text .en { color: var(--muted); font-size: 12px; margin-top: 1px; }
+  footer.meta {
+    margin-top: 24px; max-width: 720px; width: 100%;
+    color: var(--muted); font-size: 12px; text-align: center; line-height: 1.6;
+  }
+  footer.meta code { background: rgba(255,255,255,0.06); padding: 1px 6px; border-radius: 4px; font-size: 11px; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Day 2 Soundboard · 31 phrases, one render</h1>
+  <div class="sub">Duration test — all of Day 2's single-speaker phrases in <strong>one 57-second Hypereal render</strong></div>
+  <div class="meta-pill">23 credits · proves one-render-per-day is feasible</div>
+</header>
+
+<div class="layout">
+  <div class="stage">
+    <div class="avatar-wrap" id="avatarWrap">
+      <img class="poster" src="assets/elena-square.jpg" alt="Elena">
+      <video id="video" src="clips/day02/day02-long.mp4" preload="auto" playsinline muted></video>
+      <div class="caption" id="caption">
+        <span class="bg" id="captionBG"></span>
+        <span class="en" id="captionEN"></span>
+      </div>
+    </div>
+    <div class="label">Elena · native Bulgarian, Sofia</div>
+  </div>
+
+  <div class="board">
+    <div class="toggle-row">
+      <label><input type="checkbox" id="showEn" checked> Show English caption</label>
+      <span id="statusLine">Ready</span>
+    </div>
+    <div id="boardList"></div>
+  </div>
+</div>
+
+<footer class="meta">
+  Duration probe · audio = 57.38s, output mp4 = 56.19s @ 480×480, 4.1 MB · <code>23 credits</code> flat-rate.<br>
+  Same render-cost as the 7-second test — Hypereal pricing is per-job, not per-second.
+</footer>
+
+<script>
+(async () => {
+  const SEGMENTS_URL = 'assets/day02-long-segments.json';
+  const video = document.getElementById('video');
+  const wrap = document.getElementById('avatarWrap');
+  const caption = document.getElementById('caption');
+  const captionBG = document.getElementById('captionBG');
+  const captionEN = document.getElementById('captionEN');
+  const showEn = document.getElementById('showEn');
+  const statusLine = document.getElementById('statusLine');
+  const boardList = document.getElementById('boardList');
+
+  const data = await fetch(SEGMENTS_URL).then(r => r.json());
+  const SEGMENTS = {};
+
+  for (const seg of data.segments) {
+    SEGMENTS[seg.id] = seg;
+    const btn = document.createElement('button');
+    btn.className = 'phrase';
+    btn.dataset.id = seg.id;
+    btn.innerHTML = `
+      <span class="icon">►</span>
+      <span class="text"><span class="bg">${seg.bg}</span><span class="en">${seg.en}</span></span>`;
+    boardList.appendChild(btn);
+  }
+
+  let currentEnd = null;
+  let currentButton = null;
+
+  function stopPlayback() {
+    video.pause();
+    wrap.classList.remove('playing');
+    caption.classList.remove('show');
+    if (currentButton) {
+      currentButton.classList.remove('playing');
+      currentButton.querySelector('.icon').textContent = '►';
+      currentButton = null;
+    }
+    currentEnd = null;
+    statusLine.textContent = 'Ready';
+  }
+
+  async function playPhrase(id, btn) {
+    const seg = SEGMENTS[id];
+    if (!seg) return;
+    stopPlayback();
+    currentButton = btn;
+    currentEnd = seg.end;
+    btn.classList.add('playing');
+    btn.querySelector('.icon').textContent = '♪';
+    statusLine.textContent = 'Seeking…';
+    captionBG.textContent = seg.bg;
+    captionEN.textContent = showEn.checked ? seg.en : '';
+    caption.classList.add('show');
+
+    video.muted = false;
+    if (video.readyState < 1) {
+      await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
+    }
+    video.pause();
+    const seekPromise = new Promise(resolve => {
+      if (Math.abs(video.currentTime - seg.start) < 0.03) resolve();
+      else video.addEventListener('seeked', resolve, { once: true });
+    });
+    video.currentTime = seg.start;
+    await seekPromise;
+    if (currentButton !== btn) return;
+    statusLine.textContent = 'Playing…';
+    wrap.classList.add('playing');
+    video.play().catch(err => {
+      statusLine.textContent = 'Tap again to play';
+      console.warn(err);
+    });
+  }
+
+  video.addEventListener('timeupdate', () => {
+    if (currentEnd !== null && video.currentTime >= currentEnd) stopPlayback();
+  });
+  video.addEventListener('ended', stopPlayback);
+
+  boardList.addEventListener('click', e => {
+    const btn = e.target.closest('button.phrase');
+    if (!btn) return;
+    if (currentButton === btn) stopPlayback();
+    else playPhrase(btn.dataset.id, btn);
+  });
+
+  video.load();
+})();
+</script>
+
+</body>
+</html>

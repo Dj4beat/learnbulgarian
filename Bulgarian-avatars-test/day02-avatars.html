@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Day 2 Avatar Test — Elena teaches Bulgarian greetings</title>
+<style>
+  :root {
+    --bg: #0f1226;
+    --panel: #1a1f4e;
+    --panel-soft: #232a5e;
+    --accent: #f5c542;
+    --accent-warm: #ffd66b;
+    --text: #eef0ff;
+    --muted: #9aa0d0;
+    --border: #3a4078;
+    --good: #5fd49a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(180deg, #0a0d1f 0%, #131736 100%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  header {
+    text-align: center;
+    margin: 8px 0 28px;
+  }
+  h1 {
+    font-size: 22px;
+    margin: 0 0 6px;
+    font-weight: 600;
+  }
+  .sub {
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .stage {
+    width: 100%;
+    max-width: 480px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+  }
+  .avatar-wrap {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: #000;
+  }
+  .avatar-wrap video,
+  .avatar-wrap img.poster {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .avatar-wrap img.poster {
+    transition: opacity 0.25s;
+    pointer-events: none;
+  }
+  .avatar-wrap.playing img.poster { opacity: 0; }
+  .caption {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    text-align: center;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 16px;
+    line-height: 1.3;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+  }
+  .caption.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .caption .bg {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent-warm);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .caption .en {
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .controls {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .toggle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 0 4px 6px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .toggle-row label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+  .toggle-row input { accent-color: var(--accent); }
+  button.phrase {
+    background: var(--panel-soft);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 16px;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.15s, border-color 0.15s, transform 0.05s;
+    font-family: inherit;
+  }
+  button.phrase:hover {
+    background: #2a3170;
+    border-color: var(--accent);
+  }
+  button.phrase:active { transform: scale(0.985); }
+  button.phrase.playing {
+    background: #2f3680;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(245,197,66,0.25);
+  }
+  .icon {
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #1a1f4e;
+    display: grid;
+    place-items: center;
+    font-weight: 700;
+  }
+  .phrase.playing .icon { background: var(--good); color: #0f1226; }
+  .text { display: flex; flex-direction: column; }
+  .text .bg {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  .text .en {
+    color: var(--muted);
+    font-size: 13px;
+    margin-top: 2px;
+  }
+  footer.meta {
+    margin-top: 24px;
+    max-width: 480px;
+    width: 100%;
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    line-height: 1.6;
+  }
+  footer.meta code {
+    background: rgba(255,255,255,0.06);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Day 2 · Bulgarian greetings with Elena</h1>
+  <div class="sub">Tap a phrase — Elena will say it in Bulgarian</div>
+</header>
+
+<div class="stage">
+  <div class="avatar-wrap" id="avatarWrap">
+    <img class="poster" src="assets/elena-square.jpg" alt="Elena, your Bulgarian teacher">
+    <video id="video"
+           src="clips/day02/day02-greetings.mp4"
+           preload="auto"
+           playsinline
+           muted></video>
+    <div class="caption" id="caption">
+      <span class="bg" id="captionBG"></span>
+      <span class="en" id="captionEN"></span>
+    </div>
+  </div>
+
+  <div class="controls">
+    <div class="toggle-row">
+      <label>
+        <input type="checkbox" id="showEn" checked>
+        Show English caption while speaking
+      </label>
+      <span id="statusLine">Ready</span>
+    </div>
+
+    <button class="phrase" data-id="zdraveite">
+      <span class="icon">►</span>
+      <span class="text"><span class="bg">Здравейте</span><span class="en">Hello (formal / group)</span></span>
+    </button>
+    <button class="phrase" data-id="dobro_utro">
+      <span class="icon">►</span>
+      <span class="text"><span class="bg">Добро утро</span><span class="en">Good morning</span></span>
+    </button>
+    <button class="phrase" data-id="dobar_den">
+      <span class="icon">►</span>
+      <span class="text"><span class="bg">Добър ден</span><span class="en">Good day / afternoon</span></span>
+    </button>
+    <button class="phrase" data-id="dovizhdane">
+      <span class="icon">►</span>
+      <span class="text"><span class="bg">Довиждане</span><span class="en">Goodbye</span></span>
+    </button>
+  </div>
+</div>
+
+<footer class="meta">
+  Test page · Voice: Elena (native Bulgarian, Sofia accent, via ElevenLabs Voice Library).
+  Avatar: Hypereal i2v lip-sync · 1 render = <code>23 credits</code>.<br>
+  All 4 phrases live in one MP4 — segments sliced clientside by <code>currentTime</code>.
+</footer>
+
+<script>
+(() => {
+  const video = document.getElementById('video');
+  const wrap = document.getElementById('avatarWrap');
+  const caption = document.getElementById('caption');
+  const captionBG = document.getElementById('captionBG');
+  const captionEN = document.getElementById('captionEN');
+  const showEn = document.getElementById('showEn');
+  const statusLine = document.getElementById('statusLine');
+  const buttons = document.querySelectorAll('button.phrase');
+
+  // Segment timing — keep in sync with assets/day02-segments.json
+  const SEGMENTS = {
+    zdraveite:  { start: 0.25, end: 1.40, bg: 'Здравейте',   en: 'Hello (formal / group)' },
+    dobro_utro: { start: 2.30, end: 3.55, bg: 'Добро утро',  en: 'Good morning' },
+    dobar_den:  { start: 4.45, end: 5.42, bg: 'Добър ден',   en: 'Good day / afternoon' },
+    dovizhdane: { start: 6.32, end: 7.39, bg: 'Довиждане',   en: 'Goodbye' },
+  };
+
+  let currentEnd = null;
+  let currentButton = null;
+
+  function stopPlayback() {
+    video.pause();
+    wrap.classList.remove('playing');
+    caption.classList.remove('show');
+    if (currentButton) {
+      currentButton.classList.remove('playing');
+      currentButton.querySelector('.icon').textContent = '►';
+      currentButton = null;
+    }
+    currentEnd = null;
+    statusLine.textContent = 'Ready';
+  }
+
+  async function playPhrase(id, btn) {
+    const seg = SEGMENTS[id];
+    if (!seg) return;
+    stopPlayback();
+
+    currentButton = btn;
+    currentEnd = seg.end;
+    btn.classList.add('playing');
+    btn.querySelector('.icon').textContent = '♪';
+    statusLine.textContent = 'Seeking…';
+
+    captionBG.textContent = seg.bg;
+    captionEN.textContent = showEn.checked ? seg.en : '';
+    caption.classList.add('show');
+
+    video.muted = false;
+
+    // Make sure metadata is loaded — without this, currentTime = X is ignored.
+    if (video.readyState < 1) {
+      await new Promise(r => video.addEventListener('loadedmetadata', r, { once: true }));
+    }
+
+    // Pause and seek. The seek is async, so we wait for the 'seeked' event
+    // before calling play() — otherwise play() resumes from the OLD position
+    // (which is why every button used to start at 0 and play more than its
+    // own phrase before the end-cutoff hit).
+    video.pause();
+    const seekPromise = new Promise(resolve => {
+      if (Math.abs(video.currentTime - seg.start) < 0.03) {
+        resolve();
+      } else {
+        video.addEventListener('seeked', resolve, { once: true });
+      }
+    });
+    video.currentTime = seg.start;
+    await seekPromise;
+
+    // User may have clicked a different button while we were seeking.
+    if (currentButton !== btn) return;
+
+    statusLine.textContent = 'Playing…';
+    wrap.classList.add('playing');
+    video.play().catch(err => {
+      statusLine.textContent = 'Tap again to play';
+      console.warn('play() rejected:', err);
+    });
+  }
+
+  video.addEventListener('timeupdate', () => {
+    if (currentEnd !== null && video.currentTime >= currentEnd) {
+      stopPlayback();
+    }
+  });
+
+  video.addEventListener('ended', stopPlayback);
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.id;
+      if (currentButton === btn) {
+        stopPlayback();
+      } else {
+        playPhrase(id, btn);
+      }
+    });
+  });
+
+  // Preload so first click is snappy
+  video.load();
+})();
+</script>
+
+</body>
+</html>

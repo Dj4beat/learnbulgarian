@@ -1780,3 +1780,26 @@ venv\Scripts\python.exe generate_pro_audio.py --force day01.html
 
 Next editing target:
 - continue the retroactive roadmap pass with `day02.html`
+
+---
+
+## Parallel work stream — Avatar System
+
+Last updated: 2026-05-14
+
+Beginning 2026-05-13, a separate work stream was opened to add AI-avatar video narration to every day of the course. This sits alongside (does not replace) the content-upgrade workflow above.
+
+**Authoritative doc:** [`AVATAR_SYSTEM.md`](AVATAR_SYSTEM.md) — character roster, voice IDs, render budget, file map, known issues, and amendments log all live there.
+
+**Branch + worktree:** `claude/blissful-bouman-36288c` at `.claude/worktrees/blissful-bouman-36288c/`. All avatar artefacts live under `Bulgarian-avatars-test/` inside the worktree, **not** in the main project root.
+
+**Status at 2026-05-14 EOD:**
+- Day 2 prototype (`Bulgarian-avatars-test/day02-prototype.html`) built and rendered.
+- Single 6:44 Elena MP4 powers all Tier-1 features (cold-open · cold recap · register toggle · spotlight buttons · live quiz audio · mega-soundboard · outro).
+- 5 Hypereal renders fired today ($1.15 total). 424 credits ($4.24) remaining.
+- Character roster: Elena (rendered) + Ivan/Georgi voice (chosen, not rendered) + Babà (TBD).
+- ElevenLabs upgraded to Starter ($6/mo) mid-session after quota hit; Creator ($22) or one Pro month ($99) likely needed for full 60-day rollout.
+
+**Next session — first task:** walk through the user's QA amendments on the Day 2 prototype one-by-one, capturing each in the Amendments Log in `AVATAR_SYSTEM.md`.
+
+**Important:** the avatar work uses the SAME files as the content-upgrade work but does not modify them. The live `day02.html` remains untouched. Avatar features are prototyped in the `Bulgarian-avatars-test/` sandbox and will only be integrated into the live day pages after QA sign-off.
