@@ -1,0 +1,224 @@
+{
+  "voice": "Elena (Bulgarian native, Sofia accent)",
+  "model": "eleven_multilingual_v2",
+  "total_seconds": 57.38,
+  "segments": [
+    {
+      "id": "zdravey",
+      "bg": "Здравей",
+      "en": "Hello (informal)",
+      "start": 0.2,
+      "end": 1.22
+    },
+    {
+      "id": "zdraveite",
+      "bg": "Здравейте",
+      "en": "Hello (formal/group)",
+      "start": 1.92,
+      "end": 3.12
+    },
+    {
+      "id": "dobro_utro",
+      "bg": "Добро утро",
+      "en": "Good morning",
+      "start": 3.82,
+      "end": 4.92
+    },
+    {
+      "id": "dobar_den",
+      "bg": "Добър ден",
+      "en": "Good day / afternoon",
+      "start": 5.62,
+      "end": 6.59
+    },
+    {
+      "id": "dobar_vecher",
+      "bg": "Добър вечер",
+      "en": "Good evening",
+      "start": 7.29,
+      "end": 8.39
+    },
+    {
+      "id": "dovizhdane",
+      "bg": "Довиждане",
+      "en": "Goodbye",
+      "start": 9.09,
+      "end": 10.19
+    },
+    {
+      "id": "chao",
+      "bg": "Чао",
+      "en": "Bye",
+      "start": 10.89,
+      "end": 11.8
+    },
+    {
+      "id": "do_skoro",
+      "bg": "До скоро",
+      "en": "See you soon",
+      "start": 12.5,
+      "end": 13.6
+    },
+    {
+      "id": "leka_nosht",
+      "bg": "Лека нощ",
+      "en": "Good night",
+      "start": 14.3,
+      "end": 15.37
+    },
+    {
+      "id": "izvini",
+      "bg": "Извини",
+      "en": "Sorry (informal)",
+      "start": 16.07,
+      "end": 17.14
+    },
+    {
+      "id": "izvinete",
+      "bg": "Извинете",
+      "en": "Sorry / excuse me (formal)",
+      "start": 17.84,
+      "end": 18.99
+    },
+    {
+      "id": "chakay",
+      "bg": "Чакай",
+      "en": "Wait (informal)",
+      "start": 19.69,
+      "end": 20.76
+    },
+    {
+      "id": "chakayte",
+      "bg": "Чакайте",
+      "en": "Wait (formal)",
+      "start": 21.46,
+      "end": 22.66
+    },
+    {
+      "id": "govori",
+      "bg": "Говори",
+      "en": "Speak (informal)",
+      "start": 23.36,
+      "end": 24.43
+    },
+    {
+      "id": "govorete",
+      "bg": "Говорете",
+      "en": "Speak (formal)",
+      "start": 25.13,
+      "end": 26.33
+    },
+    {
+      "id": "molya",
+      "bg": "Моля",
+      "en": "Please / you're welcome",
+      "start": 27.03,
+      "end": 28.18
+    },
+    {
+      "id": "blagodarya",
+      "bg": "Благодаря",
+      "en": "Thank you",
+      "start": 28.88,
+      "end": 30.16
+    },
+    {
+      "id": "mnogo_blag",
+      "bg": "Много благодаря",
+      "en": "Thank you very much",
+      "start": 30.86,
+      "end": 32.19
+    },
+    {
+      "id": "nyama_nishto",
+      "bg": "Няма нищо",
+      "en": "It's nothing / no worries",
+      "start": 32.89,
+      "end": 33.86
+    },
+    {
+      "id": "zapovyadayte",
+      "bg": "Заповядайте",
+      "en": "Here you are / please come in",
+      "start": 34.56,
+      "end": 35.81
+    },
+    {
+      "id": "nazdrave",
+      "bg": "Наздраве",
+      "en": "Cheers / bless you",
+      "start": 36.51,
+      "end": 37.58
+    },
+    {
+      "id": "mersi",
+      "bg": "Мерси",
+      "en": "Thanks (casual)",
+      "start": 38.28,
+      "end": 39.48
+    },
+    {
+      "id": "dobre_doshli",
+      "bg": "Добре дошли",
+      "en": "Welcome",
+      "start": 40.18,
+      "end": 41.38
+    },
+    {
+      "id": "ne_razbiram",
+      "bg": "Не разбирам",
+      "en": "I don't understand",
+      "start": 42.08,
+      "end": 43.15
+    },
+    {
+      "id": "ne_govoria",
+      "bg": "Не говоря добре български",
+      "en": "I don't speak Bulgarian well",
+      "start": 43.85,
+      "end": 45.23
+    },
+    {
+      "id": "govorite_en",
+      "bg": "Говорите ли английски?",
+      "en": "Do you speak English?",
+      "start": 45.93,
+      "end": 47.26
+    },
+    {
+      "id": "po_bavno",
+      "bg": "Моля, говорете по-бавно",
+      "en": "Please speak more slowly",
+      "start": 47.96,
+      "end": 49.45
+    },
+    {
+      "id": "kak_se_kazva",
+      "bg": "Как се казва това?",
+      "en": "What is this called?",
+      "start": 50.15,
+      "end": 51.48
+    },
+    {
+      "id": "razbrah",
+      "bg": "Разбрах",
+      "en": "I understood",
+      "start": 52.18,
+      "end": 53.25
+    },
+    {
+      "id": "ucha_bg",
+      "bg": "Уча български",
+      "en": "I am learning Bulgarian",
+      "start": 53.95,
+      "end": 55.1
+    },
+    {
+      "id": "povtorete",
+      "bg": "Моля, повторете",
+      "en": "Please repeat",
+      "start": 55.8,
+      "end": 57.13
+    }
+  ]
+}
