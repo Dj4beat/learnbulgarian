@@ -384,6 +384,35 @@ When the user QAs the prototype next session, these should all work:
 
 ---
 
+## Session work done while user was away (2026-05-14 final pass)
+
+After the user reported v2 "very broken" with strict instructions to test methodically and not return until confident, I:
+
+1. Diagnosed the actual v2 bugs (path prefix, seek-into-MP4 fragility, double-audio risk)
+2. Switched to a **per-segment-audio-file architecture** — eliminates the seek alignment problem at the root. Each of the 91 segments is its own atomic MP3 file at `Bulgarian-avatars-test/audio/elena-day02/<seg>.mp3`.
+3. Regenerated 17 missing slow segments via ElevenLabs (after user's Starter quota upgrade) — ~3,400 chars used.
+4. Built `day02-prototype-v3.html` from the full `day02.html` (all 1364 lines of text preserved), with the old browser-TTS audio.js script REMOVED at build time (no possibility of double-fire).
+5. Wrote `verify_v3_static.py` (8 structural checks: button wiring, file existence, path correctness, image resolution, MP4 resolution, old-script absence, structural blocks, soundboard coverage). All 8 pass.
+6. Ran **three independent QC-agent audits** to find logic bugs. Total **5 critical defects found and fixed**:
+   - Recap card stopped after 1 of 12 clips (queue wiped by stop() call inside playSegment)
+   - "Добър ден" button played the shop-owner roleplay audio (normalize() stripped trailing `!` so both forms collided into one key)
+   - Recap button couldn't be toggle-stopped (currentButton was null'd by playSegment when called from playQueue)
+   - Cold-open stuck in "playing" UI state when browser autoplay was blocked (rejection wasn't cleaned up)
+   - Cold-open MP4 audio could play simultaneously with an inline button's audio (stopAudio paused Audio but not coldVideo)
+7. Added build-time existence check for all 27 non-button segment IDs (recaps, spotlights, intros, cold-open, outro). Build hard-fails if any audio file is missing.
+8. Third QC pass returned ✓ ready to show user.
+
+The QC log (`Bulgarian-avatars-test/day02_prototype/QC_LOG.md`) records the full investigation with timestamps, each bug, each fix, each verification, and lessons learned.
+
+**File for user QA when they return:**
+```
+C:\Users\Dj4be\Desktop\New Bulgarian\.claude\worktrees\blissful-bouman-36288c\Bulgarian-avatars-test\day02-prototype-v3.html
+```
+
+Open the file directly — no server needed. (The v2 prototype at `day02-prototype-v2.html` is now superseded; v3 fixes its bugs.)
+
+---
+
 ## Session work done while user was away (2026-05-14 late)
 
 While the user was offline, two improvements were made based on their parting feedback:
