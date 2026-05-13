@@ -1,0 +1,35 @@
+{
+  "voice": "Elena (Bulgarian native, Sofia accent)",
+  "model": "eleven_multilingual_v2",
+  "total_seconds": 7.64,
+  "segments": [
+    {
+      "id": "zdraveite",
+      "bg": "Здравейте",
+      "en": "Hello",
+      "start": 0.25,
+      "end": 1.4
+    },
+    {
+      "id": "dobro_utro",
+      "bg": "Добро утро",
+      "en": "Good morning",
+      "start": 2.3,
+      "end": 3.55
+    },
+    {
+      "id": "dobar_den",
+      "bg": "Добър ден",
+      "en": "Good day",
+      "start": 4.45,
+      "end": 5.42
+    },
+    {
+      "id": "dovizhdane",
+      "bg": "Довиждане",
+      "en": "Goodbye",
+      "start": 6.32,
+      "end": 7.39
+    }
+  ]
+}
