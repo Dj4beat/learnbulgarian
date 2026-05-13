@@ -212,6 +212,101 @@ All sourced from the single 6:44 Elena master MP4. The HTML is fully self-contai
 
 ---
 
+## Brainstorm: audio-button alignment (the "buttons don't line up" problem)
+
+### What we observed
+User QA on the prototype: "hardly any of the buttons line up with the audio (sometimes no audio heard)". Worst near the end of the page.
+
+### Root cause
+The source audio we fed to Hypereal was **408.41s**. The MP4 that came back is **404.52s**. That's a **~3.89 second drift** — about 1% shorter. Hypereal trims/re-encodes the audio during rendering; the drift accumulates linearly through the file. Our segment timing JSON was built against the source audio, so:
+- Early segments (cold_open, recap_1): off by tens of ms — barely noticeable.
+- Mid segments: off by 1-2s.
+- Late segments (spotlights, outro): off by 3-4s — completely wrong button-to-audio mapping.
+
+### Immediate fix applied 2026-05-14 EOD
+`Bulgarian-avatars-test/day02_prototype/scale_segments.py` — multiplies every segment's start/end by `mp4_duration / source_duration = 0.990475`. Outputs `assets/elena/day02-master-segments-scaled.json`. The HTML's inlined SEGS block was overwritten with the scaled values. Buttons should now land within ~100-200ms of their target, vs ~3-4s off before.
+
+This is a quick fix. The remaining ~100ms drift may still cause minor "wrong start" issues on short phrases.
+
+### Broader solutions to consider (worth a session of work)
+
+**Solution A — Silence-detection-based calibration (more accurate, more fragile).**
+Use ffmpeg's `silencedetect` filter on the MP4 to find real segment boundaries between gaps. Map detected regions 1:1 to source segment IDs. We attempted this (`recalibrate_segments.py`) and got close — 98 regions detected vs 91 expected because long atempo'd narration segments have internal sentence-break pauses that look identical to inter-segment gaps. Could refine with a hybrid: trust silence detection for short phrase segments; fall back to ratio scaling for long narration segments.
+
+**Solution B — Make the gaps obviously unique (cheap, reliable).**
+Use a distinctive marker frequency in the inter-segment gaps that wouldn't appear naturally. E.g., insert a very short low-volume sine-wave click (50ms, -40dB) as the FIRST sample of every gap. Then `silencedetect` becomes trivially reliable — detect every click, every boundary known. Costs nothing (still silent-feeling to the listener; click is sub-audible). Most robust option.
+
+**Solution C — Pad the audio before rendering (preventative).**
+Add an extra 5 seconds of leading silence and 5 seconds of trailing silence to the source audio. Hypereal's trim won't reach the spoken content. Source-audio timings would then map 1:1 to MP4 timings. Cost: 5-10 wasted seconds of render (still $0.23 same render). Simplest preventative measure for future renders.
+
+**Solution D — Pull the audio track directly from the MP4 for timing.**
+After downloading the Hypereal MP4, extract its audio with `ffmpeg -i mp4 -vn audio.wav`, run that through our silence-pipeline locally, generate segments. The MP4's audio IS what plays — so any timing derived from it is by definition correct. Most robust at the cost of one extra ffmpeg pass per render.
+
+**Recommended for next renders:** Solution C (padded silence). 5s pre-roll and 5s tail. Zero new logic, no detection needed, perfectly stable timings going forward.
+
+**Recommended for THIS already-rendered MP4:** the ratio scaling that's already in place is good enough for QA. If we discover specific phrases that are still off after this fix, we'll either re-render with padding or use Solution B's click-marker approach.
+
+---
+
+## Brainstorm: text preservation in the prototype
+
+### The feedback
+"You've cut way too much text. Some people learn by video, some by reading, often both. Even if there are drop downs or reveal buttons, all text should remain."
+
+### What I cut from the live day02.html in the prototype
+The prototype is a stripped-down demo, not a full-page replacement. I included:
+- Section 3 (greetings by time of day) — kept the 4-row vocab table
+- Section 5 (-те ending) — replaced the 4-pair table with register-toggle rockers
+- Section 6 (polite phrases) — kept an 8-row table
+- Section 8 (Roleplay 1) — kept the dialogue
+- Mini-quiz — reduced from 20 questions to 2
+
+I removed entirely:
+- Long opening prose / bakery story (still referenced for the cold-open auto-play but cut from the page)
+- Section 2 (ти vs Вие table with full notes columns)
+- Section 4 (full hello/goodbye table with `Notes` column)
+- Section 7 ("Reading the room" — four scenario boxes with reasoning)
+- Roleplay 2 (Баба Мария)
+- Roleplay 3 (Sofia café)
+- Quiz questions 3-20
+- Writing task (5 BG answers)
+- Full recap table (11 rows with example phrases)
+
+### Why this matters
+The course has a triple audience:
+- **Readers** — need the full prose, examples, cultural notes.
+- **Listeners/Videos** — need Elena's narration AND the lip-synced visual.
+- **Mixed learners** — read first, then listen, then read again with comprehension.
+
+Cutting text optimises for the avatar-feature demo but destroys the page for the first audience.
+
+### The fix
+Rebuild the prototype starting from the FULL `day02.html` (1364 lines), layering avatar features ON TOP — never replacing prose, tables, or info-boxes. Specifically:
+
+1. **The bakery cold-open**: keep the existing intro story as-is. Add the avatar BESIDE the story (don't merge them). The avatar narrates the same content but the text stays.
+2. **Register table (Section 2 ти vs Вие)**: keep the full table + its golden rule box. Add a small "Hear both forms" rocker BENEATH it (additive, not a replacement).
+3. **All vocab tables**: keep every column (Bulgarian, Romanised, English, Notes, Audio). Upgrade the `▶ Listen` button's audio source from browser-TTS to Elena's MP4 — same UX, better quality. Zero text changes.
+4. **The -те ending table (Section 5)**: keep the full table. The "register toggle rocker" becomes a SECOND interactive element below it, demonstrating the same content in a different modality.
+5. **Section 7 (Reading the room)**: keep all four scenario boxes verbatim. Each gets a tiny "Hear Elena dramatise this scenario" button. The reading text remains; Elena adds an audio layer.
+6. **All three roleplays**: keep full text. Add "▶ Play whole scene" + "🎤 Shadow mode" controls above each.
+7. **All info-boxes**: keep all prose. Add "Hear Elena explain" buttons where a spotlight clip exists.
+8. **Quiz**: keep all 20 questions and ALL options. Live audio = additive reveal-on-wrong icon.
+9. **Writing task**: keep verbatim, no avatar features needed (it's a written-output exercise).
+10. **Recap table**: keep all 11 rows. The cold-recap card at the top references these same phrases via MP4 seek.
+
+### Rule going forward
+**Avatar features must be ADDITIVE, never substitutive.** Drop-downs and reveal-toggles are fine for tidiness, but the underlying text must be there for any reader who wants it.
+
+### Plan for v2 prototype
+Build `Bulgarian-avatars-test/day02-prototype-v2.html` starting as a copy of `day02.html`, then:
+- Insert the cold-open hero, recap card, and section-intro pills as additions
+- Rewire `data-text` audio buttons to seek into Elena's MP4 (keep the buttons, swap the backend)
+- Add `data-seg` attributes alongside `data-text` to map each existing button to its master-MP4 segment ID
+- Append the mega-soundboard and outro card at the end
+- Add new "Hear Elena explain" buttons to existing info-boxes (where a spotlight exists)
+
+---
+
 ## Bugs / known issues at end-of-day
 
 1. **`fetch()` blocked on `file://`** — fixed by inlining the segments JSON into `day02-prototype.html`. The external JSON file remains as the source of truth; the inlined copy must be kept in sync if segment timings change.

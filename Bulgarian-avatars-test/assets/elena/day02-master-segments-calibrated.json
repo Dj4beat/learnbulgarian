@@ -1,0 +1,465 @@
+{
+  "voice": "Elena (Bulgarian native, Sofia accent)",
+  "model": "eleven_multilingual_v2",
+  "total_seconds": 404.52,
+  "source": "silencedetect on elena-day02-master-fs.mp4",
+  "noise_db": -45,
+  "min_gap_s": 0.8,
+  "segments": [
+    {
+      "id": "cold_open",
+      "start": 0.0,
+      "end": 19.543
+    },
+    {
+      "id": "recap_intro",
+      "start": 20.891,
+      "end": 25.052
+    },
+    {
+      "id": "recap_1",
+      "start": 26.071,
+      "end": 27.496
+    },
+    {
+      "id": "recap_2",
+      "start": 28.505,
+      "end": 32.854
+    },
+    {
+      "id": "recap_3",
+      "start": 34.023,
+      "end": 37.958
+    },
+    {
+      "id": "recap_4",
+      "start": 39.103,
+      "end": 41.511
+    },
+    {
+      "id": "recap_5",
+      "start": 42.696,
+      "end": 46.38
+    },
+    {
+      "id": "recap_6",
+      "start": 47.671,
+      "end": 51.971
+    },
+    {
+      "id": "recap_7",
+      "start": 53.511,
+      "end": 55.868
+    },
+    {
+      "id": "recap_8",
+      "start": 57.888,
+      "end": 69.276
+    },
+    {
+      "id": "recap_9",
+      "start": 71.324,
+      "end": 76.93
+    },
+    {
+      "id": "recap_10",
+      "start": 78.859,
+      "end": 82.447
+    },
+    {
+      "id": "recap_11",
+      "start": 84.576,
+      "end": 89.479
+    },
+    {
+      "id": "intro_s2",
+      "start": 91.487,
+      "end": 104.886
+    },
+    {
+      "id": "intro_s3",
+      "start": 107.07,
+      "end": 119.036
+    },
+    {
+      "id": "intro_s4",
+      "start": 123.126,
+      "end": 130.302
+    },
+    {
+      "id": "intro_s5",
+      "start": 132.145,
+      "end": 137.932
+    },
+    {
+      "id": "intro_s6",
+      "start": 139.635,
+      "end": 147.805
+    },
+    {
+      "id": "intro_s7",
+      "start": 149.227,
+      "end": 155.703
+    },
+    {
+      "id": "intro_s8",
+      "start": 157.033,
+      "end": 163.654
+    },
+    {
+      "id": "intro_roleplays",
+      "start": 164.995,
+      "end": 171.994
+    },
+    {
+      "id": "p_zdravey",
+      "start": 173.515,
+      "end": 176.402
+    },
+    {
+      "id": "p_zdraveite",
+      "start": 177.748,
+      "end": 181.044
+    },
+    {
+      "id": "p_dobro_utro",
+      "start": 182.281,
+      "end": 183.381
+    },
+    {
+      "id": "p_dobar_den",
+      "start": 184.478,
+      "end": 185.507
+    },
+    {
+      "id": "p_dobar_vecher",
+      "start": 186.517,
+      "end": 187.616
+    },
+    {
+      "id": "p_dovizhdane",
+      "start": 188.507,
+      "end": 189.623
+    },
+    {
+      "id": "p_chao",
+      "start": 190.839,
+      "end": 191.773
+    },
+    {
+      "id": "p_do_skoro",
+      "start": 192.935,
+      "end": 195.709
+    },
+    {
+      "id": "p_leka_nosht",
+      "start": 196.916,
+      "end": 199.482
+    },
+    {
+      "id": "p_priyaten_den",
+      "start": 200.806,
+      "end": 203.353
+    },
+    {
+      "id": "p_izvini",
+      "start": 204.675,
+      "end": 207.756
+    },
+    {
+      "id": "p_izvinete",
+      "start": 208.668,
+      "end": 211.413
+    },
+    {
+      "id": "p_chakay",
+      "start": 212.412,
+      "end": 214.045
+    },
+    {
+      "id": "p_chakayte",
+      "start": 215.508,
+      "end": 217.158
+    },
+    {
+      "id": "p_govori",
+      "start": 218.591,
+      "end": 220.157
+    },
+    {
+      "id": "p_govorete",
+      "start": 221.172,
+      "end": 222.558
+    },
+    {
+      "id": "p_zapovyaday",
+      "start": 223.733,
+      "end": 225.296
+    },
+    {
+      "id": "p_zapovyadayte",
+      "start": 227.021,
+      "end": 228.507
+    },
+    {
+      "id": "p_molya",
+      "start": 229.686,
+      "end": 231.289
+    },
+    {
+      "id": "p_blagodarya",
+      "start": 232.324,
+      "end": 235.696
+    },
+    {
+      "id": "p_mnogo_blag",
+      "start": 236.821,
+      "end": 238.701
+    },
+    {
+      "id": "p_nyama_nishto",
+      "start": 239.82,
+      "end": 241.074
+    },
+    {
+      "id": "p_nazdrave",
+      "start": 242.67,
+      "end": 245.836
+    },
+    {
+      "id": "p_mersi",
+      "start": 247.189,
+      "end": 248.366
+    },
+    {
+      "id": "p_dobre_doshli",
+      "start": 249.723,
+      "end": 253.567
+    },
+    {
+      "id": "p_s_udovolstvie",
+      "start": 255.251,
+      "end": 257.141
+    },
+    {
+      "id": "p_dostatachno",
+      "start": 258.266,
+      "end": 262.611
+    },
+    {
+      "id": "p_ne_razbiram",
+      "start": 264.027,
+      "end": 265.87
+    },
+    {
+      "id": "p_ne_govoria",
+      "start": 267.385,
+      "end": 284.695
+    },
+    {
+      "id": "p_govorite_en",
+      "start": 286.085,
+      "end": 288.225
+    },
+    {
+      "id": "p_po_bavno",
+      "start": 289.433,
+      "end": 304.778
+    },
+    {
+      "id": "p_kak_se_kazva",
+      "start": 306.169,
+      "end": 308.409
+    },
+    {
+      "id": "p_razbrah",
+      "start": 309.617,
+      "end": 329.338
+    },
+    {
+      "id": "p_ucha_bg",
+      "start": 330.753,
+      "end": 332.697
+    },
+    {
+      "id": "p_povtorete",
+      "start": 334.204,
+      "end": 347.02
+    },
+    {
+      "id": "p_mozhem_na_ti",
+      "start": 348.448,
+      "end": 350.757
+    },
+    {
+      "id": "p_utro",
+      "start": 351.955,
+      "end": 369.885
+    },
+    {
+      "id": "p_banichka",
+      "start": 371.306,
+      "end": 373.579
+    },
+    {
+      "id": "p_zdrave",
+      "start": 374.84,
+      "end": 387.605
+    },
+    {
+      "id": "p_dobro",
+      "start": 389.02,
+      "end": 391.384
+    },
+    {
+      "id": "p_dobar",
+      "start": 392.602,
+      "end": 403.406
+    },
+    {
+      "id": "p_dobra_vecher",
+      "start": 404.445,
+      "end": 404.52
+    },
+    {
+      "id": "rp1_owner_1",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp1_you_1",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp1_owner_2",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp1_you_2",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp1_owner_3",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp1_you_3",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp1_owner_4",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp2_ivan",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp2_baba_1",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp2_you_1",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp2_baba_2",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp2_you_2",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp2_baba_3",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp2_you_3",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp3_friend_1",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp3_you_1",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp3_friend_2",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp3_you_2",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp3_friend_3",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp3_you_3",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "rp3_friend_4",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "spotlight_te",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "spotlight_mersi",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "spotlight_zapovyadayte",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "spotlight_vie",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "spotlight_dobra_vs_dobar",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "spotlight_ucha_bg",
+      "start": null,
+      "end": null
+    },
+    {
+      "id": "outro",
+      "start": null,
+      "end": null
+    }
+  ]
+}
