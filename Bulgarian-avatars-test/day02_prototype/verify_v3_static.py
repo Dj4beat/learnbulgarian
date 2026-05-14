@@ -85,7 +85,7 @@ def main():
     else:
         print("    OK — all images resolve")
 
-    # --- Check 4: the cold-open MP4 resolves ---
+    # --- Check 4: the cold-open MP4 resolves AND is the small dedicated one ---
     mp4_pat = re.compile(r"COLD_OPEN_VIDEO\s*=\s*'([^']+)'")
     mp4 = mp4_pat.search(html)
     if mp4:
@@ -95,7 +95,13 @@ def main():
         if not candidate.exists():
             err(f"[4] missing: {mp4_src} -> {candidate}")
         else:
-            print(f"    OK — exists ({candidate.stat().st_size//1024} KB)")
+            size_kb = candidate.stat().st_size // 1024
+            print(f"    OK — exists ({size_kb} KB)")
+            # The small dedicated cold-open should be < 5 MB. If we're still
+            # pointing at the 32MB master MP4, the cold-open will bleed into
+            # other sections — exactly what we fixed this round.
+            if size_kb > 5000:
+                err(f"[4] cold-open MP4 is {size_kb}KB — too large; likely pointing at the master MP4 instead of the dedicated cold-open.mp4 slice")
     else:
         warn("[4] Could not find COLD_OPEN_VIDEO in v3 (unexpected)")
 
@@ -121,9 +127,14 @@ def main():
         ("cold-open", r'class="elena-cold-open"', 1),
         ("recap card", r'class="elena-recap-card"', 1),
         ("outro card", r'class="elena-outro"', 1),
-        ("mini-avatar", r'class="elena-mini"', 1),
         ("soundboard", r'class="elena-soundboard"', 1),
+        ("cold-stop button", r'id="elenaColdStop"', 1),
+        ("cold-replay button", r'id="elenaColdReplay"', 1),
     ]
+    # mini-avatar was REMOVED this round — audio-only segments don't need
+    # a popup; the button-highlight is enough visual feedback.
+    if 'class="elena-mini"' in html:
+        err("[7] mini-avatar should be REMOVED but is still present in HTML")
     for name, pat, expected_count in expected:
         c = len(re.findall(pat, html))
         status = "OK" if c == expected_count else f"FAIL (got {c}, expected {expected_count})"

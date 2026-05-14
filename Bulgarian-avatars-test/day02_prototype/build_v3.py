@@ -1,15 +1,16 @@
 """Build day02-prototype-v3.html — foolproof per-segment-audio version.
 
-Key changes from v2:
+Architecture (refined after user QA feedback):
   - Each .play-audio button plays its OWN MP3 file from
     audio/elena-day02/<segment_id>.mp3 — no MP4 seek, no alignment risk.
-  - The old day02 audio.js <script> block (which fired browser TTS as a
-    fallback) is REMOVED so it can't double-trigger.
-  - All asset paths are relative to the v3 HTML's location
-    (Bulgarian-avatars-test/), no Bulgarian-avatars-test/ prefix.
-  - Cold-open still uses the master MP4 (single contiguous clip — only
-    place where the lip-sync video is actually watched).
-  - Mini-avatar shows a static Elena image during inline audio playback.
+  - The old day02 audio.js <script> block is REMOVED so it can't double-fire.
+  - Cold-open uses a DEDICATED 19.7s MP4 slice (clips/day02/cold-open.mp4),
+    NOT the master MP4 — prevents bleeding into other sections.
+  - Stop + Replay buttons on the cold-open hero for explicit control.
+  - No floating mini-avatar — audio-only segments only get button-highlight
+    feedback. (User: "we don't need Elena to pop up" for non-lip-sync audio.)
+  - ~500ms gap between recap queue items so the queue doesn't feel rushed.
+  - Mobile-first: recap card stacks vertically at <600px viewport.
 
 Output: Bulgarian-avatars-test/day02-prototype-v3.html
 """
@@ -149,7 +150,16 @@ ELENA_CSS = """
   font-size: 22px; margin-bottom: 8px; color: var(--rose);
 }
 .elena-cold-open p { color: var(--ink); margin-bottom: 8px; }
-.elena-cold-open .ec-hint { font-size: 13px; color: var(--gold); font-style: italic; margin-top: 8px; }
+.elena-cold-open .ec-controls {
+  display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap;
+}
+.elena-cold-open .ec-ctrl {
+  background: var(--navy); color: var(--cream); border: 0;
+  border-radius: 8px; padding: 8px 14px;
+  font-family: 'Source Sans 3', sans-serif; font-size: 13px;
+  cursor: pointer;
+}
+.elena-cold-open .ec-ctrl:hover { background: var(--navy-mid); }
 
 .elena-recap-card {
   background: var(--navy); color: var(--cream); border-radius: 16px;
@@ -173,6 +183,18 @@ ELENA_CSS = """
   cursor: pointer; flex-shrink: 0;
 }
 .elena-recap-card button:hover { background: #f0b340; }
+
+/* Mobile-first: at narrow viewports the recap card's flex row is too
+ * cramped (72px thumb + flexible text + ~110px button). Switch to a
+ * single-column layout under 600px. */
+@media (max-width: 600px) {
+  .elena-recap-card {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+  }
+  .elena-recap-card button { width: 100%; }
+}
 
 .elena-intro-pill {
   display: inline-flex; align-items: center; gap: 8px;
@@ -244,27 +266,6 @@ ELENA_CSS = """
   font-family: inherit; font-weight: 700; cursor: pointer; font-size: 14px;
 }
 
-.elena-mini {
-  position: fixed; bottom: 16px; right: 16px;
-  width: 180px; background: var(--navy); border-radius: 14px;
-  overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.35);
-  z-index: 1000; opacity: 0; transform: translateY(20px);
-  transition: opacity 0.25s, transform 0.25s; pointer-events: none;
-}
-.elena-mini.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
-.elena-mini .em-img { aspect-ratio: 1 / 1; background: #000; position: relative; overflow: hidden; }
-.elena-mini .em-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.elena-mini .em-caption {
-  padding: 8px 12px; color: var(--cream); font-size: 12px;
-  display: flex; align-items: center; gap: 8px;
-}
-.elena-mini .em-pulse {
-  width: 8px; height: 8px; background: var(--gold);
-  border-radius: 50%; flex-shrink: 0;
-  animation: elenaPulse 1.2s infinite;
-}
-@keyframes elenaPulse { 0%,100% { opacity: 0.5; } 50% { opacity: 1; } }
-
 .elena-banner {
   background: var(--gold); color: var(--navy);
   padding: 8px 16px; text-align: center;
@@ -288,7 +289,10 @@ COLD_OPEN_BLOCK = """
   <div class="ec-prose">
     <h3>Hear it from Elena</h3>
     <p>Press play, or just keep scrolling — Elena will narrate the bakery story above. The text is right there; this is the audio layer.</p>
-    <p class="ec-hint">Auto-plays once when you scroll past.</p>
+    <div class="ec-controls">
+      <button id="elenaColdStop" class="ec-ctrl" style="display:none">⏸ Stop</button>
+      <button id="elenaColdReplay" class="ec-ctrl">↻ Replay</button>
+    </div>
   </div>
 </div>
 """
@@ -348,11 +352,6 @@ SOUNDBOARD_BLOCK = """
     <button data-elena-action="play-segment" data-seg="outro">▶ Hear Elena sign off</button>
   </div>
 </div>
-
-<div class="elena-mini" id="elenaMini">
-  <div class="em-img"><img id="elenaMiniImg" src="assets/elena/01-workhorse.jpg" alt="Elena"></div>
-  <div class="em-caption"><span class="em-pulse"></span><span id="elenaCaption">Elena is speaking</span></div>
-</div>
 """
 
 
@@ -361,7 +360,11 @@ def build_controller_js() -> str:
 <script id="elena-controller">
 (() => {
   const AUDIO_BASE = 'audio/elena-day02/';
-  const COLD_OPEN_VIDEO = 'clips/day02/elena-day02-master-fs.mp4';
+  // Use the small dedicated cold-open MP4 (19.7s, 1.3MB) — not the master.
+  // This is what fixes "cold-open keeps playing into all sections".
+  const COLD_OPEN_VIDEO = 'clips/day02/cold-open.mp4';
+  // ~500ms gap between consecutive recap clips so they don't feel rushed.
+  const QUEUE_GAP_MS = 500;
 
   // ----- soundboard tile data -----
   const SOUNDBOARD = [
@@ -407,11 +410,12 @@ def build_controller_js() -> str:
   const RECAP_QUEUE = ['recap_intro','recap_1','recap_2','recap_3','recap_4','recap_5',
                        'recap_6','recap_7','recap_8','recap_9','recap_10','recap_11'];
 
-  const mini = document.getElementById('elenaMini');
-  const caption = document.getElementById('elenaCaption');
   const coldAvatar = document.getElementById('elenaColdAvatar');
+  const coldStopBtn = document.getElementById('elenaColdStop');
+  const coldReplayBtn = document.getElementById('elenaColdReplay');
 
-  // Cold-open: use the master MP4 (one contiguous lip-synced segment).
+  // Cold-open uses its own dedicated short MP4 file. It plays start-to-end
+  // (19.7s) and stops naturally — no risk of bleeding into other content.
   const coldVideo = document.createElement('video');
   coldVideo.src = COLD_OPEN_VIDEO;
   coldVideo.preload = 'auto';
@@ -429,6 +433,9 @@ def build_controller_js() -> str:
   let coldOpenAutoplayed = false;
   let queueLabel = '';
   let queueButton = null;
+  // Incremented on every stopAll() so pending setTimeout queue-progressions
+  // can detect they've been cancelled and abort cleanly.
+  let playbackEpoch = 0;
 
   function clearButtonState() {
     document.querySelectorAll('.elena-playing, .elena-intro-pill.playing, .elena-spotlight-btn.playing, .esb-tile.playing, .elena-recap-card button.playing')
@@ -441,11 +448,12 @@ def build_controller_js() -> str:
     if (btn.classList.contains('play-audio')) btn.classList.add('elena-playing');
     else btn.classList.add('playing');
   }
-  function showMini(label) {
-    if (caption) caption.textContent = label || 'Elena is speaking';
-    mini.classList.add('show');
-  }
-  function hideMini() { mini.classList.remove('show'); }
+  // mini-avatar was removed — audio-only segments only need button-highlight
+  // feedback. The no-op shims are kept here as deliberate dead code so future
+  // additions of new playback paths don't have to remember to remove popup
+  // calls. Each line below is intentional.
+  function showMini(_label) { /* intentional no-op */ }
+  function hideMini() { /* intentional no-op */ }
 
   function stopAudio() {
     // Pauses CURRENT playback from all sources (Audio + cold-open MP4).
@@ -465,13 +473,16 @@ def build_controller_js() -> str:
   }
 
   function stopAll() {
-    // Full reset: stop audio, clear queue, reset UI, pause cold-open.
+    // Full reset: stop audio, clear queue, reset UI, pause cold-open,
+    // increment epoch so any in-flight setTimeout aborts.
+    playbackEpoch++;
     stopAudio();
     queue = [];
     queueLabel = '';
     queueButton = null;
     coldVideo.pause();
     if (coldAvatar) coldAvatar.classList.remove('playing');
+    if (coldStopBtn) coldStopBtn.style.display = 'none';
     setCurrentButton(null);
     hideMini();
   }
@@ -490,7 +501,13 @@ def build_controller_js() -> str:
       currentAudio = null;
       if (queue.length) {
         const next = queue.shift();
-        _startSegment(next, queueButton || btn, queueLabel || label);
+        const epochAtPause = playbackEpoch;
+        // small pause between clips so the queue doesn't feel rushed
+        setTimeout(() => {
+          // If stopAll fired during the pause, abort silently
+          if (epochAtPause !== playbackEpoch) return;
+          _startSegment(next, queueButton || btn, queueLabel || label);
+        }, QUEUE_GAP_MS);
       } else {
         setCurrentButton(null);
         hideMini();
@@ -564,20 +581,18 @@ def build_controller_js() -> str:
   function playColdOpen(isAutoplay) {
     stopAll();
     coldAvatar.classList.add('playing');
-    showMini('Cold-open: the bakery');
+    if (coldStopBtn) coldStopBtn.style.display = '';
     coldVideo.muted = false;
     coldVideo.currentTime = 0;
     coldVideo.onended = () => {
       coldAvatar.classList.remove('playing');
-      hideMini();
+      if (coldStopBtn) coldStopBtn.style.display = 'none';
     };
     coldVideo.play().catch(err => {
-      // Most likely cause: browser autoplay policy blocks unmuted media
-      // without user gesture. Roll back the UI so the static poster is
-      // visible — user can click the avatar to start it as a gesture.
+      // Browser autoplay policy may block unmuted media without user gesture.
       console.warn('cold-open play() rejected', err);
       coldAvatar.classList.remove('playing');
-      hideMini();
+      if (coldStopBtn) coldStopBtn.style.display = 'none';
     });
   }
 
@@ -592,6 +607,18 @@ def build_controller_js() -> str:
     }, { threshold: 0.4 });
     obs.observe(document.getElementById('elenaColdOpen'));
     coldAvatar.addEventListener('click', () => playColdOpen(false));
+  }
+  if (coldStopBtn) {
+    coldStopBtn.addEventListener('click', e => {
+      e.preventDefault();
+      stopAll();
+    });
+  }
+  if (coldReplayBtn) {
+    coldReplayBtn.addEventListener('click', e => {
+      e.preventDefault();
+      playColdOpen(false);
+    });
   }
 
   // Render mega-soundboard
@@ -642,7 +669,9 @@ INTRO_SEGS = [
     "intro_s7", "intro_s8", "intro_roleplays",
 ]
 REQUIRED_NON_BUTTON_SEGS = [
-    "cold_open", "outro", *RECAP_QUEUE, *SPOTLIGHT_SEGS, *INTRO_SEGS,
+    "cold_open", "outro",
+    "spotlight_molya",   # added this round
+    *RECAP_QUEUE, *SPOTLIGHT_SEGS, *INTRO_SEGS,
 ]
 
 
@@ -715,11 +744,14 @@ def main() -> None:
         print(f"  pill {label}: {'ok' if n else 'MISS'}")
 
     # --- 6. Inject spotlight buttons inside specific info-boxes ---
+    # Note: the Моля info-box now uses its own spotlight_molya clip (added
+    # this round). spotlight_ucha_bg was also re-generated to say "two words"
+    # instead of "three words" — Уча български is two words.
     spotlight_anchors = [
         ("⚠️ The golden rule",                 "spotlight_vie",            "04-rules.jpg"),
         ("💡 Memory tip — Здравей",            "spotlight_te",             "05-grammar.jpg"),
         ("💡 Why this matters",                "spotlight_te",             "05-grammar.jpg"),
-        ("💡 Моля — the most versatile word",  "spotlight_ucha_bg",        "05-grammar.jpg"),
+        ("💡 Моля — the most versatile word",  "spotlight_molya",          "03-cultural.jpg"),
         ("🇧🇬 Мерси — the French connection",  "spotlight_mersi",          "03-cultural.jpg"),
         ("🏠 Bulgarian hospitality",           "spotlight_zapovyadayte",   "03-cultural.jpg"),
         ("💡 The most useful phrase",          "spotlight_ucha_bg",        "05-grammar.jpg"),
