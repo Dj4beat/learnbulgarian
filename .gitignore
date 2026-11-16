@@ -8,3 +8,6 @@ venv/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Local record of what the last SFTP deploy uploaded. Not a secret.
+.deploy-state.json
